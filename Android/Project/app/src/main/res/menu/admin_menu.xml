@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_homepage"
+            android:title="HOME PAGE"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_assignment"
+            android:title="ASSIGNMENT"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_class"
+            android:title="CLASS"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_module"
+            android:title="MODULE"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_enrollment"
+            android:title="ENROLLMENT"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_feedback"
+            android:title="FEEDBACK"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_result"
+            android:title="RESULT"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_question"
+            android:title="QUESTION"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_contact"
+            android:title="CONTACT"
+            android:icon=""/>
+        <item
+            android:id="@+id/nav_logout"
+            android:icon=""
+            android:title="LOGOUT" />
+
+    </group>
+
+</menu>
