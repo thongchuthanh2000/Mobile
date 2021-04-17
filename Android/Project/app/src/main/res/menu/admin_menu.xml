@@ -6,42 +6,42 @@
         <item
             android:id="@+id/nav_homepage"
             android:title="HOME PAGE"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_assignment"
             android:title="ASSIGNMENT"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_class"
             android:title="CLASS"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_module"
             android:title="MODULE"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_enrollment"
             android:title="ENROLLMENT"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_feedback"
             android:title="FEEDBACK"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_result"
             android:title="RESULT"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_question"
             android:title="QUESTION"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_contact"
             android:title="CONTACT"
-            android:icon=""/>
+            android:icon="@drawable/ic_baseline_group_24"/>
         <item
             android:id="@+id/nav_logout"
-            android:icon=""
+            android:icon="@drawable/ic_baseline_group_24"
             android:title="LOGOUT" />
 
     </group>
