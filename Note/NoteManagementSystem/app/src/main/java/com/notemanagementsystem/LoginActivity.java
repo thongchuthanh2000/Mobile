@@ -42,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void run() {
 
-                            User user = userDAO.login(email,password);
+                            User user = userDAO.checkUser(email,password);
 
                             if(user==null){
                                 runOnUiThread(new Runnable() {

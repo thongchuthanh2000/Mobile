@@ -38,24 +38,38 @@ public class SignUpActivity extends AppCompatActivity {
                 user.setPassWord(edtPassword_SignUp.getText().toString());
 
                 if(validateInput_SignIn(user)){
-                    if(edtConfirm.getText().toString().equals(edtPassword_SignUp.getText().toString())){
+                    if(edtConfirm.getText().toString().equals(edtPassword_SignUp.getText().toString())) {
 
                         AppDatabase appDatabase = AppDatabase.getAppDatabase(getApplicationContext());
                         UserDAO userDAO = appDatabase.userDAO();
 
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                userDAO.insert(user);
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getApplicationContext(),"Success!",Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        }).start();
+                        User userCheck = userDAO.checkUser(edtEmail_SignUp.getText().toString(), edtPassword_SignUp.getText().toString());
 
+                        if (userCheck == null) {
+
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    userDAO.insert(user);
+
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+
+                                        }
+                                    });
+                                }
+                            }).start();
+
+                        }
+                        else{
+
+                            Toast.makeText(getApplicationContext(), "Use already exists!", Toast.LENGTH_SHORT).show();
+
+                        }
                     }
                     else {
 
