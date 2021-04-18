@@ -4,17 +4,50 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
+
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/menu_home" />
+
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/nav_category"
+            android:icon="@drawable/ic_menu_category"
+            android:title="@string/menu_category" />
+
         <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/nav_priority"
+            android:icon="@drawable/ic_menu_priority"
+            android:title="@string/menu_priority" />
+
+        <item
+            android:id="@+id/nav_status"
+            android:icon="@drawable/ic_menu_build"
+            android:title="@string/menu_status" />
+
+        <item
+            android:id="@+id/nav_note"
+            android:icon="@drawable/ic_menu_build"
+            android:title="@string/menu_note" />
+
     </group>
+
+
+    <item android:title="@string/menu_account">
+        <menu>
+            <item
+                android:id="@+id/nav_editProfile"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/menu_editProfile" />
+
+            <item
+                android:id="@+id/nav_changePassword"
+                android:icon="@drawable/ic_menu_send"
+                android:title="@string/menu_changePassword" />
+        </menu>
+    </item>
+
+
+
+
 </menu>

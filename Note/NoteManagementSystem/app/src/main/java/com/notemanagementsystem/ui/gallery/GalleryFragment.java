@@ -22,8 +22,8 @@ public class GalleryFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         galleryViewModel =
                 new ViewModelProvider(this).get(GalleryViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_gallery, container, false);
-        final TextView textView = root.findViewById(R.id.text_gallery);
+        View root = inflater.inflate(R.layout.fragment_category, container, false);
+        final TextView textView = root.findViewById(R.id.text_category);
         galleryViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
             @Override
             public void onChanged(@Nullable String s) {

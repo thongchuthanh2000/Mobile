@@ -12,14 +12,38 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
+        android:id="@+id/nav_category"
         android:name="com.notemanagementsystem.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:label="@string/menu_category"
+        tools:layout="@layout/fragment_category" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+        android:id="@+id/nav_priority"
         android:name="com.notemanagementsystem.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:label="@string/menu_priority"
+        tools:layout="@layout/fragment_priority" />
+
+    <fragment
+        android:id="@+id/nav_status"
+        android:name="com.notemanagementsystem.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_status"
+        tools:layout="@layout/frament_status" />
+
+    <fragment
+        android:id="@+id/nav_note"
+        android:name="com.notemanagementsystem.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_note"
+        tools:layout="@layout/fragment_note" />
+
+    <fragment
+        android:id="@+id/nav_editProfile"
+        android:name="com.notemanagementsystem.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_editProfile"
+        tools:layout="@layout/fragment_edit_profile" />
+
+    <fragment
+        android:id="@+id/nav_changePassword"
+        android:name="com.notemanagementsystem.ui.slideshow.SlideshowFragment"
+        android:label="@string/menu_changePassword"
+        tools:layout="@layout/fragment_change_password" />
 </navigation>

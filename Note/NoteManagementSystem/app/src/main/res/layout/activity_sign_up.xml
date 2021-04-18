@@ -51,11 +51,12 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/btnSignUp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sign Up"
             android:layout_marginLeft="20dp"
-            android:id="@+id/btnSignUp"/>
+            android:background="@drawable/button_format"
+            android:text="Sign Up" />
 
         <Button
             android:layout_width="wrap_content"
@@ -63,7 +64,8 @@
             android:text="Sign In"
             android:layout_marginLeft="160dp"
             android:layout_marginRight="20dp"
-            android:id="@+id/btnSwitch_To_Login"/>
+            android:id="@+id/btnSwitch_To_Login"
+            android:background="@drawable/button_format"/>
 
     </LinearLayout>
 
