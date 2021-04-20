@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity(tableName = "priority")
 public class Priority {
     @PrimaryKey(autoGenerate = true)
-    public int uid;
+    public int id;
 
     @ColumnInfo(name = "name")
     public String name;
@@ -24,12 +24,12 @@ public class Priority {
     }
     public Priority() {
     }
-    public int getUid() {
-        return uid;
+    public int getId() {
+        return id;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity(tableName = "status")
 public class Status {
     @PrimaryKey(autoGenerate = true)
-    public int uid;
+    public int id;
 
 
     @ColumnInfo(name = "name")
@@ -25,12 +25,12 @@ public class Status {
     }
     public Status() {
     }
-    public int getUid() {
-        return uid;
+    public int getId() {
+        return id;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {

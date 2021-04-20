@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 public class User {
 
     @PrimaryKey(autoGenerate = true)
-    public int uid;
+    public int id;
 
     @ColumnInfo(name = "email")
     public String email;
@@ -20,12 +20,12 @@ public class User {
 
     }
 
-    public int getUid() {
-        return uid;
+    public int getId() {
+        return id;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEmail() {

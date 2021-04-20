@@ -10,7 +10,7 @@ import java.util.Date;
 @Entity(tableName = "category")
 public class Category {
     @PrimaryKey(autoGenerate = true)
-    public int uid;
+    public int id;
 
     @ColumnInfo(name = "name")
     public String name;
@@ -25,12 +25,12 @@ public class Category {
     }
     public Category() {
     }
-    public int getUid() {
-        return uid;
+    public int getId() {
+        return id;
     }
 
-    public void setUid(int uid) {
-        this.uid = uid;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
