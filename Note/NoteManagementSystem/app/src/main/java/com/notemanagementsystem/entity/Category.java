@@ -1,6 +1,5 @@
 package com.notemanagementsystem.entity;
 
-import android.text.format.DateUtils;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
