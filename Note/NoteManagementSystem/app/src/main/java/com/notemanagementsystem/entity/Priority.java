@@ -17,6 +17,7 @@ public class Priority {
     @ColumnInfo(name = "createdDate")
     public Date createdDate;
 
+
     public Priority(String name, Date createdDate) {
         this.name = name;
         this.createdDate = createdDate;
@@ -46,4 +47,5 @@ public class Priority {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
+
 }
