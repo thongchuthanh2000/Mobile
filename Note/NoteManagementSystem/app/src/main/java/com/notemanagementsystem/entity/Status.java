@@ -1,29 +1,29 @@
 package com.notemanagementsystem.entity;
 
-
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "category")
-public class Category {
+@Entity(tableName = "status")
+public class Status {
     @PrimaryKey(autoGenerate = true)
     public int uid;
+
 
     @ColumnInfo(name = "name")
     public String name;
 
+
     @ColumnInfo(name = "createdDate")
     public Date createdDate;
 
-
-    public Category(String name, Date createdDate) {
+    public Status(String name, Date createdDate) {
         this.name = name;
         this.createdDate = createdDate;
     }
-    public Category() {
+    public Status() {
     }
     public int getUid() {
         return uid;
@@ -48,4 +48,6 @@ public class Category {
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
+
+
 }
