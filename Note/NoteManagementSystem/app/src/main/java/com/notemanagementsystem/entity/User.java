@@ -2,7 +2,6 @@ package com.notemanagementsystem.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "user")
@@ -21,11 +20,11 @@ public class User {
 
     }
 
-    public int getId() {
+    public int getUid() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setUid(int id) {
         this.id = id;
     }
 

@@ -46,7 +46,7 @@ public class SignUpActivity extends AppCompatActivity {
                             AppDatabase appDatabase = AppDatabase.getAppDatabase(getApplicationContext());
                             UserDAO userDAO = appDatabase.userDAO();
 
-                            User userCheck = userDAO.checkUser(edtEmail_SignUp.getText().toString(), edtPassword_SignUp.getText().toString());
+                            User userCheck = userDAO.checkExistUser(edtEmail_SignUp.getText().toString());
 
                             if (userCheck == null) {
 
