@@ -3,6 +3,7 @@ package com.notemanagementsystem.dao;
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.notemanagementsystem.entity.Note;
 
@@ -16,4 +17,7 @@ public interface NoteDAO {
 
     @Query("select * from note")
     List<Note> getListNote();
+
+    @Update
+    void updateNote(Note note);
 }

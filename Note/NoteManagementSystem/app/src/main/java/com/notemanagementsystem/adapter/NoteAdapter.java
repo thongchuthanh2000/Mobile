@@ -1,8 +1,10 @@
 package com.notemanagementsystem.adapter;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,15 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
         notifyDataSetChanged();
     }
 
+    private IClickItemNote iClickItemNote;
+    public interface IClickItemNote{
+        void updateNote(Note note);
+    }
+
+    public NoteAdapter(IClickItemNote iClickItemNote) {
+        this.iClickItemNote = iClickItemNote;
+    }
+
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -31,7 +42,7 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
 
     @Override
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
-        Note note = mListNote.get(position);
+        final Note note = mListNote.get(position);
         if(note == null){
             return;
         }
@@ -40,6 +51,31 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
         sb.append("Name: " + note.getName().toString() + '\n');
 
         holder.tv_item_note.setText(sb);
+
+        holder.tv_item_note.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.tv_item_note);
+                popupMenu.getMenuInflater().inflate(R.menu.option_popup_menu, popupMenu.getMenu());
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.it_edit:
+                                iClickItemNote.updateNote(note);
+                                return true;
+                            case R.id.it_delete:
+                                //
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+                return false;
+            }
+        });
     }
 
     @Override

@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -93,7 +94,12 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         fab_add_note.setOnClickListener(this);
 
         rcvNote = view.findViewById(R.id.rcv_Note);
-        noteAdapter = new NoteAdapter();
+        noteAdapter = new NoteAdapter(new NoteAdapter.IClickItemNote() {
+            @Override
+            public void updateNote(Note note) {
+                clickUpdateNote(view, note);
+            }
+        });
         mListNote = new ArrayList<>();
 
         mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getListNote();
@@ -151,9 +157,9 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
                 Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
 
-                AppDatabase.getAppDatabase(v.getContext()).noteDAO().getListNote();
+                //AppDatabase.getAppDatabase(v.getContext()).noteDAO().getListNote();
 
-                //mListNote = AppDatabase.getAppDatabase(v.getContext()).noteDAO().getListNote();
+                //reload frm
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
 
@@ -162,6 +168,69 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         btn_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
+    }
+
+    private void clickUpdateNote(View v, Note note){
+        openDialogEdit(Gravity.CENTER, v.getContext(), note);
+    }
+
+    private void openDialogEdit(int gravity, Context context, Note note){
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_editnote);
+
+        Window window = dialog.getWindow();
+        if (window ==  null){
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttribute = window.getAttributes();
+        windowAttribute.gravity = gravity;
+        window.setAttributes(windowAttribute);
+
+        dialog.setCancelable(false);
+
+        EditText et_name_note1 = dialog.findViewById(R.id.et_name_note1);
+        Button btn_update = dialog.findViewById(R.id.btn_update);
+        Button btn_close1 = dialog.findViewById(R.id.btn_close1);
+
+        if(note != null){
+            et_name_note1.setText(note.getName());
+        }
+
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name_note = et_name_note1.getText().toString().trim();
+
+                if(TextUtils.isEmpty(name_note)){
+                    return;
+                }
+
+                note.setName(name_note);
+                AppDatabase.getAppDatabase(v.getContext()).noteDAO().updateNote(note);
+
+                Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
+
+                //reload frm
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
+
+                dialog.cancel();
+            }
+        });
+
+        btn_close1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.cancel();
