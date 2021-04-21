@@ -71,7 +71,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void delete(Priority priority) {
-
+                clickDeletePriority(view,priority);
             }
         });
         mListPriority = new ArrayList<>();
@@ -86,14 +86,70 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
         return view;
     }
-    private void clickUpdateNote(View v, Note note){
-        openDialogEdit(Gravity.CENTER, v.getContext(), note);
+    private void clickUpdatePriority(View v, Priority priority){
+        openDialogEdit(Gravity.CENTER, v.getContext(), priority);
     }
 
-    private void openDialogEdit(int center, Context context, Note note) {
+    private void openDialogEdit(int gravity, Context context, Priority priority) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_editnote);
+
+        Window window = dialog.getWindow();
+        if (window ==  null){
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttribute = window.getAttributes();
+        windowAttribute.gravity = gravity;
+        window.setAttributes(windowAttribute);
+
+        dialog.setCancelable(false);
+
+        EditText edtNamePriority = dialog.findViewById(R.id.edt_name_priority);
+        Button btnUpdate = dialog.findViewById(R.id.btn_update);
+        Button btnClose = dialog.findViewById(R.id.btn_close_priority);
+
+        if(priority != null){
+            edtNamePriority.setText(priority.getName());
+        }
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String namePriority = edtNamePriority.getText().toString().trim();
+
+                if(TextUtils.isEmpty(namePriority)){
+                    return;
+                }
+
+                priority.setName(namePriority);
+                AppDatabase.getAppDatabase(v.getContext()).priorityDAO().update(priority);
+
+                Toast.makeText(v.getContext(), "Update Priority successfully!", Toast.LENGTH_SHORT).show();
+
+                //reload frm
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, new PriorityFragment()).addToBackStack(null).commit();
+
+                dialog.cancel();
+            }
+        });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
     }
 
-    private void clickDeleteNote(View v, Priority priority){
+    private void clickDeletePriority(View v, Priority priority){
         new AlertDialog.Builder(v.getContext())
                 .setTitle("Confirm")
                 .setMessage("Are you sure to delete this ?")
@@ -121,7 +177,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
     private void openDialog(int gravity, Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_priority);
+        dialog.setContentView(R.layout.layout_dialog);
 
         Window window = dialog.getWindow();
         if (window ==  null){

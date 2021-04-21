@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.notemanagementsystem.entity.Priority;
 
@@ -20,4 +21,6 @@ public interface PriorityDAO {
 
     @Delete
     void delete(Priority priority);
+    @Update
+    void update(Priority priority);
 }
