@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -104,6 +105,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         dialog.setContentView(R.layout.layout_dialog);
         dialog.setCancelable(false);
 
+        TextView title = dialog.findViewById(R.id.title);
         EditText edtNameStatus = dialog.findViewById(R.id.edt_name);
         Button btnUpdate = dialog.findViewById(R.id.btn_add);
         Button btnClose = dialog.findViewById(R.id.btn_close);
@@ -111,6 +113,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         if (status != null){
             edtNameStatus.setText(status.getName());
             btnUpdate.setText("Update");
+            title.setText("Status Form");
         }
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
@@ -161,9 +164,12 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         dialog.setContentView(R.layout.layout_dialog);
         dialog.setCancelable(false);
 
+        TextView title = dialog.findViewById(R.id.title);
         EditText edtNameStatus = dialog.findViewById(R.id.edt_name);
         Button btnAdd = dialog.findViewById(R.id.btn_add);
         Button btnClose = dialog.findViewById(R.id.btn_close);
+
+        title.setText("Status Form");
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override

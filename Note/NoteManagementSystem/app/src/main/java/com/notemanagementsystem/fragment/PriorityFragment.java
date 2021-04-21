@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,8 +31,6 @@ import com.notemanagementsystem.AppDatabase;
 
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.adapter.PriorityAdapter;
-import com.notemanagementsystem.dao.NoteDAO;
-import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Priority;
 
 import java.time.LocalDateTime;
@@ -93,7 +92,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
     private void openDialogEdit(int gravity, Context context, Priority priority) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_editnote);
+        dialog.setContentView(R.layout.layout_dialog);
 
         Window window = dialog.getWindow();
         if (window ==  null){
@@ -109,12 +108,15 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
         dialog.setCancelable(false);
 
-        EditText edtNamePriority = dialog.findViewById(R.id.edt_name_priority);
-        Button btnUpdate = dialog.findViewById(R.id.btn_update);
-        Button btnClose = dialog.findViewById(R.id.btn_close_priority);
+        TextView title = dialog.findViewById(R.id.title);
+        EditText edtNamePriority = dialog.findViewById(R.id.edt_name);
+        Button btnUpdate = dialog.findViewById(R.id.btn_add);
+        Button btnClose = dialog.findViewById(R.id.btn_close);
 
         if(priority != null){
             edtNamePriority.setText(priority.getName());
+            btnUpdate.setText("Update");
+            title.setText("Priority Form");
         }
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
@@ -129,7 +131,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
                 priority.setName(namePriority);
                 AppDatabase.getAppDatabase(v.getContext()).priorityDAO().update(priority);
 
-                Toast.makeText(v.getContext(), "Update Priority successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Update priority successfully!", Toast.LENGTH_SHORT).show();
 
                 //reload frm
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -157,11 +159,11 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AppDatabase.getAppDatabase(v.getContext()).priorityDAO().delete(priority);
-                        Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Delete priority successfully!", Toast.LENGTH_SHORT).show();
 
                         //reload frm
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
+                        ft.replace(R.id.content_frame, new PriorityFragment()).addToBackStack(null).commit();
                     }
                 })
                 .setNegativeButton("No", null)
@@ -193,31 +195,33 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
         dialog.setCancelable(false);
 
-        EditText edtNamePriority = dialog.findViewById(R.id.edt_name_priority);
+        TextView title = dialog.findViewById(R.id.title);
+        EditText edtNamePriority = dialog.findViewById(R.id.edt_name);
         Button btnAdd = dialog.findViewById(R.id.btn_add);
         Button btnClose = dialog.findViewById(R.id.btn_close);
+        title.setText("Priority Form");
+
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String nameNote = edtNamePriority.getText().toString().trim();
+                String namePriority = edtNamePriority.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameNote)){
+                if(TextUtils.isEmpty(namePriority)){
                     return;
                 }
 
-
-                Priority priority = new Priority(nameNote, new Date());
+                Priority priority = new Priority(namePriority, new Date());
                 AppDatabase.getAppDatabase(v.getContext()).priorityDAO().insert(priority);
 
-                Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Add priority successfully!", Toast.LENGTH_SHORT).show();
 
-                mListPriority = AppDatabase.getAppDatabase(v.getContext()).priorityDAO().getAllPriority();
-                priorityAdapter.setData(mListPriority);
+//                mListPriority = AppDatabase.getAppDatabase(v.getContext()).priorityDAO().getAllPriority();
+//                priorityAdapter.setData(mListPriority);
 
 
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
+                ft.replace(R.id.content_frame, new PriorityFragment()).addToBackStack(null).commit();
 
                 dialog.cancel();
             }

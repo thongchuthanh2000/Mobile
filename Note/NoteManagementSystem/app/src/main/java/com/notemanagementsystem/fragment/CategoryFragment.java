@@ -1,9 +1,9 @@
 package com.notemanagementsystem.fragment;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -16,10 +16,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,7 +26,6 @@ import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.adapter.CategoryAdapter;
 import com.notemanagementsystem.entity.Category;
-import com.notemanagementsystem.entity.Priority;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,7 +54,17 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
         fabAddCategory.setOnClickListener(this);
 
         rcvCategory = view.findViewById(R.id.rcv_category);
-        categoryAdapter = new CategoryAdapter();
+        categoryAdapter = new CategoryAdapter(new CategoryAdapter.IClickItemCategory() {
+            @Override
+            public void updateCategory(Category category) {
+                clickUpdateCategory(view, category);
+            }
+
+            @Override
+            public void deleteCategory(Category category) {
+                clickDeleteCategory(view, category);
+            }
+        });
         mListCategory = new ArrayList<>();
 
         mListCategory = AppDatabase.getAppDatabase(view.getContext()).categoryDAO().getAllCategory();
@@ -68,6 +76,79 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
         rcvCategory.setAdapter(categoryAdapter);
 
         return view;
+    }
+
+    private void clickDeleteCategory(View view, Category category) {
+        new AlertDialog.Builder(view.getContext())
+                .setTitle("Confirm")
+                .setMessage("Are you sure to delete this category?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AppDatabase.getAppDatabase(view.getContext()).categoryDAO().delete(category);
+                        Toast.makeText(view.getContext(), "Delete category successfully!", Toast.LENGTH_SHORT).show();
+
+                        //reload frm
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.content_frame, new CategoryFragment()).addToBackStack(null).commit();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void clickUpdateCategory(View view, Category category) {
+        openDialogEdit(Gravity.CENTER, view.getContext(), category);
+    }
+
+    private void openDialogEdit(int center, Context context, Category category) {
+        final Dialog dialog = new Dialog(context);
+
+        dialog.setContentView(R.layout.layout_dialog);
+        dialog.setCancelable(false);
+
+        TextView title = dialog.findViewById(R.id.title);
+        EditText edtNameCategory = dialog.findViewById(R.id.edt_name);
+        Button btnUpdate = dialog.findViewById(R.id.btn_add);
+        Button btnClose = dialog.findViewById(R.id.btn_close);
+
+        if (category != null){
+            edtNameCategory.setText(category.getName());
+            btnUpdate.setText("Update");
+            title.setText("Category Form");
+        }
+
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String nameCategory = edtNameCategory.getText().toString().trim();
+
+                if(TextUtils.isEmpty(nameCategory)){
+                    return;
+                }
+
+                category.setName(nameCategory);
+                category.setCreateDate(new Date());
+                AppDatabase.getAppDatabase(v.getContext()).categoryDAO().update(category);
+
+                Toast.makeText(v.getContext(), "Update category successfully", Toast.LENGTH_LONG).show();
+
+                //reload frm
+                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+                fragmentTransaction.replace(R.id.content_frame, new CategoryFragment()).addToBackStack(null).commit();
+
+                dialog.cancel();
+            }
+        });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override
@@ -96,9 +177,12 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
 
         dialog.setCancelable(false);
 
+        TextView title = dialog.findViewById(R.id.title);
         EditText edtNameCategory = dialog.findViewById(R.id.edt_name);
         Button btnAdd = dialog.findViewById(R.id.btn_add);
         Button btnClose = dialog.findViewById(R.id.btn_close);
+
+        title.setText("Category Form");
 
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override

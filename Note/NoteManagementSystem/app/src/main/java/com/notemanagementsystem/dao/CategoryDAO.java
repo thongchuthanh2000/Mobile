@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.notemanagementsystem.entity.Category;
 import com.notemanagementsystem.entity.Priority;
@@ -21,4 +22,7 @@ public interface CategoryDAO {
 
     @Delete
     void delete(Category category);
+
+    @Update
+    void update(Category category);
 }

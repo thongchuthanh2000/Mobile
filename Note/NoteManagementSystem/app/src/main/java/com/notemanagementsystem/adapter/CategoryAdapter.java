@@ -1,8 +1,10 @@
 package com.notemanagementsystem.adapter;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,9 +20,19 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     private List<Category> mListCategory;
 
+    public CategoryAdapter(IClickItemCategory iClickItemCategory) {
+        this.iClickItemCategory = iClickItemCategory;
+    }
+
     public void setData(List<Category> list){
         this.mListCategory = list;
         notifyDataSetChanged();
+    }
+
+    private CategoryAdapter.IClickItemCategory iClickItemCategory;
+    public interface IClickItemCategory{
+        void updateCategory(Category category);
+        void deleteCategory(Category category);
     }
 
     @NonNull
@@ -40,6 +52,31 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.catName.setText(category.getName());
         String formatedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(category.getCreateDate());
         holder.createdDate.setText(formatedDate);
+
+        holder.catName.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.catName);
+                popupMenu.getMenuInflater().inflate(R.menu.option_popup_menu, popupMenu.getMenu());
+
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.it_edit:
+                                iClickItemCategory.updateCategory(category);
+                                return true;
+                            case R.id.it_delete:
+                                iClickItemCategory.deleteCategory(category);
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+                return false;
+            }
+        });
     }
 
     @Override
