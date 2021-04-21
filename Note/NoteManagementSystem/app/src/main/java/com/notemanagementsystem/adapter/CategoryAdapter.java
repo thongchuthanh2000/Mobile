@@ -1,5 +1,6 @@
 package com.notemanagementsystem.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;

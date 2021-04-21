@@ -21,9 +21,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.adapter.NoteAdapter;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.entity.Category;
 import com.notemanagementsystem.entity.Note;
 
 import java.text.ParseException;
@@ -39,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,12 +91,16 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    FloatingActionButton fab_add_note;
-    RecyclerView rcvNote;
-    NoteAdapter noteAdapter;
-    List<Note> mListNote;
-    Calendar c;
-    DatePickerDialog dpd;
+    private FloatingActionButton fab_add_note;
+    private RecyclerView rcvNote;
+    private NoteAdapter noteAdapter;
+    private List<Note> mListNote;
+
+    private Calendar c;
+    private DatePickerDialog dpd;
+
+    private String category;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -167,7 +174,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 String name_note = et_name_note.getText().toString().trim();
                 String plan_date = tv_plan_date.getText().toString().trim();
 
-                if(TextUtils.isEmpty(name_note) || TextUtils.isEmpty(plan_date)){
+                if(TextUtils.isEmpty(name_note) || TextUtils.isEmpty(plan_date) || TextUtils.isEmpty(category)){
                     return;
                 }
 
@@ -178,7 +185,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                     date1 = new Date();
                 }
 
-                Note note = new Note(name_note, date1, new Date());
+                Note note = new Note(name_note, date1, new Date(), category);
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().insertNote(note);
 
                 Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
@@ -200,8 +207,6 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-
-
         btn_plan_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -220,6 +225,30 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        List<String> li = getListCategory(context);
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spn_category = dialog.findViewById(R.id.spn_category);
+        spn_category.setAdapter(dataAdapter);
+
+        spn_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getItemAtPosition(position).equals("Select category...")){
+                    //do nothing
+                }
+                else {
+                    category = parent.getItemAtPosition(position).toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         dialog.show();
     }
@@ -257,6 +286,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             et_name_note1.setText(note.getName());
             String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
             tv_plan_date1.setText(planDate);
+            category=note.getCategory();
         }
 
         btn_update.setOnClickListener(new View.OnClickListener() {
@@ -279,6 +309,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
                 note.setName(name_note);
                 note.setPlanDate(date1);
+                note.setCategory(category);
 
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().updateNote(note);
 
@@ -317,6 +348,31 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        List<String> li = getListCategory(context);
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spn_category1 = dialog.findViewById(R.id.spn_category1);
+        spn_category1.setAdapter(dataAdapter);
+
+        spn_category1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getItemAtPosition(position).equals("Select category...")){
+                    //do nothing
+                }
+                else {
+                    category = parent.getItemAtPosition(position).toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         dialog.show();
     }
 
@@ -338,4 +394,14 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 .setNegativeButton("No", null)
                 .show();
     }
+
+    private List<String> getListCategory(Context context){
+        List<String> list = new ArrayList<>();
+        list.add(0, "Select category...");
+        for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategory()){
+            list.add(c.getName().toString().trim());
+        }
+        return list;
+    }
+
 }

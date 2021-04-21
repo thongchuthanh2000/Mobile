@@ -2,6 +2,7 @@ package com.notemanagementsystem.entity;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Dao;
+import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -23,11 +24,13 @@ public class Note {
     @ColumnInfo(name = "planDate")
     public Date planDate;
 
+    public String category;
 
-    public Note(String name, Date planDate, Date createDate) {
+    public Note(String name, Date planDate, Date createDate, String category) {
         this.name = name;
         this.createDate = createDate;
         this.planDate = planDate;
+        this.category = category;
     }
 
     public int getId() {
@@ -60,5 +63,13 @@ public class Note {
 
     public void setPlanDate(Date planDate) {
         this.planDate = planDate;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

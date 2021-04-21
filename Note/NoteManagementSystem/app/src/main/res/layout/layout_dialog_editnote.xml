@@ -22,6 +22,12 @@
         android:textSize="16sp"
         android:hint="Enter note name..." />
 
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spn_category1"
+        app:layout_constraintTop_toBottomOf="@+id/et_name_note1"/>
+
     <TextView
         android:id="@+id/tv_plan_date1"
         android:layout_width="wrap_content"
@@ -29,7 +35,7 @@
         android:layout_marginTop="12dp"
         android:hint="Select plan date"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_name_note1" />
+        app:layout_constraintTop_toBottomOf="@+id/spn_category1" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_plan_date1"
@@ -37,7 +43,7 @@
         android:layout_height="wrap_content"
         android:text="..."
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_name_note1" />
+        app:layout_constraintTop_toBottomOf="@+id/spn_category1" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_update"

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Note;
 
@@ -51,6 +52,7 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
 
         StringBuffer sb = new StringBuffer();
         sb.append("Name: " + note.getName().toString() + '\n');
+        sb.append("Category: " + note.getCategory() + '\n');
         String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
         sb.append("Plan Date: " + planDate + '\n');
         String createDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(note.getCreateDate());

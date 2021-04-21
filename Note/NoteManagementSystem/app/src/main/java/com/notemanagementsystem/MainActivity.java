@@ -34,7 +34,7 @@ import androidx.appcompat.widget.Toolbar;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    private AppBarConfiguration mAppBarConfiguration;
+    //private AppBarConfiguration mAppBarConfiguration;
 
 //    private static final int fragment_home = 1;
 //    private static final int fragment_category = 2;
