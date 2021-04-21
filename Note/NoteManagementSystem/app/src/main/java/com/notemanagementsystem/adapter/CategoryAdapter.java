@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Category;
-import com.notemanagementsystem.entity.Note;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
