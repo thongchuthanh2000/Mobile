@@ -17,118 +17,74 @@ import com.notemanagementsystem.entity.User;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText edtEmail, edtPassword;
-    Button btnSignIn, btnExit;
-    CheckBox cbRememberMe;
-    FloatingActionButton fab_add_user;
-//    SharedPreferences sharedPreferences;
+    private EditText edtEmail, edtPassword;
+    private Button btnSignIn, btnExit;
+    private CheckBox cbRememberMe;
+    private FloatingActionButton fabAddUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        SessionManager sessionManager = new SessionManager(getApplicationContext());
-
         addControls();
-
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                final String email = edtEmail.getText().toString();
-                final String password = edtPassword.getText().toString();
-
-                if(validateInput_LogIn()){
-
-                    AppDatabase appDatabase = AppDatabase.getAppDatabase(getApplicationContext());
-                    UserDAO userDAO = appDatabase.userDAO();
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            User user = userDAO.checkUser(email,password);
-
-                            if(user==null){
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getApplicationContext(),"Invalid Credentials!",Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                            else {
-
-                                sessionManager.setUserId(user.getId());
-                                sessionManager.setLogin(true);
-
-//                                if(cbRememberMe.isChecked()){
-//                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-//                                    editor.putString("username",user.email);
-//                                    editor.putString("pass",user.password);
-//
-//                                    editor.putBoolean("checked",true);
-//                                    editor.commit();
-//                                }
-
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-
-                                //to get session - use "session.getUserId();"
-
-                            }
-                        }
-                    }).start();
-                }
-                else {
-                    Toast.makeText(getApplicationContext(),"Fill all fields!",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnExit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                System.exit(0);
-            }
-        });
-
-        fab_add_user.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
-                startActivity(intent);
-            }
-        });
+        addEvent();
     }
 
     public void addControls(){
-
-        edtEmail = findViewById(R.id.edtEmail);
-        edtPassword = findViewById(R.id.edtPassword);
-        btnSignIn = findViewById(R.id.btnSignIn);
-        btnExit = findViewById(R.id.btnExit);
-        cbRememberMe = findViewById(R.id.cbRememberMe);
-        fab_add_user = findViewById(R.id.fab_add_user);
-
-//        sharedPreferences = getSharedPreferences("dataLogin",MODE_PRIVATE);
-//        edtEmail.setText(sharedPreferences.getString("email",""));
-//        edtPassword.setText(sharedPreferences.getString("pass",""));
-//        cbRememberMe.setChecked(sharedPreferences.getBoolean("checked",false));
-
+        edtEmail = findViewById(R.id.edt_email);
+        edtPassword = findViewById(R.id.edt_password);
+        btnSignIn = findViewById(R.id.btn_sign_in);
+        btnExit = findViewById(R.id.btn_exit);
+        cbRememberMe = findViewById(R.id.cb_remember_me);
+        fabAddUser = findViewById(R.id.fab_add_user);
     }
 
     public void addEvent(){
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
+        btnSignIn.setOnClickListener(v -> {
+            final String email = edtEmail.getText().toString().trim();
+            final String password = edtPassword.getText().toString().trim();
 
+            if(validateInput_LogIn(email,password)){
 
+                new Thread(() -> {
+                    User user = AppDatabase.getAppDatabase(getApplicationContext())
+                            .userDAO()
+                            .checkUser(email,password);
+
+                    if(user==null){
+                        runOnUiThread(() -> {
+                            Toast.makeText(getApplicationContext(),"Invalid Credentials!",Toast.LENGTH_SHORT).show();
+                        });
+                    }
+                    else {
+
+                        sessionManager.setUserId(user.getId());
+                        sessionManager.setLogin(true);
+
+                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        startActivity(intent);
+                    }
+                }).start();
+            }
+            else {
+                Toast.makeText(getApplicationContext(),"Fill all fields!",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnExit.setOnClickListener(v -> {
+            finish();
+            System.exit(0);
+        });
+
+        fabAddUser.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+            startActivity(intent);
+        });
     }
 
-    public Boolean validateInput_LogIn (){
-        String email = edtEmail.getText().toString();
-        String pass = edtPassword.getText().toString();
-
+    public Boolean validateInput_LogIn ( String email,  String pass){
         if( email.isEmpty() || pass.isEmpty()){
             return false;
         }

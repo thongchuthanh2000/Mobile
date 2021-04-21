@@ -63,12 +63,12 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
         sb.append("Created Date: " + createDate);
 
 
-        holder.tv_item_note.setText(sb);
+        holder.tvItemNote.setText(sb);
 
-        holder.tv_item_note.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.tvItemNote.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.tv_item_note);
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.tvItemNote);
                 popupMenu.getMenuInflater().inflate(R.menu.option_popup_menu, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -100,11 +100,11 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
     }
 
     public class NoteViewHolder extends RecyclerView.ViewHolder {
-        private TextView tv_item_note;
+        private TextView tvItemNote;
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
-            tv_item_note = itemView.findViewById(R.id.tv_item_note);
+            tvItemNote = itemView.findViewById(R.id.tv_item_note);
         }
     }
 }

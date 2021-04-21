@@ -30,6 +30,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.PriorityAdapter;
 import com.notemanagementsystem.entity.Priority;
 
@@ -46,10 +47,10 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    public FloatingActionButton fabAddPriority;
-    public RecyclerView rcvPriority;
-    public PriorityAdapter priorityAdapter;
-    public List<Priority> mListPriority;
+    private FloatingActionButton fabAddPriority;
+    private RecyclerView rcvPriority;
+    private PriorityAdapter priorityAdapter;
+    private List<Priority> mListPriority;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +58,6 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
 
         View view = inflater.inflate(R.layout.fragment_priority, container, false);
-
         fabAddPriority = view.findViewById(R.id.fab_add_priority);
         fabAddPriority.setOnClickListener(this);
 
@@ -73,10 +73,12 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
                 clickDeletePriority(view,priority);
             }
         });
+
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         mListPriority = new ArrayList<>();
-
-        mListPriority = AppDatabase.getAppDatabase(view.getContext()).priorityDAO().getAllPriority();
-
+        mListPriority = AppDatabase.getAppDatabase(view.getContext()).priorityDAO().getAllPriorityById(userId);
         priorityAdapter.setData(mListPriority);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -91,20 +93,6 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
     private void openDialogEdit(int gravity, Context context, Priority priority) {
         final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog);
-
-        Window window = dialog.getWindow();
-        if (window ==  null){
-            return;
-        }
-
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttribute = window.getAttributes();
-        windowAttribute.gravity = gravity;
-        window.setAttributes(windowAttribute);
 
         dialog.setCancelable(false);
 
@@ -119,33 +107,24 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
             title.setText("Priority Form");
         }
 
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String namePriority = edtNamePriority.getText().toString().trim();
+        btnUpdate.setOnClickListener(v -> {
+            String namePriority = edtNamePriority.getText().toString().trim();
 
-                if(TextUtils.isEmpty(namePriority)){
-                    return;
-                }
-
-                priority.setName(namePriority);
-                AppDatabase.getAppDatabase(v.getContext()).priorityDAO().update(priority);
-
-                Toast.makeText(v.getContext(), "Update priority successfully!", Toast.LENGTH_SHORT).show();
-
-                //reload frm
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, new PriorityFragment()).addToBackStack(null).commit();
-
-                dialog.cancel();
+            if(TextUtils.isEmpty(namePriority)){
+                return;
             }
+
+            priority.setName(namePriority);
+            AppDatabase.getAppDatabase(v.getContext()).priorityDAO().update(priority);
+
+            Toast.makeText(v.getContext(), "Update priority successfully!", Toast.LENGTH_SHORT).show();
+
+            replaceFragment(new PriorityFragment());
+            dialog.cancel();
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
+        btnClose.setOnClickListener(v -> {
+            dialog.cancel();
         });
 
         dialog.show();
@@ -154,17 +133,12 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
     private void clickDeletePriority(View v, Priority priority){
         new AlertDialog.Builder(v.getContext())
                 .setTitle("Confirm")
-                .setMessage("Are you sure to delete this ?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AppDatabase.getAppDatabase(v.getContext()).priorityDAO().delete(priority);
-                        Toast.makeText(v.getContext(), "Delete priority successfully!", Toast.LENGTH_SHORT).show();
+                .setMessage("Are you sure to delete this Priority?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    AppDatabase.getAppDatabase(v.getContext()).priorityDAO().delete(priority);
+                    Toast.makeText(v.getContext(), "Delete priority successfully!", Toast.LENGTH_SHORT).show();
 
-                        //reload frm
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.content_frame, new PriorityFragment()).addToBackStack(null).commit();
-                    }
+                    replaceFragment(new PriorityFragment());
                 })
                 .setNegativeButton("No", null)
                 .show();
@@ -178,20 +152,6 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
     private void openDialog(int gravity, Context context) {
         final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog);
-
-        Window window = dialog.getWindow();
-        if (window ==  null){
-            return;
-        }
-
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttribute = window.getAttributes();
-        windowAttribute.gravity = gravity;
-        window.setAttributes(windowAttribute);
 
         dialog.setCancelable(false);
 
@@ -202,38 +162,36 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
         title.setText("Priority Form");
 
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String namePriority = edtNamePriority.getText().toString().trim();
+        btnAdd.setOnClickListener(v -> {
+            String namePriority = edtNamePriority.getText().toString().trim();
 
-                if(TextUtils.isEmpty(namePriority)){
-                    return;
-                }
-
-                Priority priority = new Priority(namePriority, new Date());
-                AppDatabase.getAppDatabase(v.getContext()).priorityDAO().insert(priority);
-
-                Toast.makeText(v.getContext(), "Add priority successfully!", Toast.LENGTH_SHORT).show();
-
-//                mListPriority = AppDatabase.getAppDatabase(v.getContext()).priorityDAO().getAllPriority();
-//                priorityAdapter.setData(mListPriority);
-
-
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, new PriorityFragment()).addToBackStack(null).commit();
-
-                dialog.cancel();
+            if(TextUtils.isEmpty(namePriority)){
+                return;
             }
+
+            SessionManager sessionManager = new SessionManager(getContext());
+            int userId = sessionManager.getUserId();
+
+            Priority priority = new Priority(namePriority, new Date(), userId);
+            AppDatabase.getAppDatabase(v.getContext()).priorityDAO().insert(priority);
+
+            Toast.makeText(v.getContext(), "Add priority successfully!", Toast.LENGTH_SHORT).show();
+
+            replaceFragment(new PriorityFragment());
+
+            dialog.cancel();
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
+        btnClose.setOnClickListener(v -> {
+            dialog.cancel();
         });
 
         dialog.show();
+    }
+
+    private void replaceFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.commit();
     }
 }

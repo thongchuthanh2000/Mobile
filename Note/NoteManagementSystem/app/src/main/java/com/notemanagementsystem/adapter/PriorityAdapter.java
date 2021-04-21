@@ -22,11 +22,7 @@ import java.util.List;
 
 public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.PriorityViewHolder> {
 
-
     private PriorityAdapter.IClickItemPriority iClickItemNote;
-
-
-
     public interface IClickItemPriority{
         void update(Priority priority);
         void delete(Priority priority);
@@ -56,9 +52,9 @@ public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.Prior
             return;
         }
 
-        holder.nameCategoryPriorityStatus.setText(priority.getName());
+        holder.priorityName.setText(priority.getName());
         String formatedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(priority.getCreateDate());
-        holder.createdDateCategoryPriorityStatus.setText(formatedDate);
+        holder.createdDate.setText(formatedDate);
 
 
         holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
@@ -101,14 +97,15 @@ public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.Prior
 
     public class PriorityViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView nameCategoryPriorityStatus;
-        private TextView createdDateCategoryPriorityStatus;
+        private TextView priorityName;
+        private TextView createdDate;
         private LinearLayout layout;
+
         public PriorityViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            nameCategoryPriorityStatus = itemView.findViewById(R.id.txt_name_category_priority_status);
-            createdDateCategoryPriorityStatus = itemView.findViewById(R.id.txt_created_category_priority_status);
+            priorityName = itemView.findViewById(R.id.txt_name_category_priority_status);
+            createdDate = itemView.findViewById(R.id.txt_created_category_priority_status);
             layout = itemView.findViewById(R.id.linear_item_category_priority_status);
         }
     }

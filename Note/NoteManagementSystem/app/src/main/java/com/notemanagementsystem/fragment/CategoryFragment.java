@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.CategoryAdapter;
 import com.notemanagementsystem.entity.Category;
 
@@ -39,10 +40,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
     public List<Category> mListCategory;
 
     public CategoryFragment() {
-        // Required empty public constructor
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,10 +63,12 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
                 clickDeleteCategory(view, category);
             }
         });
+
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         mListCategory = new ArrayList<>();
-
-        mListCategory = AppDatabase.getAppDatabase(view.getContext()).categoryDAO().getAllCategory();
-
+        mListCategory = AppDatabase.getAppDatabase(view.getContext()).categoryDAO().getAllCategoryById(userId);
         categoryAdapter.setData(mListCategory);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -118,35 +118,26 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
             title.setText("Category Form");
         }
 
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String nameCategory = edtNameCategory.getText().toString().trim();
+        btnClose.setOnClickListener(v -> {
+            String nameCategory = edtNameCategory.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameCategory)){
-                    return;
-                }
-
-                category.setName(nameCategory);
-                category.setCreateDate(new Date());
-                AppDatabase.getAppDatabase(v.getContext()).categoryDAO().update(category);
-
-                Toast.makeText(v.getContext(), "Update category successfully", Toast.LENGTH_LONG).show();
-
-                //reload frm
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, new CategoryFragment()).addToBackStack(null).commit();
-
-                dialog.cancel();
+            if(TextUtils.isEmpty(nameCategory)){
+                return;
             }
+
+            category.setName(nameCategory);
+            category.setCreateDate(new Date());
+            AppDatabase.getAppDatabase(v.getContext()).categoryDAO().update(category);
+
+            showToast("Update category successfully");
+            replaceFragment( new CategoryFragment());
+
+            dialog.cancel();
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
+         btnClose.setOnClickListener(v -> {
+             dialog.cancel();
+         });
 
         dialog.show();
     }
@@ -160,21 +151,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
 
     private void openDialog(int gravity, Context context) {
         final Dialog dialog = new Dialog(context);
-        //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         dialog.setContentView(R.layout.layout_dialog);
-
-//        Window window = dialog.getWindow();
-//        if (window ==  null){
-//            return;
-//        }
-//
-//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-//        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//
-//        WindowManager.LayoutParams windowAttribute = window.getAttributes();
-//        windowAttribute.gravity = gravity;
-//        window.setAttributes(windowAttribute);
-
         dialog.setCancelable(false);
 
         TextView title = dialog.findViewById(R.id.title);
@@ -184,35 +162,39 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
 
         title.setText("Category Form");
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String nameCategory = edtNameCategory.getText().toString().trim();
+        btnAdd.setOnClickListener(v -> {
+            String nameCategory = edtNameCategory.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameCategory)){
-                    return;
-                }
-
-                Category category = new Category(nameCategory, new Date());
-                AppDatabase.getAppDatabase(v.getContext()).categoryDAO().insert(category);
-
-                Toast.makeText(v.getContext(), "Add category successfully", Toast.LENGTH_LONG).show();
-
-                //reload frm
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, new CategoryFragment()).addToBackStack(null).commit();
-
-                dialog.cancel();
+            if(TextUtils.isEmpty(nameCategory)){
+                return;
             }
+
+            SessionManager sessionManager = new SessionManager(getContext());
+            int userId = sessionManager.getUserId();
+
+            Category category = new Category(nameCategory, new Date(), userId);
+            AppDatabase.getAppDatabase(v.getContext()).categoryDAO().insert(category);
+
+            showToast("Add category successfully");
+            replaceFragment( new CategoryFragment());
+
+            dialog.cancel();
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
+        btnClose.setOnClickListener(v -> {
+            dialog.cancel();
         });
 
         dialog.show();
+    }
+
+    private void replaceFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.commit();
+    }
+
+    public void showToast(String string){
+        Toast.makeText(getContext(),string,Toast.LENGTH_SHORT).show();
     }
 }

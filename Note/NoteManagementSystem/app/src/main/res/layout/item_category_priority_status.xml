@@ -4,8 +4,6 @@
     android:orientation="vertical"
     android:id="@+id/linear_item_category_priority_status"
     android:layout_height="wrap_content">
->>>>>>> 85c0b1c0519b669be4c51a209e3b539156ebb77b
-
 
     <RelativeLayout
         android:layout_width="match_parent"

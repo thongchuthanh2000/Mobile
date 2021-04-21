@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -33,6 +32,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.NoteAdapter;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Category;
@@ -48,42 +48,18 @@ import java.util.Date;
 import java.util.List;
 
 public class NoteFragment extends Fragment implements View.OnClickListener {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-    private String mParam1;
-    private String mParam2;
 
     public NoteFragment() {
-
     }
-
-    public static NoteFragment newInstance(String param1, String param2) {
-        NoteFragment fragment = new NoteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-
 
     //
-    private FloatingActionButton fab_add_note;
+    private FloatingActionButton fabAddNote;
     private RecyclerView rcvNote;
     private NoteAdapter noteAdapter;
     private List<Note> mListNote;
 
-    private Calendar c;
-    private DatePickerDialog dpd;
+    private Calendar calendar;
+    private DatePickerDialog datePickerDialog;
 
     private String category = "_";
     private String priority = "_";
@@ -94,8 +70,8 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_note, container, false);
 
-        fab_add_note = view.findViewById(R.id.fab_add_note);
-        fab_add_note.setOnClickListener(this);
+        fabAddNote = view.findViewById(R.id.fab_add_note);
+        fabAddNote.setOnClickListener(this);
 
         rcvNote = view.findViewById(R.id.rcv_Note);
         noteAdapter = new NoteAdapter(new NoteAdapter.IClickItemNote() {
@@ -110,8 +86,11 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         mListNote = new ArrayList<>();
-        mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getListNote();
+        mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getAllNoteById(userId);
         noteAdapter.setData(mListNote);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -148,86 +127,78 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
         dialog.setCancelable(false);
 
-        EditText et_name_note = dialog.findViewById(R.id.et_name_note);
-        Button btn_add = dialog.findViewById(R.id.btn_add);
-        Button btn_close = dialog.findViewById(R.id.btn_close);
-        Button btn_plan_date = dialog.findViewById(R.id.btn_plan_date);
-        TextView tv_plan_date = dialog.findViewById(R.id.tv_plan_date);
+        EditText edtNameNote = dialog.findViewById(R.id.edt_name_note);
+        Button btnAdd = dialog.findViewById(R.id.btn_add_note);
+        Button btnClose = dialog.findViewById(R.id.btn_close_note);
+        Button btnPlanDate = dialog.findViewById(R.id.btn_plan_date);
+        TextView tvPlanDate = dialog.findViewById(R.id.tv_plan_date);
 
         //add a new note
-        btn_add.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name_note = et_name_note.getText().toString().trim();
-                String plan_date = tv_plan_date.getText().toString().trim();
+        btnAdd.setOnClickListener(v -> {
+            String nameNote = edtNameNote.getText().toString().trim();
+            String planDate = tvPlanDate.getText().toString().trim();
 
-                if(TextUtils.isEmpty(name_note) || TextUtils.isEmpty(plan_date)){
-                    return;
-                }
-
-                Date date1;
-                try {
-                    date1 = new SimpleDateFormat("yyyy-MM-dd").parse(plan_date);
-                } catch (ParseException e) {
-                    date1 = new Date();
-                }
-
-                Note note = new Note(name_note, date1, new Date(), category, priority, status);
-                AppDatabase.getAppDatabase(v.getContext()).noteDAO().insertNote(note);
-
-                Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
-
-                //reload frm
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
-
-                dialog.cancel();
+            if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(planDate)){
+                return;
             }
+
+            Date date;
+            try {
+                date = new SimpleDateFormat("yyyy-MM-dd").parse(planDate);
+            } catch (ParseException e) {
+                date = new Date();
+            }
+
+            SessionManager sessionManager = new SessionManager(getContext());
+            int userId = sessionManager.getUserId();
+
+            Note note = new Note(nameNote, date, new Date(), category, priority, status, userId);
+            AppDatabase.getAppDatabase(v.getContext()).noteDAO().insert(note);
+
+            Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
+
+            replaceFragment(new NoteFragment());
+
+            dialog.cancel();
         });
 
         //Close dialog
-        btn_close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                dialog.cancel();
-            }
+        btnClose.setOnClickListener(v -> {
+            dialog.cancel();
         });
 
         //Select plan date
-        btn_plan_date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                c = Calendar.getInstance();
-                int day = c.get(Calendar.DAY_OF_MONTH);
-                int month = c.get(Calendar.MONTH);
-                int year = c.get(Calendar.YEAR);
+        btnPlanDate.setOnClickListener(v -> {
+            calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
 
-                dpd = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
-                        tv_plan_date.setText(mYear + "-" + mMonth + "-" + mDayOfMonth);
-                    }
-                }, year, month, day);
-                dpd.show();
-            }
+            datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
+                @Override
+                public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
+                    tvPlanDate.setText(mYear + "-" + (mMonth+1) + "-" + mDayOfMonth);
+                }
+            }, year, month, day);
+
+            datePickerDialog.show();
         });
 
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         //Select category
-        List<String> liCate = getList(context, 0);
+        List<String> liCate = getList(context, 0, userId);
         ArrayAdapter<String> dataAdapterCate = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liCate);
         dataAdapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner spn_category = dialog.findViewById(R.id.spn_category);
-        spn_category.setAdapter(dataAdapterCate);
+        Spinner spnCategory = dialog.findViewById(R.id.spn_category);
+        spnCategory.setAdapter(dataAdapterCate);
 
-        spn_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position).equals("Select category...")){
-                    //do nothing
-                }
-                else {
+                if(position!=0){
                     category = parent.getItemAtPosition(position).toString();
                 }
             }
@@ -239,20 +210,17 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         //Select priority
-        List<String> liPrio = getList(context, 1);
+        List<String> liPrio = getList(context, 1, userId);
         ArrayAdapter<String> dataAdapterPrio = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liPrio);
         dataAdapterPrio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner spn_priority = dialog.findViewById(R.id.spn_priority);
-        spn_priority.setAdapter(dataAdapterPrio);
+        Spinner spnPriority = dialog.findViewById(R.id.spn_priority);
+        spnPriority.setAdapter(dataAdapterPrio);
 
-        spn_priority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position).equals("Select priority...")){
-                    //do nothing
-                }
-                else {
+                if (position!=0){
                     priority = parent.getItemAtPosition(position).toString();
                 }
             }
@@ -264,20 +232,17 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         //Select status
-        List<String> liStt = getList(context, 2);
+        List<String> liStt = getList(context, 2, userId);
         ArrayAdapter<String> dataAdapterStt = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liStt);
         dataAdapterStt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner spn_status = dialog.findViewById(R.id.spn_status);
-        spn_status.setAdapter(dataAdapterStt);
+        Spinner spnStatus = dialog.findViewById(R.id.spn_status);
+        spnStatus.setAdapter(dataAdapterStt);
 
-        spn_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position).equals("Select status...")){
-                    //do nothing
-                }
-                else {
+                if(position!=0){
                     status = parent.getItemAtPosition(position).toString();
                 }
             }
@@ -299,7 +264,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
     private void openDialogEdit(int gravity, Context context, Note note){
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_editnote);
+        dialog.setContentView(R.layout.layout_dialog_edit_note);
 
         Window window = dialog.getWindow();
         if (window ==  null){
@@ -315,101 +280,95 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
         dialog.setCancelable(false);
 
-        EditText et_name_note1 = dialog.findViewById(R.id.et_name_note1);
-        Button btn_update = dialog.findViewById(R.id.btn_update);
-        Button btn_close1 = dialog.findViewById(R.id.btn_close1);
-        Button btn_plan_date1 = dialog.findViewById(R.id.btn_plan_date1);
-        TextView tv_plan_date1 = dialog.findViewById(R.id.tv_plan_date1);
+        EditText edtNameNote = dialog.findViewById(R.id.edt_name_note);
+        Button btnUpdate = dialog.findViewById(R.id.btn_update_note);
+        Button btnClose = dialog.findViewById(R.id.btn_close_note);
+        Button btnPlanDate = dialog.findViewById(R.id.btn_plan_date);
+        TextView tvPlanDate = dialog.findViewById(R.id.tv_plan_date);
 
-        if(note != null){
-            et_name_note1.setText(note.getName());
-            String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
-            tv_plan_date1.setText(planDate);
+        if (note==null){
+            return;
+        }
+
+            edtNameNote.setText(note.getName());
+            String formatPlanDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
+            tvPlanDate.setText(formatPlanDate);
             category = note.getCategory();
             priority = note.getPriority();
             status = note.getStatus();
-        }
+
 
         //update note
-        btn_update.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String name_note = et_name_note1.getText().toString().trim();
-                String plan_date = tv_plan_date1.getText().toString().trim();
+        btnUpdate.setOnClickListener(v -> {
+            String nameNote = edtNameNote.getText().toString().trim();
+            String planDate = tvPlanDate.getText().toString().trim();
 
-                if(TextUtils.isEmpty(name_note) || TextUtils.isEmpty(plan_date)){
-                    return;
-                }
-
-                //convert plan date
-                Date date1 = new Date();
-                try {
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    date1 = formatter.parse(plan_date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                note.setName(name_note);
-                note.setPlanDate(date1);
-                note.setCategory(category);
-                note.setPriority(priority);
-                note.setStatus(status);
-
-                AppDatabase.getAppDatabase(v.getContext()).noteDAO().updateNote(note);
-
-                Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
-
-                //reload fragment
-                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
-
-                dialog.cancel();
+            if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(planDate)){
+                return;
             }
+
+            //convert plan date
+            Date date = new Date();
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                date = formatter.parse(planDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            note.setName(nameNote);
+            note.setPlanDate(date);
+            note.setCategory(category);
+            note.setPriority(priority);
+            note.setStatus(status);
+
+            AppDatabase.getAppDatabase(v.getContext()).noteDAO().update(note);
+
+            Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
+            replaceFragment(new NoteFragment());
+
+            dialog.cancel();
         });
 
         //close dialog
-        btn_close1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
+        btnClose.setOnClickListener(v -> {
+            dialog.cancel();
         });
 
         //update plan date
-        btn_plan_date1.setOnClickListener(new View.OnClickListener() {
+        btnPlanDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                c = Calendar.getInstance();
-                int day = c.get(Calendar.DAY_OF_MONTH);
-                int month = c.get(Calendar.MONTH);
-                int year = c.get(Calendar.YEAR);
+                calendar = Calendar.getInstance();
+                int day = calendar.get(Calendar.DAY_OF_MONTH);
+                int month = calendar.get(Calendar.MONTH);
+                int year = calendar.get(Calendar.YEAR);
 
-                dpd = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
+                datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
-                        tv_plan_date1.setText(mYear + "-" + mMonth + "-" + mDayOfMonth);
+                        tvPlanDate.setText(mYear + "-" + (mMonth+1) + "-" + mDayOfMonth);
                     }
                 }, year, month, day);
-                dpd.show();
+                datePickerDialog.show();
             }
         });
 
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         //update  category
-        List<String> li = getList(context, 0);
+        List<String> li = getList(context, 0, userId);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner spn_category1 = dialog.findViewById(R.id.spn_category1);
-        spn_category1.setAdapter(dataAdapter);
+        Spinner spnCategory = dialog.findViewById(R.id.spn_category);
+        spnCategory.setAdapter(dataAdapter);
 
-        spn_category1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position).equals("Select category...")){
-                    //do nothing
-                }
-                else {
+               if(position!=0){
                     category = parent.getItemAtPosition(position).toString();
                 }
             }
@@ -421,20 +380,17 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         //Update priority
-        List<String> liPrio = getList(context, 1);
+        List<String> liPrio = getList(context, 1, userId);
         ArrayAdapter<String> dataAdapterPrio = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liPrio);
         dataAdapterPrio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner spn_priority1 = dialog.findViewById(R.id.spn_priority1);
-        spn_priority1.setAdapter(dataAdapterPrio);
+        Spinner spnPriority = dialog.findViewById(R.id.spn_priority);
+        spnPriority.setAdapter(dataAdapterPrio);
 
-        spn_priority1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position).equals("Select priority...")){
-                    //do nothing
-                }
-                else {
+               if(position!=0){
                     priority = parent.getItemAtPosition(position).toString();
                 }
             }
@@ -446,20 +402,17 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         //Update status
-        List<String> liStt = getList(context, 2);
+        List<String> liStt = getList(context, 2, userId);
         ArrayAdapter<String> dataAdapterStt = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liStt);
         dataAdapterStt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner spn_status1 = dialog.findViewById(R.id.spn_status1);
-        spn_status1.setAdapter(dataAdapterStt);
+        Spinner spnStatus = dialog.findViewById(R.id.spn_status);
+        spnStatus.setAdapter(dataAdapterStt);
 
-        spn_status1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(parent.getItemAtPosition(position).equals("Select status...")){
-                    //do nothing
-                }
-                else {
+                if(position!=0){
                     status = parent.getItemAtPosition(position).toString();
                 }
             }
@@ -476,42 +429,37 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
     //delete note
     private void clickDeleteNote(View v, Note note){
         new AlertDialog.Builder(v.getContext())
-                .setTitle(note.getName().toString().trim())
+                .setTitle(note.getName().trim())
                 .setMessage("Are you sure to delete this note?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AppDatabase.getAppDatabase(v.getContext()).noteDAO().deleteNote(note);
-                        Toast.makeText(v.getContext(), "Deleted " + note.getName().toString().trim() + "!", Toast.LENGTH_SHORT).show();
+                .setPositiveButton("Yes",((dialog, which) -> {
+                    AppDatabase.getAppDatabase(v.getContext()).noteDAO().delete(note);
+                    Toast.makeText(v.getContext(), "Deleted " + note.getName().toString().trim() + "!", Toast.LENGTH_SHORT).show();
 
-                        //reload frm
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
-                    }
-                })
+                    replaceFragment(new NoteFragment());
+                }))
                 .setNegativeButton("No", null)
                 .show();
     }
 
     //get list for selecting category, priority and status
-    private List<String> getList(Context context, int i){
+    private List<String> getList(Context context, int i, int userId){
         List<String> list = new ArrayList<>();
         switch (i) {
             case 0:
                 list.add(0, "Select category...");
-                for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategory()){
+                for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategoryById(userId)){
                     list.add(c.getName().toString().trim());
                 }
                 return list;
             case 1:
                 list.add(0, "Select priority...");
-                for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllPriority()){
+                for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllPriorityById(userId)){
                     list.add(p.getName().toString().trim());
                 }
                 return list;
             case 2:
                 list.add(0, "Select status...");
-                for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllStatus()){
+                for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllStatusById(userId)){
                     list.add(s.getName().toString().trim());
                 }
                 return list;
@@ -519,4 +467,9 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         return list;
     }
 
+    private void replaceFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.commit();
+    }
 }

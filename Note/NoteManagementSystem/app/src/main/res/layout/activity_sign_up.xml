@@ -22,9 +22,10 @@
         android:layout_height="wrap_content"
         android:hint="Enter your email"
         android:layout_marginRight="20dp"
+        android:inputType="textEmailAddress"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="25dp"
-        android:id="@+id/edtEmail_SignUp"/>
+        android:id="@+id/edt_email_sign_up"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -34,7 +35,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="25dp"
-        android:id="@+id/edtPassword_SignUp"/>
+        android:id="@+id/edt_password_sign_up"/>
 
     <EditText
         android:layout_width="match_parent"
@@ -44,7 +45,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="25dp"
-        android:id="@+id/edtConfirm"/>
+        android:id="@+id/edt_password_sign_up_confirm"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -53,7 +54,7 @@
         android:paddingLeft="20dp">
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btnSignUp"
+            android:id="@+id/btn_sign_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -66,7 +67,7 @@
             android:layout_height="wrap_content"
             android:text="Sign In"
             app:layout_constraintRight_toRightOf="parent"
-            android:id="@+id/btnSwitch_To_Login"
+            android:id="@+id/btn_switch_to_login"
             android:background="@drawable/button_format"
             tools:ignore="MissingConstraints" />
 

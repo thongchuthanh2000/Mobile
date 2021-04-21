@@ -12,9 +12,10 @@ import java.util.Date;
 @Entity(tableName = "priority")
 public class Priority {
 
-    public Priority(String name, Date createDate) {
+    public Priority(String name, Date createDate, int userId) {
         this.name = name;
         this.createDate = createDate;
+        this.userId = userId;
     }
 
     public Priority() {
@@ -44,6 +45,14 @@ public class Priority {
         this.createDate = createDate;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
     @PrimaryKey(autoGenerate = true)
     public int id;
 
@@ -52,5 +61,9 @@ public class Priority {
 
     @ColumnInfo(name = "createdDate")
     public Date createDate;
+
+    @ColumnInfo(name = "userId")
+    public int userId;
+
 
 }

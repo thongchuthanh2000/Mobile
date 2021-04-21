@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -14,98 +13,91 @@ import com.notemanagementsystem.entity.User;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    EditText edtEmail_SignUp, edtPassword_SignUp, edtConfirm ;
-    Button btnSignUp, btnSwitchToLogin;
+    private EditText edtEmailSignUp, edtPasswordSignUp, edtConfirm ;
+    private Button btnSignUp, btnSwitchToLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
 
-        edtEmail_SignUp = findViewById(R.id.edtEmail_SignUp);
-        edtPassword_SignUp = findViewById(R.id.edtPassword_SignUp);
-        edtConfirm = findViewById(R.id.edtConfirm);
-        btnSignUp = findViewById(R.id.btnSignUp);
-        btnSwitchToLogin = findViewById(R.id.btnSwitch_To_Login);
+        addControls();
+        addEvents();
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                User user = new User();
-                user.setEmail(edtEmail_SignUp.getText().toString());
-                user.setPassword(edtPassword_SignUp.getText().toString());
 
-                if(validateInput_SignIn(user)){
+        btnSignUp.setOnClickListener(v -> {
+            User user = new User();
+            user.setEmail(edtEmailSignUp.getText().toString());
+            user.setPassword(edtPasswordSignUp.getText().toString());
 
-                    if(regexInput(user)){
+            if(validateInputSignIn(user)){
 
-                        if(edtConfirm.getText().toString().equals(edtPassword_SignUp.getText().toString())) {
+                if(regexInput(user)){
 
-                            AppDatabase appDatabase = AppDatabase.getAppDatabase(getApplicationContext());
-                            UserDAO userDAO = appDatabase.userDAO();
+                    if(edtConfirm.getText().toString().equals(edtPasswordSignUp.getText().toString())) {
 
-                            User userCheck = userDAO.checkExistUser(edtEmail_SignUp.getText().toString());
+                        AppDatabase appDatabase = AppDatabase.getAppDatabase(getApplicationContext());
+                        UserDAO userDAO = appDatabase.userDAO();
 
-                            if (userCheck == null) {
+                        User userCheck = userDAO.checkExistUser(edtEmailSignUp.getText().toString());
 
-                                new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
+                        if (userCheck == null) {
 
-                                        userDAO.insert(user);
+                            new Thread(new Runnable() {
+                                @Override
+                                public void run() {
 
-                                        runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
+                                    userDAO.insert(user);
 
-                                                Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+                                    runOnUiThread(() -> {
+                                        showToast("Success!");
+                                    });
+                                }
+                            }).start();
 
-                                            }
-                                        });
-                                    }
-                                }).start();
-
-                            }
-                            else{
-
-                                Toast.makeText(getApplicationContext(), "Use already exists!", Toast.LENGTH_SHORT).show();
-
-                            }
                         }
-                        else {
-
-                            Toast.makeText(getApplicationContext(),"Password confirmation is incorrect !",Toast.LENGTH_SHORT).show();
-
+                        else{
+                            showToast( "Use already exists!");
                         }
                     }
                     else {
-
-                        Toast.makeText(getApplicationContext(),"Please enter the correct email format and the password must be at least 6 characters in length !",Toast.LENGTH_SHORT).show();
-
+                        showToast("Password confirmation is incorrect !");
                     }
                 }
-                else{
-
-                    Toast.makeText(getApplicationContext(),"Please fill in all fields!",Toast.LENGTH_SHORT).show();
-
+                else {
+                    showToast("Please enter the correct email format and the password must be at least 6 characters in length !");
                 }
             }
-        });
-
-        btnSwitchToLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
-                startActivity(intent);
-
+            else{
+                showToast("Please fill in all fields!");
             }
+        }
+        );
+
+        btnSwitchToLogin.setOnClickListener(v -> {
+            Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
 
     }
 
-    private Boolean validateInput_SignIn(User user){
+    public void showToast(String string){
+        Toast.makeText(this,string,Toast.LENGTH_SHORT).show();
+    }
+
+    private void addEvents() {
+    }
+
+    private void addControls() {
+        edtEmailSignUp = findViewById(R.id.edt_email_sign_up);
+        edtPasswordSignUp = findViewById(R.id.edt_password_sign_up);
+        edtConfirm = findViewById(R.id.edt_password_sign_up_confirm);
+        btnSignUp = findViewById(R.id.btn_sign_up);
+        btnSwitchToLogin = findViewById(R.id.btn_switch_to_login);
+    }
+
+    private Boolean validateInputSignIn(User user){
 
         if(user.getEmail().isEmpty()||
                 user.getPassword().isEmpty()||
@@ -113,15 +105,12 @@ public class SignUpActivity extends AppCompatActivity {
             return false;
         }
         return true;
-
     }
 
     public Boolean regexInput(User user){
 
         if(user.getEmail().matches("^(.+)@(.+)$") && user.getPassword().matches(".{6,}")){
-
             return true;
-
         }
 
         return false;

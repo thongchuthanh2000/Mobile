@@ -25,8 +25,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         this.iClickItemCategory = iClickItemCategory;
     }
 
-    public void setData(List<Category> list){
-        this.mListCategory = list;
+    public void setData(List<Category> mListCategory){
+        this.mListCategory = mListCategory;
         notifyDataSetChanged();
     }
 
@@ -43,6 +43,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return new CategoryViewHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
         Category category = mListCategory.get(position);
@@ -50,14 +51,15 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
             return;
         }
 
-        holder.catName.setText(category.getName());
+        holder.categoryName.setText(category.getName());
         String formatedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(category.getCreateDate());
         holder.createdDate.setText(formatedDate);
 
-        holder.catName.setOnLongClickListener(new View.OnLongClickListener() {
+
+        holder.categoryName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.catName);
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.categoryName);
                 popupMenu.getMenuInflater().inflate(R.menu.option_popup_menu, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -89,12 +91,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     public class CategoryViewHolder extends RecyclerView.ViewHolder{
-        private TextView catName;
+        private TextView categoryName;
         private TextView createdDate;
 
         public CategoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            catName = itemView.findViewById(R.id.txt_name_category_priority_status);
+            categoryName = itemView.findViewById(R.id.txt_name_category_priority_status);
             createdDate = itemView.findViewById(R.id.txt_created_category_priority_status);
         }
     }

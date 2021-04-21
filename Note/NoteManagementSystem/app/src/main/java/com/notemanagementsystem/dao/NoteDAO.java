@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.notemanagementsystem.entity.Note;
+import com.notemanagementsystem.entity.User;
 
 import java.util.List;
 
@@ -14,14 +15,14 @@ import java.util.List;
 public interface NoteDAO {
 
     @Insert
-    void insertNote(Note note);
-
-    @Query("select * from note")
-    List<Note> getListNote();
+    void insert(Note note);
 
     @Update
-    void updateNote(Note note);
+    void update(Note note);
 
     @Delete
-    void deleteNote(Note note);
+    void delete(Note note);
+
+    @Query("SELECT * FROM note WHERE userId =(:userId)")
+    List<Note> getAllNoteById(int userId);
 }

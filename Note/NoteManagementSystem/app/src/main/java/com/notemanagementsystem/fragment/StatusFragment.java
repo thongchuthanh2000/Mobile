@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.StatusAdapter;
 import com.notemanagementsystem.entity.Status;
 
@@ -33,10 +34,10 @@ import java.util.List;
 
 public class StatusFragment extends Fragment implements View.OnClickListener {
 
-    public FloatingActionButton fabAddStatus;
-    public RecyclerView rcvStatus;
-    public StatusAdapter statusAdapter;
-    public List<Status> mListStatus;
+    private FloatingActionButton fabAddStatus;
+    private RecyclerView rcvStatus;
+    private StatusAdapter statusAdapter;
+    private List<Status> mListStatus;
 
     public StatusFragment() {
         // Required empty public constructor
@@ -57,16 +58,17 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
             public void updateStatus(Status status) {
                 clickUpdateStatus(view, status);
             }
-
             @Override
             public void deleteStatus(Status status) {
                 clickDeleteStatus(view, status);
             }
         });
+
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         mListStatus = new ArrayList<>();
-
-        mListStatus = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllStatus();
-
+        mListStatus = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllStatusById(userId);
         statusAdapter.setData(mListStatus);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -80,16 +82,11 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Confirm")
                 .setMessage("Are you sure to delete this status?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AppDatabase.getAppDatabase(view.getContext()).statusDAO().delete(status);
-                        Toast.makeText(view.getContext(), "Delete status successfully!", Toast.LENGTH_SHORT).show();
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    AppDatabase.getAppDatabase(view.getContext()).statusDAO().delete(status);
+                    Toast.makeText(view.getContext(), "Delete status successfully!", Toast.LENGTH_SHORT).show();
 
-                        //reload frm
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.content_frame, new StatusFragment()).addToBackStack(null).commit();
-                    }
+                    replaceFragment(new StatusFragment());
                 })
                 .setNegativeButton("No", null)
                 .show();
@@ -116,35 +113,25 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
             title.setText("Status Form");
         }
 
-        btnUpdate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String nameStatus = edtNameStatus.getText().toString().trim();
+        btnUpdate.setOnClickListener(v -> {
+            String nameStatus = edtNameStatus.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameStatus)){
-                    return;
-                }
-
-//                Status status = new Status(nameStatus, new Date());
-                status.setName(nameStatus);
-                status.setCreateDate(new Date());
-                AppDatabase.getAppDatabase(v.getContext()).statusDAO().update(status);
-
-                Toast.makeText(v.getContext(), "Update status successfully", Toast.LENGTH_LONG).show();
-
-                //reload frm
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, new StatusFragment()).addToBackStack(null).commit();
-
-                dialog.cancel();
+            if(TextUtils.isEmpty(nameStatus)){
+                return;
             }
+
+            status.setName(nameStatus);
+            status.setCreateDate(new Date());
+            AppDatabase.getAppDatabase(v.getContext()).statusDAO().update(status);
+
+            Toast.makeText(v.getContext(), "Update status successfully", Toast.LENGTH_LONG).show();
+            replaceFragment(new StatusFragment());
+
+            dialog.cancel();
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
+        btnClose.setOnClickListener(v -> {
+            dialog.cancel();
         });
 
         dialog.show();
@@ -155,7 +142,6 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         if (v.getId() == R.id.fab_add_status){
             openDialog(Gravity.CENTER, v.getContext());
         }
-
     }
 
     private void openDialog(int gravity, Context context) {
@@ -171,35 +157,36 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
 
         title.setText("Status Form");
 
-        btnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String nameStatus = edtNameStatus.getText().toString().trim();
+        btnAdd.setOnClickListener(v -> {
+            String nameStatus = edtNameStatus.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameStatus)){
-                    return;
-                }
-
-                Status status = new Status(nameStatus, new Date());
-                AppDatabase.getAppDatabase(v.getContext()).statusDAO().insert(status);
-
-                Toast.makeText(v.getContext(), "Add status successfully", Toast.LENGTH_LONG).show();
-
-                //reload frm
-                FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-                fragmentTransaction.replace(R.id.content_frame, new StatusFragment()).addToBackStack(null).commit();
-
-                dialog.cancel();
+            if(TextUtils.isEmpty(nameStatus)){
+                return;
             }
+
+            SessionManager sessionManager = new SessionManager(getContext());
+            int userId = sessionManager.getUserId();
+
+            Status status = new Status(nameStatus, new Date(), userId);
+            AppDatabase.getAppDatabase(v.getContext()).statusDAO().insert(status);
+
+            Toast.makeText(v.getContext(), "Add status successfully", Toast.LENGTH_LONG).show();
+
+            replaceFragment(new StatusFragment());
+            dialog.cancel();
         });
 
-        btnClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
+        btnClose.setOnClickListener(v -> {
+            dialog.cancel();
         });
 
         dialog.show();
     }
+
+    private void replaceFragment(Fragment fragment){
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.content_frame, fragment);
+        fragmentTransaction.commit();
+    }
+
 }

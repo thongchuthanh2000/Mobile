@@ -13,9 +13,6 @@ import java.util.List;
 @Dao
 public interface UserDAO {
 
-    @Query("SELECT * FROM user")
-    List<User> getAllUser();
-
     @Query("SELECT * FROM user WHERE email=(:email) AND password=(:password)")
     User checkUser(String email, String password);
 
@@ -26,10 +23,10 @@ public interface UserDAO {
     User getUserById(int id);
 
     @Update
-    void updateUser(User user);
+    void update(User user);
 
     @Insert
-    public void insert(User user);
+    void insert(User user);
 
     @Delete
     void delete(User user);
