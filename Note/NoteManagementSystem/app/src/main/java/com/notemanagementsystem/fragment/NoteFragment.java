@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -36,6 +37,8 @@ import com.notemanagementsystem.adapter.NoteAdapter;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Category;
 import com.notemanagementsystem.entity.Note;
+import com.notemanagementsystem.entity.Priority;
+import com.notemanagementsystem.entity.Status;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,35 +47,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link NoteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class NoteFragment extends Fragment implements View.OnClickListener {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     public NoteFragment() {
-        // Required empty public constructor
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NoteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static NoteFragment newInstance(String param1, String param2) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
@@ -91,6 +75,8 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+    //
     private FloatingActionButton fab_add_note;
     private RecyclerView rcvNote;
     private NoteAdapter noteAdapter;
@@ -99,12 +85,12 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
     private Calendar c;
     private DatePickerDialog dpd;
 
-    private String category;
-
+    private String category = "_";
+    private String priority = "_";
+    private String status = "_";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_note, container, false);
 
@@ -123,10 +109,9 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 clickDeleteNote(view, note);
             }
         });
+
         mListNote = new ArrayList<>();
-
         mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getListNote();
-
         noteAdapter.setData(mListNote);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -139,11 +124,12 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.fab_add_note){
-            openDialog(Gravity.CENTER, v.getContext());
+            openDialogAdd(Gravity.CENTER, v.getContext());
         }
     }
 
-    private void openDialog(int gravity, Context context) {
+    private void openDialogAdd(int gravity, Context context) {
+
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_note);
@@ -168,13 +154,14 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         Button btn_plan_date = dialog.findViewById(R.id.btn_plan_date);
         TextView tv_plan_date = dialog.findViewById(R.id.tv_plan_date);
 
+        //add a new note
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name_note = et_name_note.getText().toString().trim();
                 String plan_date = tv_plan_date.getText().toString().trim();
 
-                if(TextUtils.isEmpty(name_note) || TextUtils.isEmpty(plan_date) || TextUtils.isEmpty(category)){
+                if(TextUtils.isEmpty(name_note) || TextUtils.isEmpty(plan_date)){
                     return;
                 }
 
@@ -185,12 +172,10 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                     date1 = new Date();
                 }
 
-                Note note = new Note(name_note, date1, new Date(), category);
+                Note note = new Note(name_note, date1, new Date(), category, priority, status);
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().insertNote(note);
 
                 Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
-
-                //AppDatabase.getAppDatabase(v.getContext()).noteDAO().getListNote();
 
                 //reload frm
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -200,13 +185,16 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        //Close dialog
         btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 dialog.cancel();
             }
         });
 
+        //Select plan date
         btn_plan_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,13 +213,13 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        List<String> li = getListCategory(context);
-
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //Select category
+        List<String> liCate = getList(context, 0);
+        ArrayAdapter<String> dataAdapterCate = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liCate);
+        dataAdapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         Spinner spn_category = dialog.findViewById(R.id.spn_category);
-        spn_category.setAdapter(dataAdapter);
+        spn_category.setAdapter(dataAdapterCate);
 
         spn_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -250,9 +238,60 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        //Select priority
+        List<String> liPrio = getList(context, 1);
+        ArrayAdapter<String> dataAdapterPrio = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liPrio);
+        dataAdapterPrio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spn_priority = dialog.findViewById(R.id.spn_priority);
+        spn_priority.setAdapter(dataAdapterPrio);
+
+        spn_priority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getItemAtPosition(position).equals("Select priority...")){
+                    //do nothing
+                }
+                else {
+                    priority = parent.getItemAtPosition(position).toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //Select status
+        List<String> liStt = getList(context, 2);
+        ArrayAdapter<String> dataAdapterStt = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liStt);
+        dataAdapterStt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spn_status = dialog.findViewById(R.id.spn_status);
+        spn_status.setAdapter(dataAdapterStt);
+
+        spn_status.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getItemAtPosition(position).equals("Select status...")){
+                    //do nothing
+                }
+                else {
+                    status = parent.getItemAtPosition(position).toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         dialog.show();
     }
 
+    //Update note
     private void clickUpdateNote(View v, Note note){
         openDialogEdit(Gravity.CENTER, v.getContext(), note);
     }
@@ -286,9 +325,12 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             et_name_note1.setText(note.getName());
             String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
             tv_plan_date1.setText(planDate);
-            category=note.getCategory();
+            category = note.getCategory();
+            priority = note.getPriority();
+            status = note.getStatus();
         }
 
+        //update note
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -299,6 +341,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
+                //convert plan date
                 Date date1 = new Date();
                 try {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
@@ -310,12 +353,14 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 note.setName(name_note);
                 note.setPlanDate(date1);
                 note.setCategory(category);
+                note.setPriority(priority);
+                note.setStatus(status);
 
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().updateNote(note);
 
                 Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
 
-                //reload frm
+                //reload fragment
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
 
@@ -323,6 +368,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        //close dialog
         btn_close1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -330,6 +376,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        //update plan date
         btn_plan_date1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -348,8 +395,8 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        List<String> li = getListCategory(context);
-
+        //update  category
+        List<String> li = getList(context, 0);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -373,18 +420,69 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        //Update priority
+        List<String> liPrio = getList(context, 1);
+        ArrayAdapter<String> dataAdapterPrio = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liPrio);
+        dataAdapterPrio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spn_priority1 = dialog.findViewById(R.id.spn_priority1);
+        spn_priority1.setAdapter(dataAdapterPrio);
+
+        spn_priority1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getItemAtPosition(position).equals("Select priority...")){
+                    //do nothing
+                }
+                else {
+                    priority = parent.getItemAtPosition(position).toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        //Update status
+        List<String> liStt = getList(context, 2);
+        ArrayAdapter<String> dataAdapterStt = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liStt);
+        dataAdapterStt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spn_status1 = dialog.findViewById(R.id.spn_status1);
+        spn_status1.setAdapter(dataAdapterStt);
+
+        spn_status1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(parent.getItemAtPosition(position).equals("Select status...")){
+                    //do nothing
+                }
+                else {
+                    status = parent.getItemAtPosition(position).toString();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         dialog.show();
     }
 
+    //delete note
     private void clickDeleteNote(View v, Note note){
         new AlertDialog.Builder(v.getContext())
-                .setTitle("Confirm")
+                .setTitle(note.getName().toString().trim())
                 .setMessage("Are you sure to delete this note?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         AppDatabase.getAppDatabase(v.getContext()).noteDAO().deleteNote(note);
-                        Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(v.getContext(), "Deleted " + note.getName().toString().trim() + "!", Toast.LENGTH_SHORT).show();
 
                         //reload frm
                         FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
@@ -395,11 +493,28 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 .show();
     }
 
-    private List<String> getListCategory(Context context){
+    //get list for selecting category, priority and status
+    private List<String> getList(Context context, int i){
         List<String> list = new ArrayList<>();
-        list.add(0, "Select category...");
-        for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategory()){
-            list.add(c.getName().toString().trim());
+        switch (i) {
+            case 0:
+                list.add(0, "Select category...");
+                for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategory()){
+                    list.add(c.getName().toString().trim());
+                }
+                return list;
+            case 1:
+                list.add(0, "Select priority...");
+                for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllPriority()){
+                    list.add(p.getName().toString().trim());
+                }
+                return list;
+            case 2:
+                list.add(0, "Select status...");
+                for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllStatus()){
+                    list.add(s.getName().toString().trim());
+                }
+                return list;
         }
         return list;
     }

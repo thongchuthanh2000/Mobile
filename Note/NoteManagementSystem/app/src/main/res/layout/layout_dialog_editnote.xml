@@ -26,16 +26,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/spn_category1"
-        app:layout_constraintTop_toBottomOf="@+id/et_name_note1"/>
+        app:layout_constraintTop_toBottomOf="@+id/et_name_note1"
+        android:layout_marginTop="8dp"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spn_priority1"
+        app:layout_constraintTop_toBottomOf="@+id/spn_category1"
+        android:layout_marginTop="8dp"/>
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spn_status1"
+        app:layout_constraintTop_toBottomOf="@+id/spn_priority1"
+        android:layout_marginTop="8dp"/>
 
     <TextView
         android:id="@+id/tv_plan_date1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="20dp"
         android:hint="Select plan date"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spn_category1" />
+        app:layout_constraintTop_toBottomOf="@+id/spn_status1" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_plan_date1"
@@ -43,7 +58,8 @@
         android:layout_height="wrap_content"
         android:text="..."
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spn_category1" />
+        app:layout_constraintTop_toBottomOf="@+id/spn_status1"
+        android:layout_marginTop="8dp"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_update"
@@ -51,7 +67,8 @@
         android:layout_height="wrap_content"
         android:text="Update"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_plan_date1" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_plan_date1"
+        android:layout_marginTop="8dp"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_close1"
@@ -59,7 +76,7 @@
         android:layout_height="wrap_content"
         android:text="Close"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_plan_date1" />
-
+        app:layout_constraintTop_toBottomOf="@+id/btn_plan_date1"
+        android:layout_marginTop="8dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

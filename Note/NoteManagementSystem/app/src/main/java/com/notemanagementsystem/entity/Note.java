@@ -24,13 +24,22 @@ public class Note {
     @ColumnInfo(name = "planDate")
     public Date planDate;
 
+    @ColumnInfo(name = "category")
     public String category;
 
-    public Note(String name, Date planDate, Date createDate, String category) {
+    @ColumnInfo(name = "priority")
+    public String priority;
+
+    @ColumnInfo(name = "status")
+    public String status;
+
+    public Note(String name, Date planDate, Date createDate, String category, String priority, String status) {
         this.name = name;
         this.createDate = createDate;
         this.planDate = planDate;
         this.category = category;
+        this.priority = priority;
+        this.status = status;
     }
 
     public int getId() {
@@ -71,5 +80,21 @@ public class Note {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getPriority() {
+        return priority;
+    }
+
+    public void setPriority(String priority) {
+        this.priority = priority;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -53,8 +53,12 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
         StringBuffer sb = new StringBuffer();
         sb.append("Name: " + note.getName().toString() + '\n');
         sb.append("Category: " + note.getCategory() + '\n');
+        sb.append("Priority: " + note.getPriority() + '\n');
+        sb.append("Status: " + note.getStatus() + '\n');
+
         String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
         sb.append("Plan Date: " + planDate + '\n');
+
         String createDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(note.getCreateDate());
         sb.append("Created Date: " + createDate);
 
@@ -96,14 +100,11 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
     }
 
     public class NoteViewHolder extends RecyclerView.ViewHolder {
-
         private TextView tv_item_note;
 
         public NoteViewHolder(@NonNull View itemView) {
             super(itemView);
-
             tv_item_note = itemView.findViewById(R.id.tv_item_note);
-
         }
     }
 }
