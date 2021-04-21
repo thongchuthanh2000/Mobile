@@ -32,7 +32,9 @@ import com.notemanagementsystem.dao.NoteDAO;
 import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Priority;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -76,65 +78,65 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.fab_add_note){
-//            openDialog(Gravity.CENTER, v.getContext());
+        if(v.getId() == R.id.fab_add_priority){
+            openDialog(Gravity.CENTER, v.getContext());
         }
     }
 
-//    private void openDialog(int gravity, Context context) {
-//        final Dialog dialog = new Dialog(context);
-//        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        dialog.setContentView(R.layout.layout_dialog_note);
-//
-//        Window window = dialog.getWindow();
-//        if (window ==  null){
-//            return;
-//        }
-//
-//        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-//        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//
-//        WindowManager.LayoutParams windowAttribute = window.getAttributes();
-//        windowAttribute.gravity = gravity;
-//        window.setAttributes(windowAttribute);
-//
-//        dialog.setCancelable(false);
-//
-//        EditText et_name_note = dialog.findViewById(R.id.et_name_note);
-//        Button btn_add = dialog.findViewById(R.id.btn_add);
-//        Button btn_close = dialog.findViewById(R.id.btn_close);
-//
-//        btn_add.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                String name_note = et_name_note.getText().toString().trim();
-//
-//                if(TextUtils.isEmpty(name_note)){
-//                    return;
-//                }
-//
-//                Note note = new Note(name_note);
-//                AppDatabase.getAppDatabase(v.getContext()).noteDAO().insertNote(note);
-//
-//                Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
-//
-//                AppDatabase.getAppDatabase(v.getContext()).noteDAO().getListNote();
-//
-//                //mListNote = AppDatabase.getAppDatabase(v.getContext()).noteDAO().getListNote();
-//                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-//                ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
-//
-//                dialog.cancel();
-//            }
-//        });
-//
-//        btn_close.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.cancel();
-//            }
-//        });
-//
-//        dialog.show();
-//    }
+    private void openDialog(int gravity, Context context) {
+        final Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.layout_dialog_priority);
+
+        Window window = dialog.getWindow();
+        if (window ==  null){
+            return;
+        }
+
+        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        WindowManager.LayoutParams windowAttribute = window.getAttributes();
+        windowAttribute.gravity = gravity;
+        window.setAttributes(windowAttribute);
+
+        dialog.setCancelable(false);
+
+        EditText edtNamePriority = dialog.findViewById(R.id.edt_name_priority);
+        Button btnAdd = dialog.findViewById(R.id.btn_add);
+        Button btnClose = dialog.findViewById(R.id.btn_close);
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String nameNote = edtNamePriority.getText().toString().trim();
+
+                if(TextUtils.isEmpty(nameNote)){
+                    return;
+                }
+
+
+                Priority priority = new Priority(nameNote, new Date());
+                AppDatabase.getAppDatabase(v.getContext()).priorityDAO().insert(priority);
+
+                Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
+
+                mListPriority = AppDatabase.getAppDatabase(v.getContext()).priorityDAO().getAllPriority();
+
+                FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
+
+                dialog.cancel();
+            }
+        });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
+    }
 }

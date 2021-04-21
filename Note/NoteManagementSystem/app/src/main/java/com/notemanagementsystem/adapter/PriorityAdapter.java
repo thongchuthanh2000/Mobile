@@ -12,6 +12,9 @@ import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Priority;
 
+import org.w3c.dom.Text;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.PriorityViewHolder> {
@@ -36,10 +39,9 @@ public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.Prior
             return;
         }
 
-        StringBuffer sb = new StringBuffer();
-        sb.append("Name: " + priority.name.toString() + '\n');
-
-        holder.itemCategoryPriorityStatus.setText(sb);
+        holder.nameCategoryPriorityStatus.setText(priority.getName());
+        String formatedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(priority.getCreateDate());
+        holder.createdDateCategoryPriorityStatus.setText(formatedDate);
     }
 
     @Override
@@ -52,12 +54,13 @@ public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.Prior
 
     public class PriorityViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView itemCategoryPriorityStatus;
-
+        private TextView nameCategoryPriorityStatus;
+        private TextView createdDateCategoryPriorityStatus;
         public PriorityViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            itemCategoryPriorityStatus = itemView.findViewById(R.id.tv_item_category_priority_status);
+            nameCategoryPriorityStatus = itemView.findViewById(R.id.txt_name_category_priority_status);
+            createdDateCategoryPriorityStatus = itemView.findViewById(R.id.txt_created_category_priority_status);
 
         }
     }

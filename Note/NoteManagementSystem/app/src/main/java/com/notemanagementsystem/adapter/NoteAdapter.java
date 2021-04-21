@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Note;
 
+
 import java.util.List;
 
 public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
