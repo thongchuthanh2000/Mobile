@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.dao.UserDAO;
 import com.notemanagementsystem.entity.User;
 
@@ -18,6 +19,9 @@ public class LoginActivity extends AppCompatActivity {
     EditText edtEmail, edtPassword;
     Button btnSignIn, btnExit;
     CheckBox cbRememberMe;
+    FloatingActionButton fab_add_user;
+
+    private Session session;//global variable
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +29,8 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         getView();
+
+        session = new Session(this);
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,8 +60,11 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             else {
 
+                                session.setUserId(user.id);
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                                 startActivity(intent);
+
+                                //to get session - use "session.getUserId();"
 
                             }
                         }
@@ -74,6 +83,14 @@ public class LoginActivity extends AppCompatActivity {
                 System.exit(0);
             }
         });
+
+        fab_add_user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public void getView(){
@@ -83,6 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         btnSignIn = findViewById(R.id.btnSignIn);
         btnExit = findViewById(R.id.btnExit);
         cbRememberMe = findViewById(R.id.cbRememberMe);
+        fab_add_user = findViewById(R.id.fab_add_user);
 
     }
 

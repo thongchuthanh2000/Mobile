@@ -38,42 +38,51 @@ public class SignUpActivity extends AppCompatActivity {
                 user.setPassWord(edtPassword_SignUp.getText().toString());
 
                 if(validateInput_SignIn(user)){
-                    if(edtConfirm.getText().toString().equals(edtPassword_SignUp.getText().toString())) {
 
-                        AppDatabase appDatabase = AppDatabase.getAppDatabase(getApplicationContext());
-                        UserDAO userDAO = appDatabase.userDAO();
+                    if(regexInput(user)){
 
-                        User userCheck = userDAO.checkUser(edtEmail_SignUp.getText().toString(), edtPassword_SignUp.getText().toString());
+                        if(edtConfirm.getText().toString().equals(edtPassword_SignUp.getText().toString())) {
 
-                        if (userCheck == null) {
+                            AppDatabase appDatabase = AppDatabase.getAppDatabase(getApplicationContext());
+                            UserDAO userDAO = appDatabase.userDAO();
 
-                            new Thread(new Runnable() {
-                                @Override
-                                public void run() {
+                            User userCheck = userDAO.checkUser(edtEmail_SignUp.getText().toString(), edtPassword_SignUp.getText().toString());
 
-                                    userDAO.insert(user);
+                            if (userCheck == null) {
 
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
 
-                                            Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+                                        userDAO.insert(user);
 
-                                        }
-                                    });
-                                }
-                            }).start();
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
 
+                                                Toast.makeText(getApplicationContext(), "Success!", Toast.LENGTH_SHORT).show();
+
+                                            }
+                                        });
+                                    }
+                                }).start();
+
+                            }
+                            else{
+
+                                Toast.makeText(getApplicationContext(), "Use already exists!", Toast.LENGTH_SHORT).show();
+
+                            }
                         }
-                        else{
+                        else {
 
-                            Toast.makeText(getApplicationContext(), "Use already exists!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Password confirmation is incorrect !",Toast.LENGTH_SHORT).show();
 
                         }
                     }
                     else {
 
-                        Toast.makeText(getApplicationContext(),"Confirm your password!",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(),"Please enter the correct email format and the password must be at least 6 characters in length !",Toast.LENGTH_SHORT).show();
 
                     }
                 }
@@ -106,5 +115,16 @@ public class SignUpActivity extends AppCompatActivity {
         }
         return true;
 
+    }
+
+    public Boolean regexInput(User user){
+
+        if(user.email.matches("^(.+)@(.+)$") && user.password.matches(".{6,}")){
+
+            return true;
+
+        }
+
+        return false;
     }
 }

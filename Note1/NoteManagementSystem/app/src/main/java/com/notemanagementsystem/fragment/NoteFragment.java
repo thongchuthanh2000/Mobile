@@ -20,14 +20,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
-import com.notemanagementsystem.NoteAdapter;
+import com.notemanagementsystem.adapter.NoteAdapter;
 import com.notemanagementsystem.R;
-import com.notemanagementsystem.dao.NoteDAO;
 import com.notemanagementsystem.entity.Note;
 
 import java.util.ArrayList;
