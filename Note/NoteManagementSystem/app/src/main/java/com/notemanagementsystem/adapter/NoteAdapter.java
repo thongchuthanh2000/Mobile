@@ -27,6 +27,7 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
     private IClickItemNote iClickItemNote;
     public interface IClickItemNote{
         void updateNote(Note note);
+        void deleteNote(Note note);
     }
 
     public NoteAdapter(IClickItemNote iClickItemNote) {
@@ -66,7 +67,7 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
                                 iClickItemNote.updateNote(note);
                                 return true;
                             case R.id.it_delete:
-                                //
+                                iClickItemNote.deleteNote(note);
                                 return true;
                         }
                         return false;

@@ -1,7 +1,9 @@
 package com.notemanagementsystem.fragment;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -98,6 +100,11 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             @Override
             public void updateNote(Note note) {
                 clickUpdateNote(view, note);
+            }
+
+            @Override
+            public void deleteNote(Note note) {
+                clickDeleteNote(view, note);
             }
         });
         mListNote = new ArrayList<>();
@@ -238,5 +245,24 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         dialog.show();
+    }
+
+    private void clickDeleteNote(View v, Note note){
+        new AlertDialog.Builder(v.getContext())
+                .setTitle("Confirm")
+                .setMessage("Are you sure to delete this note?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AppDatabase.getAppDatabase(v.getContext()).noteDAO().deleteNote(note);
+                        Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
+
+                        //reload frm
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 }
