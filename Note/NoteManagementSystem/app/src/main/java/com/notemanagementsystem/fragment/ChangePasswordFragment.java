@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.MainActivity;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.dao.UserDAO;
 import com.notemanagementsystem.entity.User;
 
@@ -55,6 +56,16 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
             replaceFragment(new HomeFragment());
 //            TextView tv_appbar_tittle = v.findViewById(R.id.tv_appbar_tittle);
 //            tv_appbar_tittle.setText("Home");
+            SessionManager sessionManager = new SessionManager(getContext());
+
+            AppDatabase appDatabase = AppDatabase.getAppDatabase(v.getContext());
+            UserDAO userDAO = appDatabase.userDAO();
+            User user = userDAO.getUserById(sessionManager.getUserId());
+
+            Toast.makeText(v.getContext(),user.getEmail(),Toast.LENGTH_SHORT).show();
+
+            sessionManager.setLogin(false);
+
         }
 
         if(v.getId() == R.id.btnChange_Password){
