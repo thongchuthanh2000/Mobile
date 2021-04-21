@@ -20,7 +20,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -28,11 +27,8 @@ import com.notemanagementsystem.AppDatabase;
 
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.adapter.PriorityAdapter;
-import com.notemanagementsystem.dao.NoteDAO;
-import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Priority;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -86,7 +82,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
     private void openDialog(int gravity, Context context) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_priority);
+        dialog.setContentView(R.layout.layout_dialog);
 
         Window window = dialog.getWindow();
         if (window ==  null){
@@ -102,7 +98,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
         dialog.setCancelable(false);
 
-        EditText edtNamePriority = dialog.findViewById(R.id.edt_name_priority);
+        EditText edtNamePriority = dialog.findViewById(R.id.edt_name);
         Button btnAdd = dialog.findViewById(R.id.btn_add);
         Button btnClose = dialog.findViewById(R.id.btn_close);
 
@@ -123,7 +119,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
                 //mListPriority = AppDatabase.getAppDatabase(v.getContext()).priorityDAO().getAllPriority();
 
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
+                ft.replace(R.id.content_frame, new PriorityFragment()).addToBackStack(null).commit();
 
                 dialog.cancel();
             }
