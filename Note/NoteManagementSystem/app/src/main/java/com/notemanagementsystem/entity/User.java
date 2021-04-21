@@ -8,23 +8,27 @@ import androidx.room.PrimaryKey;
 public class User {
 
     @PrimaryKey(autoGenerate = true)
-    public int id;
+    private int id;
 
     @ColumnInfo(name = "email")
-    public String email;
+    private String email;
+
+    public String getPassword() {
+        return password;
+    }
 
     @ColumnInfo(name = "password")
-    public String password;
+    private String password;
 
     public User() {
 
     }
 
-    public int getUid() {
+    public int getId() {
         return id;
     }
 
-    public void setUid(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -36,8 +40,8 @@ public class User {
         this.email = email;
     }
 
-    public String getPassWord() {
-        return password;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setPassWord(String passWord) {

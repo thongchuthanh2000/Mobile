@@ -21,6 +21,12 @@ public interface UserDAO {
     @Query("SELECT * FROM user WHERE email=(:email)")
     User checkExistUser(String email);
 
+    @Query("SELECT * FROM user WHERE id=(:id)")
+    User getUserById(int id);
+
+    @Query("UPDATE user SET password=(:password) WHERE id=(:id)")
+    void updatePassword(int id, String password);
+
     @Insert
     public void insert(User user);
 

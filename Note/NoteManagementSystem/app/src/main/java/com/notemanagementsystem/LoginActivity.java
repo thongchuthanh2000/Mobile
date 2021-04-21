@@ -23,7 +23,7 @@ public class LoginActivity extends AppCompatActivity {
     FloatingActionButton fab_add_user;
 //    SharedPreferences sharedPreferences;
 
-    private Session session;//global variable
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             else {
 
-                                session.setUserId(user.id);
+                                session.setUserId(user.getId());
 
 //                                if(cbRememberMe.isChecked()){
 //                                    SharedPreferences.Editor editor = sharedPreferences.edit();

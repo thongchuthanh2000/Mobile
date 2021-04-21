@@ -34,15 +34,15 @@ public class MainActivity extends AppCompatActivity
 
     private AppBarConfiguration mAppBarConfiguration;
 
-    private static final int fragment_home = 1;
-    private static final int fragment_category = 2;
-    private static final int fragment_priority = 3;
-    private static final int fragment_status = 4;
-    private static final int fragment_note = 5;
-    private static final int fragment_edit_profile = 6;
-    private static final int fragment_change_password = 7;
-
-    private int currentFragment = fragment_home;
+//    private static final int fragment_home = 1;
+//    private static final int fragment_category = 2;
+//    private static final int fragment_priority = 3;
+//    private static final int fragment_status = 4;
+//    private static final int fragment_note = 5;
+//    private static final int fragment_edit_profile = 6;
+//    private static final int fragment_change_password = 7;
+//
+//    private int currentFragment = fragment_home;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,63 +101,63 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if(id == R.id.nav_home){
-            if(fragment_home != currentFragment){
+//            if(fragment_home != currentFragment){
                 replaceFragment(new HomeFragment());
-                currentFragment = fragment_home;
+//                currentFragment = fragment_home;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Home");
-            }
+//            }
         }
         else if(id == R.id.nav_category){
-            if(fragment_category != currentFragment){
+//            if(fragment_category != currentFragment){
                 replaceFragment(new CategoryFragment());
-                currentFragment = fragment_category;
+//                currentFragment = fragment_category;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Category");
-            }
+//            }
         }
         else if(id == R.id.nav_priority){
-            if(fragment_priority != currentFragment){
+//            if(fragment_priority != currentFragment){
                 replaceFragment(new PriorityFragment());
-                currentFragment = fragment_priority;
+//                currentFragment = fragment_priority;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Priority");
-            }
+//            }
         }
         else if(id == R.id.nav_status){
-            if(fragment_status != currentFragment){
+//            if(fragment_status != currentFragment){
                 replaceFragment(new StatusFragment());
-                currentFragment = fragment_status;
+//                currentFragment = fragment_status;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Status");
-            }
+//            }
         }
         else  if(id == R.id.nav_note){
-            if(fragment_note != currentFragment){
+//            if(fragment_note != currentFragment){
                 replaceFragment(new NoteFragment());
-                currentFragment = fragment_note;
+//                currentFragment = fragment_note;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Note");
 
                 FloatingActionButton fab_add_note = findViewById(R.id.fab_add_note);
 
-            }
+//            }
         }
         else  if(id == R.id.nav_editProfile){
-            if(fragment_edit_profile != currentFragment){
+//            if(fragment_edit_profile != currentFragment){
                 replaceFragment(new EditProfileFragment());
-                currentFragment = fragment_edit_profile;
+//                currentFragment = fragment_edit_profile;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Edit Profile");
-            }
+//            }
         }
         else  if(id == R.id.nav_changePassword){
-            if(fragment_change_password != currentFragment){
+//            if(fragment_change_password != currentFragment){
                 replaceFragment(new ChangePasswordFragment());
-                currentFragment = fragment_change_password;
+//                currentFragment = fragment_change_password;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Change Password");
-            }
+//            }
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

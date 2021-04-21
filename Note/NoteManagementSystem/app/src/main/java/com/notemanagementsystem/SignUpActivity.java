@@ -28,7 +28,6 @@ public class SignUpActivity extends AppCompatActivity {
         btnSignUp = findViewById(R.id.btnSignUp);
         btnSwitchToLogin = findViewById(R.id.btnSwitch_To_Login);
 
-
         btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -109,7 +108,7 @@ public class SignUpActivity extends AppCompatActivity {
     private Boolean validateInput_SignIn(User user){
 
         if(user.getEmail().isEmpty()||
-                user.getPassWord().isEmpty()||
+                user.getPassword().isEmpty()||
                 edtConfirm.getText().toString().isEmpty()){
             return false;
         }
@@ -119,7 +118,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     public Boolean regexInput(User user){
 
-        if(user.email.matches("^(.+)@(.+)$") && user.password.matches(".{6,}")){
+        if(user.getEmail().matches("^(.+)@(.+)$") && user.getPassword().matches(".{6,}")){
 
             return true;
 
