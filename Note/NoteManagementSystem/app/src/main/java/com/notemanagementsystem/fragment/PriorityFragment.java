@@ -115,13 +115,12 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
-
                 Priority priority = new Priority(nameNote, new Date());
                 AppDatabase.getAppDatabase(v.getContext()).priorityDAO().insert(priority);
 
-                Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(v.getContext(), "Add priority successfully!", Toast.LENGTH_SHORT).show();
 
-                mListPriority = AppDatabase.getAppDatabase(v.getContext()).priorityDAO().getAllPriority();
+                //mListPriority = AppDatabase.getAppDatabase(v.getContext()).priorityDAO().getAllPriority();
 
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();

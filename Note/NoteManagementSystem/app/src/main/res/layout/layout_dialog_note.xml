@@ -22,21 +22,38 @@
         android:textSize="16sp"
         android:hint="Enter note name..." />
 
-    <Button
+    <TextView
+        android:id="@+id/tv_plan_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:hint="Select plan date"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_name_note" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_plan_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="..."
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_name_note" />
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_name_note" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_plan_date" />
 
-    <Button
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Close"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/et_name_note" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_plan_date" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
