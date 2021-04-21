@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.StatusAdapter;
 import com.notemanagementsystem.entity.Status;
 
@@ -63,10 +64,12 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
                 clickDeleteStatus(view, status);
             }
         });
+
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         mListStatus = new ArrayList<>();
-
-        mListStatus = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllStatus();
-
+        mListStatus = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllStatusById(userId);
         statusAdapter.setData(mListStatus);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -180,7 +183,10 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
-                Status status = new Status(nameStatus, new Date());
+                SessionManager sessionManager = new SessionManager(getContext());
+                int userId = sessionManager.getUserId();
+
+                Status status = new Status(nameStatus, new Date(), userId);
                 AppDatabase.getAppDatabase(v.getContext()).statusDAO().insert(status);
 
                 Toast.makeText(v.getContext(), "Add status successfully", Toast.LENGTH_LONG).show();

@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.notemanagementsystem.entity.Note;
+import com.notemanagementsystem.entity.User;
 
 import java.util.List;
 
@@ -24,4 +25,7 @@ public interface NoteDAO {
 
     @Delete
     void deleteNote(Note note);
+
+    @Query("SELECT * FROM note WHERE userId =(:userId)")
+    List<Note> getListNoteById(int userId);
 }

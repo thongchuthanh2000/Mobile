@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.CategoryAdapter;
 import com.notemanagementsystem.entity.Category;
 
@@ -41,8 +42,6 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
     public CategoryFragment() {
         // Required empty public constructor
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,9 +64,12 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
                 clickDeleteCategory(view, category);
             }
         });
-        mListCategory = new ArrayList<>();
 
-        mListCategory = AppDatabase.getAppDatabase(view.getContext()).categoryDAO().getAllCategory();
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
+        mListCategory = new ArrayList<>();
+        mListCategory = AppDatabase.getAppDatabase(view.getContext()).categoryDAO().getAllCategoryById(userId);
 
         categoryAdapter.setData(mListCategory);
 
@@ -193,7 +195,10 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
-                Category category = new Category(nameCategory, new Date());
+                SessionManager sessionManager = new SessionManager(getContext());
+                int userId = sessionManager.getUserId();
+
+                Category category = new Category(nameCategory, new Date(), userId);
                 AppDatabase.getAppDatabase(v.getContext()).categoryDAO().insert(category);
 
                 Toast.makeText(v.getContext(), "Add category successfully", Toast.LENGTH_LONG).show();

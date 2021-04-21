@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Status;
 
 import java.util.List;
@@ -24,4 +25,7 @@ public interface StatusDAO {
 
     @Delete
     void delete(Status status);
+
+    @Query("SELECT * FROM status WHERE userId =(:userId)")
+    List<Status> getAllStatusById(int userId);
 }

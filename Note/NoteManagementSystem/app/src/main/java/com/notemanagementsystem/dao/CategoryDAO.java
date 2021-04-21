@@ -7,6 +7,7 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.notemanagementsystem.entity.Category;
+import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Priority;
 
 import java.util.List;
@@ -18,11 +19,14 @@ public interface CategoryDAO {
     List<Category> getAllCategory();
 
     @Insert
-    public void insert(Category category);
+    void insert(Category category);
 
     @Delete
     void delete(Category category);
 
     @Update
     void update(Category category);
+
+    @Query("SELECT * FROM category WHERE userId =(:userId)")
+    List<Category> getAllCategoryById(int userId);
 }

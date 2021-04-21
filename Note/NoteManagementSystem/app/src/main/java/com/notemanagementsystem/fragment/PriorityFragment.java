@@ -30,6 +30,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.PriorityAdapter;
 import com.notemanagementsystem.entity.Priority;
 
@@ -73,10 +74,12 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
                 clickDeletePriority(view,priority);
             }
         });
+
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         mListPriority = new ArrayList<>();
-
-        mListPriority = AppDatabase.getAppDatabase(view.getContext()).priorityDAO().getAllPriority();
-
+        mListPriority = AppDatabase.getAppDatabase(view.getContext()).priorityDAO().getAllPriorityById(userId);
         priorityAdapter.setData(mListPriority);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -211,7 +214,10 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
-                Priority priority = new Priority(namePriority, new Date());
+                SessionManager sessionManager = new SessionManager(getContext());
+                int userId = sessionManager.getUserId();
+
+                Priority priority = new Priority(namePriority, new Date(), userId);
                 AppDatabase.getAppDatabase(v.getContext()).priorityDAO().insert(priority);
 
                 Toast.makeText(v.getContext(), "Add priority successfully!", Toast.LENGTH_SHORT).show();

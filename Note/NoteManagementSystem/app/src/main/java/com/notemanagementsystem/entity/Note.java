@@ -33,13 +33,17 @@ public class Note {
     @ColumnInfo(name = "status")
     public String status;
 
-    public Note(String name, Date planDate, Date createDate, String category, String priority, String status) {
+    @ColumnInfo(name = "userId")
+    public int userId;
+
+    public Note(String name, Date planDate, Date createDate, String category, String priority, String status, int userId) {
         this.name = name;
         this.createDate = createDate;
         this.planDate = planDate;
         this.category = category;
         this.priority = priority;
         this.status = status;
+        this.userId = userId;
     }
 
     public int getId() {
@@ -96,5 +100,13 @@ public class Note {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }

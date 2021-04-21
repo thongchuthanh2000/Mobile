@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
+import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.NoteAdapter;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Category;
@@ -110,8 +111,11 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         mListNote = new ArrayList<>();
-        mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getListNote();
+        mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getListNoteById(userId);
         noteAdapter.setData(mListNote);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -172,7 +176,10 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                     date1 = new Date();
                 }
 
-                Note note = new Note(name_note, date1, new Date(), category, priority, status);
+                SessionManager sessionManager = new SessionManager(getContext());
+                int userId = sessionManager.getUserId();
+
+                Note note = new Note(name_note, date1, new Date(), category, priority, status, userId);
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().insertNote(note);
 
                 Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
@@ -206,15 +213,18 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 dpd = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
-                        tv_plan_date.setText(mYear + "-" + mMonth + "-" + mDayOfMonth);
+                        tv_plan_date.setText(mYear + "-" + (mMonth+1) + "-" + mDayOfMonth);
                     }
                 }, year, month, day);
                 dpd.show();
             }
         });
 
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         //Select category
-        List<String> liCate = getList(context, 0);
+        List<String> liCate = getList(context, 0, userId);
         ArrayAdapter<String> dataAdapterCate = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liCate);
         dataAdapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -239,7 +249,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         //Select priority
-        List<String> liPrio = getList(context, 1);
+        List<String> liPrio = getList(context, 1, userId);
         ArrayAdapter<String> dataAdapterPrio = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liPrio);
         dataAdapterPrio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -264,7 +274,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         //Select status
-        List<String> liStt = getList(context, 2);
+        List<String> liStt = getList(context, 2, userId);
         ArrayAdapter<String> dataAdapterStt = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liStt);
         dataAdapterStt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -388,15 +398,18 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 dpd = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
-                        tv_plan_date1.setText(mYear + "-" + mMonth + "-" + mDayOfMonth);
+                        tv_plan_date1.setText(mYear + "-" + (mMonth+1) + "-" + mDayOfMonth);
                     }
                 }, year, month, day);
                 dpd.show();
             }
         });
 
+        SessionManager sessionManager = new SessionManager(getContext());
+        int userId = sessionManager.getUserId();
+
         //update  category
-        List<String> li = getList(context, 0);
+        List<String> li = getList(context, 0, userId);
         ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -421,7 +434,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         //Update priority
-        List<String> liPrio = getList(context, 1);
+        List<String> liPrio = getList(context, 1, userId);
         ArrayAdapter<String> dataAdapterPrio = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liPrio);
         dataAdapterPrio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -446,7 +459,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         });
 
         //Update status
-        List<String> liStt = getList(context, 2);
+        List<String> liStt = getList(context, 2, userId);
         ArrayAdapter<String> dataAdapterStt = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liStt);
         dataAdapterStt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -494,24 +507,24 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
     }
 
     //get list for selecting category, priority and status
-    private List<String> getList(Context context, int i){
+    private List<String> getList(Context context, int i, int userId){
         List<String> list = new ArrayList<>();
         switch (i) {
             case 0:
                 list.add(0, "Select category...");
-                for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategory()){
+                for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategoryById(userId)){
                     list.add(c.getName().toString().trim());
                 }
                 return list;
             case 1:
                 list.add(0, "Select priority...");
-                for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllPriority()){
+                for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllPriorityById(userId)){
                     list.add(p.getName().toString().trim());
                 }
                 return list;
             case 2:
                 list.add(0, "Select status...");
-                for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllStatus()){
+                for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllStatusById(userId)){
                     list.add(s.getName().toString().trim());
                 }
                 return list;

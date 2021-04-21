@@ -18,9 +18,13 @@ public class Category {
     @ColumnInfo(name = "createdDate")
     private Date createDate;
 
-    public Category(String name, Date createDate) {
+    @ColumnInfo(name = "userId")
+    public int userId;
+
+    public Category(String name, Date createDate, int userId) {
         this.name = name;
         this.createDate = createDate;
+        this.userId = userId;
     }
 
     public int getId() {
@@ -45,5 +49,13 @@ public class Category {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
