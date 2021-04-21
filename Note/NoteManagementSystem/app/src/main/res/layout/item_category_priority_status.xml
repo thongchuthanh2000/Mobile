@@ -2,7 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:id="@+id/linear_item_category_priority_status"
     android:layout_height="wrap_content">
+
 
     <RelativeLayout
         android:layout_width="match_parent"

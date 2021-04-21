@@ -1,7 +1,9 @@
 package com.notemanagementsystem.fragment;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -45,7 +47,6 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
     }
 
-
     public FloatingActionButton fabAddPriority;
     public RecyclerView rcvPriority;
     public PriorityAdapter priorityAdapter;
@@ -62,7 +63,17 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
         fabAddPriority.setOnClickListener(this);
 
         rcvPriority = view.findViewById(R.id.rcv_Priority);
-        priorityAdapter = new PriorityAdapter();
+        priorityAdapter = new PriorityAdapter(new PriorityAdapter.IClickItemPriority() {
+            @Override
+            public void update(Priority priority) {
+                clickUpdatePriority(view, priority);
+            }
+
+            @Override
+            public void delete(Priority priority) {
+
+            }
+        });
         mListPriority = new ArrayList<>();
 
         mListPriority = AppDatabase.getAppDatabase(view.getContext()).priorityDAO().getAllPriority();
@@ -75,7 +86,31 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
         return view;
     }
+    private void clickUpdateNote(View v, Note note){
+        openDialogEdit(Gravity.CENTER, v.getContext(), note);
+    }
 
+    private void openDialogEdit(int center, Context context, Note note) {
+    }
+
+    private void clickDeleteNote(View v, Priority priority){
+        new AlertDialog.Builder(v.getContext())
+                .setTitle("Confirm")
+                .setMessage("Are you sure to delete this ?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        AppDatabase.getAppDatabase(v.getContext()).priorityDAO().delete(priority);
+                        Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
+
+                        //reload frm
+                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                        ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.fab_add_priority){
@@ -122,6 +157,8 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
                 Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
 
                 mListPriority = AppDatabase.getAppDatabase(v.getContext()).priorityDAO().getAllPriority();
+                priorityAdapter.setData(mListPriority);
+
 
                 FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
                 ft.replace(R.id.content_frame, new NoteFragment()).addToBackStack(null).commit();
