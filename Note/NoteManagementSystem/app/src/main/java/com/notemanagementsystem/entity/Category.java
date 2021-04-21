@@ -1,33 +1,26 @@
 package com.notemanagementsystem.entity;
 
 import androidx.room.ColumnInfo;
-import androidx.room.Dao;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-@Entity(tableName = "note")
-public class Note {
+@Entity(tableName = "category")
+public class Category {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
     private int id;
 
-    @ColumnInfo(name = "name")
+    @ColumnInfo(name = "catName")
     private String name;
 
     @ColumnInfo(name = "createdDate")
-    public Date createDate;
+    private Date createDate;
 
-    @ColumnInfo(name = "planDate")
-    public Date planDate;
-
-
-    public Note(String name, Date planDate, Date createDate) {
+    public Category(String name, Date createDate) {
         this.name = name;
         this.createDate = createDate;
-        this.planDate = planDate;
     }
 
     public int getId() {
@@ -52,13 +45,5 @@ public class Note {
 
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
-    }
-
-    public Date getPlanDate() {
-        return planDate;
-    }
-
-    public void setPlanDate(Date planDate) {
-        this.planDate = planDate;
     }
 }

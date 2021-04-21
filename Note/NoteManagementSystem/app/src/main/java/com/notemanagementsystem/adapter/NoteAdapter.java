@@ -14,6 +14,7 @@ import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Note;
 
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
@@ -50,6 +51,11 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
 
         StringBuffer sb = new StringBuffer();
         sb.append("Name: " + note.getName().toString() + '\n');
+        String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
+        sb.append("Plan Date: " + planDate + '\n');
+        String createDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(note.getCreateDate());
+        sb.append("Created Date: " + createDate);
+
 
         holder.tv_item_note.setText(sb);
 

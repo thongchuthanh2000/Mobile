@@ -1,6 +1,7 @@
 package com.notemanagementsystem.fragment;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,8 +33,13 @@ import com.notemanagementsystem.adapter.NoteAdapter;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Note;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,10 +88,12 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    public FloatingActionButton fab_add_note;
-    public RecyclerView rcvNote;
-    public NoteAdapter noteAdapter;
-    public List<Note> mListNote;
+    FloatingActionButton fab_add_note;
+    RecyclerView rcvNote;
+    NoteAdapter noteAdapter;
+    List<Note> mListNote;
+    Calendar c;
+    DatePickerDialog dpd;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -149,17 +158,27 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         EditText et_name_note = dialog.findViewById(R.id.et_name_note);
         Button btn_add = dialog.findViewById(R.id.btn_add);
         Button btn_close = dialog.findViewById(R.id.btn_close);
+        Button btn_plan_date = dialog.findViewById(R.id.btn_plan_date);
+        TextView tv_plan_date = dialog.findViewById(R.id.tv_plan_date);
 
         btn_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name_note = et_name_note.getText().toString().trim();
+                String plan_date = tv_plan_date.getText().toString().trim();
 
-                if(TextUtils.isEmpty(name_note)){
+                if(TextUtils.isEmpty(name_note) || TextUtils.isEmpty(plan_date)){
                     return;
                 }
 
-                Note note = new Note(name_note);
+                Date date1;
+                try {
+                    date1 = new SimpleDateFormat("yyyy-MM-dd").parse(plan_date);
+                } catch (ParseException e) {
+                    date1 = new Date();
+                }
+
+                Note note = new Note(name_note, date1, new Date());
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().insertNote(note);
 
                 Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
@@ -180,6 +199,27 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                 dialog.cancel();
             }
         });
+
+
+
+        btn_plan_date.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                c = Calendar.getInstance();
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                int month = c.get(Calendar.MONTH);
+                int year = c.get(Calendar.YEAR);
+
+                dpd = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
+                        tv_plan_date.setText(mYear + "-" + mMonth + "-" + mDayOfMonth);
+                    }
+                }, year, month, day);
+                dpd.show();
+            }
+        });
+
 
         dialog.show();
     }
@@ -210,21 +250,36 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         EditText et_name_note1 = dialog.findViewById(R.id.et_name_note1);
         Button btn_update = dialog.findViewById(R.id.btn_update);
         Button btn_close1 = dialog.findViewById(R.id.btn_close1);
+        Button btn_plan_date1 = dialog.findViewById(R.id.btn_plan_date1);
+        TextView tv_plan_date1 = dialog.findViewById(R.id.tv_plan_date1);
 
         if(note != null){
             et_name_note1.setText(note.getName());
+            String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
+            tv_plan_date1.setText(planDate);
         }
 
         btn_update.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String name_note = et_name_note1.getText().toString().trim();
+                String plan_date = tv_plan_date1.getText().toString().trim();
 
-                if(TextUtils.isEmpty(name_note)){
+                if(TextUtils.isEmpty(name_note) || TextUtils.isEmpty(plan_date)){
                     return;
                 }
 
+                Date date1 = new Date();
+                try {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    date1 = formatter.parse(plan_date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
                 note.setName(name_note);
+                note.setPlanDate(date1);
+
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().updateNote(note);
 
                 Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
@@ -241,6 +296,24 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 dialog.cancel();
+            }
+        });
+
+        btn_plan_date1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                c = Calendar.getInstance();
+                int day = c.get(Calendar.DAY_OF_MONTH);
+                int month = c.get(Calendar.MONTH);
+                int year = c.get(Calendar.YEAR);
+
+                dpd = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
+                        tv_plan_date1.setText(mYear + "-" + mMonth + "-" + mDayOfMonth);
+                    }
+                }, year, month, day);
+                dpd.show();
             }
         });
 

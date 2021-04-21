@@ -23,14 +23,12 @@ public class LoginActivity extends AppCompatActivity {
     FloatingActionButton fab_add_user;
 //    SharedPreferences sharedPreferences;
 
-    private Session session;//global variable
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        session = new Session(this);
+        SessionManager sessionManager = new SessionManager(getApplicationContext());
 
         addControls();
 
@@ -62,7 +60,8 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             else {
 
-                                session.setUserId(user.id);
+                                sessionManager.setUserId(user.getId());
+                                sessionManager.setLogin(true);
 
 //                                if(cbRememberMe.isChecked()){
 //                                    SharedPreferences.Editor editor = sharedPreferences.edit();
