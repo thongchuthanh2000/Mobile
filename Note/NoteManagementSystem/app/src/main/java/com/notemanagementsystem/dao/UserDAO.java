@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.notemanagementsystem.entity.User;
 
@@ -24,8 +25,8 @@ public interface UserDAO {
     @Query("SELECT * FROM user WHERE id=(:id)")
     User getUserById(int id);
 
-    @Query("UPDATE user SET password=(:password) WHERE id=(:id)")
-    void updatePassword(int id, String password);
+    @Update
+    void updateUser(User user);
 
     @Insert
     public void insert(User user);

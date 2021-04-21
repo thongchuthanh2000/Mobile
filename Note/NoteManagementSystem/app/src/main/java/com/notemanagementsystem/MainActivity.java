@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
+import com.notemanagementsystem.dao.UserDAO;
+import com.notemanagementsystem.entity.User;
 import com.notemanagementsystem.fragment.CategoryFragment;
 import com.notemanagementsystem.fragment.ChangePasswordFragment;
 import com.notemanagementsystem.fragment.EditProfileFragment;

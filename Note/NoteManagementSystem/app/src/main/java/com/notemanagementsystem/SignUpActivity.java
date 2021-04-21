@@ -34,7 +34,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 User user = new User();
                 user.setEmail(edtEmail_SignUp.getText().toString());
-                user.setPassWord(edtPassword_SignUp.getText().toString());
+                user.setPassword(edtPassword_SignUp.getText().toString());
 
                 if(validateInput_SignIn(user)){
 

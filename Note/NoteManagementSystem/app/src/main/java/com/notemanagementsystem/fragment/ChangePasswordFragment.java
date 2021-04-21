@@ -56,23 +56,51 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
             replaceFragment(new HomeFragment());
 //            TextView tv_appbar_tittle = v.findViewById(R.id.tv_appbar_tittle);
 //            tv_appbar_tittle.setText("Home");
+        }
+
+        if(v.getId() == R.id.btnChange_Password){
+
             SessionManager sessionManager = new SessionManager(getContext());
+
+            String currentPassword = edtCurrent_Password.getText().toString();
+            String newPassword = edtNew_Password.getText().toString();
+            String againPassword = edtPassword_Again.getText().toString();
 
             AppDatabase appDatabase = AppDatabase.getAppDatabase(v.getContext());
             UserDAO userDAO = appDatabase.userDAO();
             User user = userDAO.getUserById(sessionManager.getUserId());
 
-            Toast.makeText(v.getContext(),user.getEmail(),Toast.LENGTH_SHORT).show();
+            if(currentPassword.isEmpty() || newPassword.isEmpty()||againPassword.isEmpty()){
 
-            sessionManager.setLogin(false);
+                toast("fill all filed");
 
-        }
+            }else if(!(currentPassword.equals(user.getPassword()))){
 
-        if(v.getId() == R.id.btnChange_Password){
+                toast("current is incorrect");
 
-            AppDatabase appDatabase = AppDatabase.getAppDatabase(v.getContext());
-            UserDAO userDAO = appDatabase.userDAO();
-            User user = userDAO.getUserById(0);
+            }else if(newPassword.equals(user.getPassword())){
+
+                toast("new password must");
+
+            }else if(!(newPassword.equals(againPassword))) {
+
+                toast("confirm");
+
+            }else if(regexInput(newPassword)) {
+
+                toast("6 ki tu");
+
+            }else {
+
+                user.setPassword(edtNew_Password.getText().toString());
+
+                userDAO.updateUser(user);
+
+                Toast.makeText(v.getContext(), user.getEmail(), Toast.LENGTH_SHORT).show();
+
+//            sessionManager.setLogin(false);
+
+            }
 
         }
 
@@ -82,5 +110,22 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
+    }
+
+    public void toast(String string){
+
+        Toast.makeText(getContext(),string,Toast.LENGTH_SHORT).show();
+
+    }
+
+    public Boolean regexInput(String string){
+
+        if(string.matches(".{6,}")){
+
+            return true;
+
+        }
+
+        return false;
     }
 }
