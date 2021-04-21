@@ -24,13 +24,14 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="26e386b6-9369-4684-855d-a2a3b57b6abd" name="Default Changelist" comment="" />
+    <list default="true" id="26e386b6-9369-4684-855d-a2a3b57b6abd" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[BQS4LJPFTKHQGAYT]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -72,9 +73,7 @@
     <configuration default="true" type="AndroidJUnit" factoryName="Android JUnit">
       <option name="TEST_OBJECT" value="class" />
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
+      <method v="2" />
     </configuration>
     <configuration name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
       <module name="NoteManagementSystem.app" />
@@ -129,9 +128,7 @@
       <option name="ACTIVITY_CLASS" value="" />
       <option name="SEARCH_ACTIVITY_IN_GLOBAL_SCOPE" value="false" />
       <option name="SKIP_ACTIVITY_VALIDATION" value="false" />
-      <method v="2">
-        <option name="Android.Gradle.BeforeRunTask" enabled="true" />
-      </method>
+      <method v="2" />
     </configuration>
   </component>
   <component name="SvnConfiguration">
@@ -176,9 +173,10 @@
       <screen x="0" y="0" width="1600" height="860" />
     </state>
     <state x="380" y="184" key="AndroidCreateResourceFileDialog/0.0.1600.860@0.0.1600.860" timestamp="1618976040423" />
-    <state x="580" y="184" key="FileChooserDialogImpl" timestamp="1618977029258">
-      <screen x="0" y="0" width="1600" height="860" />
+    <state x="557" y="185" key="FileChooserDialogImpl" timestamp="1618990436202">
+      <screen x="0" y="0" width="1536" height="864" />
     </state>
+    <state x="557" y="185" key="FileChooserDialogImpl/0.0.1536.864@0.0.1536.864" timestamp="1618990436202" />
     <state x="580" y="184" key="FileChooserDialogImpl/0.0.1600.860@0.0.1600.860" timestamp="1618977029258" />
     <state width="1557" height="406" key="GridCell.Tab.0.bottom" timestamp="1618974805002">
       <screen x="0" y="0" width="1600" height="860" />
