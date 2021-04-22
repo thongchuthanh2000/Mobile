@@ -34,10 +34,10 @@ import java.util.List;
 
 public class CategoryFragment extends Fragment implements View.OnClickListener {
 
-    public FloatingActionButton fabAddCategory;
-    public RecyclerView rcvCategory;
-    public CategoryAdapter categoryAdapter;
-    public List<Category> mListCategory;
+    private FloatingActionButton fabAddCategory;
+    private RecyclerView rcvCategory;
+    private CategoryAdapter categoryAdapter;
+    private List<Category> mListCategory;
 
     public CategoryFragment() {
     }
@@ -118,7 +118,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
             title.setText("Category Form");
         }
 
-        btnClose.setOnClickListener(v -> {
+        btnUpdate.setOnClickListener(v -> {
             String nameCategory = edtNameCategory.getText().toString().trim();
 
             if(TextUtils.isEmpty(nameCategory)){

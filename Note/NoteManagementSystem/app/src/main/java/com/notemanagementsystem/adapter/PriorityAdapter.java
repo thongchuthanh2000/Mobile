@@ -57,10 +57,10 @@ public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.Prior
         holder.createdDate.setText(formatedDate);
 
 
-        holder.layout.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.priorityName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.layout);
+                PopupMenu popupMenu = new PopupMenu(v.getContext(), holder.priorityName);
                 popupMenu.getMenuInflater().inflate(R.menu.option_popup_menu, popupMenu.getMenu());
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {

@@ -3,9 +3,6 @@ package com.notemanagementsystem.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -18,11 +15,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +28,6 @@ import com.notemanagementsystem.SessionManager;
 import com.notemanagementsystem.adapter.PriorityAdapter;
 import com.notemanagementsystem.entity.Priority;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -61,7 +54,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
         fabAddPriority = view.findViewById(R.id.fab_add_priority);
         fabAddPriority.setOnClickListener(this);
 
-        rcvPriority = view.findViewById(R.id.rcv_Priority);
+        rcvPriority = view.findViewById(R.id.rcv_priority);
         priorityAdapter = new PriorityAdapter(new PriorityAdapter.IClickItemPriority() {
             @Override
             public void update(Priority priority) {
@@ -93,6 +86,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
     private void openDialogEdit(int gravity, Context context, Priority priority) {
         final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.layout_dialog);
 
         dialog.setCancelable(false);
 
@@ -152,6 +146,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
 
     private void openDialog(int gravity, Context context) {
         final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.layout_dialog);
 
         dialog.setCancelable(false);
 
@@ -175,7 +170,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
             Priority priority = new Priority(namePriority, new Date(), userId);
             AppDatabase.getAppDatabase(v.getContext()).priorityDAO().insert(priority);
 
-            Toast.makeText(v.getContext(), "Add priority successfully!", Toast.LENGTH_SHORT).show();
+            showToast("Add priority successfully");
 
             replaceFragment(new PriorityFragment());
 
@@ -193,5 +188,8 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
+    }
+    public void showToast(String string){
+        Toast.makeText(getContext(),string,Toast.LENGTH_SHORT).show();
     }
 }
