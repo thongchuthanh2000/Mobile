@@ -1,6 +1,8 @@
 package com.notemanagementsystem;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.util.AttributeSet;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
@@ -19,6 +21,8 @@ import com.notemanagementsystem.fragment.NoteFragment;
 import com.notemanagementsystem.fragment.PriorityFragment;
 import com.notemanagementsystem.fragment.StatusFragment;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
@@ -46,6 +50,13 @@ public class  MainActivity extends AppCompatActivity
 //
 //    private int currentFragment = fragment_home;
 
+//    private void setEmail(String gmail) {
+//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//        View headerView = navigationView.getHeaderView(0);
+//        TextView txtEmail = (TextView) headerView.findViewById(R.id.textEmail);
+//        txtEmail.setText(gmail);
+//    }
+//    SessionManager sessionManager = new SessionManager(getApplicationContext());
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +78,13 @@ public class  MainActivity extends AppCompatActivity
 
         TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
         tv_appbar_tittle.setText("Home");
+
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
+        return super.onCreateView(name, context, attrs);
     }
 
     @Override
@@ -152,12 +170,14 @@ public class  MainActivity extends AppCompatActivity
 //            }
         }
 
+
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     private void replaceFragment(Fragment fragment){
+//        setEmail(sessionManager.getEmail());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();

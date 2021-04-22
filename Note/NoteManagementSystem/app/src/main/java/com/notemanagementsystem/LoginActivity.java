@@ -9,9 +9,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.notemanagementsystem.dao.UserDAO;
 import com.notemanagementsystem.entity.User;
 
@@ -29,7 +31,10 @@ public class LoginActivity extends AppCompatActivity {
 
         addControls();
         addEvent();
+
     }
+
+
 
     public void addControls(){
         edtEmail = findViewById(R.id.edt_email);
@@ -42,6 +47,7 @@ public class LoginActivity extends AppCompatActivity {
 
     public void addEvent(){
         SessionManager sessionManager = new SessionManager(getApplicationContext());
+        edtEmail.setText(sessionManager.getUserName());
         btnSignIn.setOnClickListener(v -> {
             final String email = edtEmail.getText().toString().trim();
             final String password = edtPassword.getText().toString().trim();
@@ -63,6 +69,16 @@ public class LoginActivity extends AppCompatActivity {
                         sessionManager.setUserId(user.getId());
                         sessionManager.setLogin(true);
 
+
+                        if (cbRememberMe.isChecked()==true){
+                            sessionManager.setUserName(email);
+                        }
+                        else {
+                            sessionManager.setUserName("");
+
+                        }
+
+                        sessionManager.setEmail(email);
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     }
@@ -72,6 +88,9 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),"Fill all fields!",Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
 
         btnExit.setOnClickListener(v -> {
             finish();

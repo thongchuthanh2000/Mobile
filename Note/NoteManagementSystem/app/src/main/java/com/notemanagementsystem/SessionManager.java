@@ -20,9 +20,25 @@ public class SessionManager {
         editor.putBoolean("key_login",login);
         editor.commit();
     }
+    public void setUserName(String username){
+        editor.putString("userName",username);
+        editor.commit();
+    }
+
+    public void setEmail(String username){
+        editor.putString("email",username);
+        editor.commit();
+    }
+
 
     public boolean getLogin(){
         return sharedPreferences.getBoolean("key_login",false);
+    }
+    public String getUserName(){
+        return sharedPreferences.getString("userName","");
+    }
+    public String getEmail(){
+        return sharedPreferences.getString("email","");
     }
 
     public void setUserId(int userId) {
