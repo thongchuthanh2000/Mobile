@@ -38,10 +38,6 @@ public class User {
         this.lastName = lastName;
     }
 
-    public User() {
-
-    }
-
     public int getId() {
         return id;
     }
@@ -69,6 +65,10 @@ public class User {
     public User(String email, String password) {
         this.email = email;
         this.password = password;
+    }
+
+    public User() {
+
     }
 
 }

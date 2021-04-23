@@ -73,7 +73,7 @@ public class  MainActivity extends AppCompatActivity
         replaceFragment(new HomeFragment());
 
         TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
-        tv_appbar_tittle.setText("Home");
+        tv_appbar_tittle.setText("Dashboard Form");
 
         setEmail();
     }
