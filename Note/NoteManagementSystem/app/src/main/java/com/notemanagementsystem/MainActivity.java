@@ -115,7 +115,7 @@ public class  MainActivity extends AppCompatActivity
                 replaceFragment(new HomeFragment());
 //                currentFragment = fragment_home;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
-                tv_appbar_tittle.setText("Home");
+                tv_appbar_tittle.setText("Dashboard Form");
 //            }
         }
         else if(id == R.id.nav_category){
@@ -123,7 +123,7 @@ public class  MainActivity extends AppCompatActivity
                 replaceFragment(new CategoryFragment());
 //                currentFragment = fragment_category;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
-                tv_appbar_tittle.setText("Category");
+                tv_appbar_tittle.setText("Category Form");
 //            }
         }
         else if(id == R.id.nav_priority){
@@ -131,7 +131,7 @@ public class  MainActivity extends AppCompatActivity
                 replaceFragment(new PriorityFragment());
 //                currentFragment = fragment_priority;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
-                tv_appbar_tittle.setText("Priority");
+                tv_appbar_tittle.setText("Priority Form");
 //            }
         }
         else if(id == R.id.nav_status){
@@ -139,7 +139,7 @@ public class  MainActivity extends AppCompatActivity
                 replaceFragment(new StatusFragment());
 //                currentFragment = fragment_status;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
-                tv_appbar_tittle.setText("Status");
+                tv_appbar_tittle.setText("Status Form");
 //            }
         }
         else  if(id == R.id.nav_note){
@@ -147,7 +147,7 @@ public class  MainActivity extends AppCompatActivity
                 replaceFragment(new NoteFragment());
 //                currentFragment = fragment_note;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
-                tv_appbar_tittle.setText("Note");
+                tv_appbar_tittle.setText("Note Form");
 
                 FloatingActionButton fab_add_note = findViewById(R.id.fab_add_note);
 

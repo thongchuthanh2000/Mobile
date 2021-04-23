@@ -23,6 +23,7 @@ public interface StatusDAO {
     @Delete
     void delete(Status status);
 
+
     @Query("SELECT * FROM status WHERE userId =(:userId)")
     List<Status> getAllStatusById(int userId);
 }

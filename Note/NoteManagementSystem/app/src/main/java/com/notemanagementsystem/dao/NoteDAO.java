@@ -23,6 +23,9 @@ public interface NoteDAO {
     @Delete
     void delete(Note note);
 
+    @Query("Select count(*) from note where userId=(:userId) and status = (:nameStatus)")
+    int getStatusByNote( String nameStatus,int userId);
+
     @Query("SELECT * FROM note WHERE userId =(:userId)")
     List<Note> getAllNoteById(int userId);
 }
