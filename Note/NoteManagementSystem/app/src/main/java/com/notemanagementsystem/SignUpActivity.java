@@ -37,7 +37,8 @@ public class SignUpActivity extends AppCompatActivity {
             User user = new User();
             user.setEmail(edtEmailSignUp.getText().toString());
             user.setPassword(edtPasswordSignUp.getText().toString());
-
+            user.setLastName("");
+            user.setFirstName("");
             if(!(validateInputSignIn(user))) {
 
                 showToast("Please fill in all the information!");
