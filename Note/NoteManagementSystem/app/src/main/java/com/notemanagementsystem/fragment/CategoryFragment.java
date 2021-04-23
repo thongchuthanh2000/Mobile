@@ -42,6 +42,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
     public CategoryFragment() {
     }
 
+    //Override this method to run fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,6 +51,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_category, container, false);
         fabAddCategory = view.findViewById(R.id.fab_add_category);
         fabAddCategory.setOnClickListener(this);
+
 
         rcvCategory = view.findViewById(R.id.rcv_category);
         categoryAdapter = new CategoryAdapter(new CategoryAdapter.IClickItemCategory() {
@@ -78,29 +80,27 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    //method to delete category
     private void clickDeleteCategory(View view, Category category) {
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Confirm")
                 .setMessage("Are you sure to delete this category?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AppDatabase.getAppDatabase(view.getContext()).categoryDAO().delete(category);
-                        Toast.makeText(view.getContext(), "Delete category successfully!", Toast.LENGTH_SHORT).show();
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    AppDatabase.getAppDatabase(view.getContext()).categoryDAO().delete(category);
+                    showToast("Delete category successfully!");
 
-                        //reload frm
-                        FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
-                        ft.replace(R.id.content_frame, new CategoryFragment()).addToBackStack(null).commit();
-                    }
+                    replaceFragment( new CategoryFragment());
                 })
                 .setNegativeButton("No", null)
                 .show();
     }
 
+    //method to update category
     private void clickUpdateCategory(View view, Category category) {
         openDialogEdit(Gravity.CENTER, view.getContext(), category);
     }
 
+    //open dialog to update category
     private void openDialogEdit(int center, Context context, Category category) {
         final Dialog dialog = new Dialog(context);
 
@@ -130,6 +130,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
             AppDatabase.getAppDatabase(v.getContext()).categoryDAO().update(category);
 
             showToast("Update category successfully");
+
             replaceFragment( new CategoryFragment());
 
             dialog.cancel();
@@ -176,6 +177,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
             AppDatabase.getAppDatabase(v.getContext()).categoryDAO().insert(category);
 
             showToast("Add category successfully");
+
             replaceFragment( new CategoryFragment());
 
             dialog.cancel();
@@ -188,6 +190,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
+    //reload fragment
     private void replaceFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);

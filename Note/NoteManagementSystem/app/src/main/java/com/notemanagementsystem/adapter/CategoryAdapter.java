@@ -31,6 +31,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     }
 
     private CategoryAdapter.IClickItemCategory iClickItemCategory;
+
     public interface IClickItemCategory{
         void updateCategory(Category category);
         void deleteCategory(Category category);
@@ -54,7 +55,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.categoryName.setText(category.getName());
         String formatedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(category.getCreateDate());
         holder.createdDate.setText(formatedDate);
-
 
         holder.categoryName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
