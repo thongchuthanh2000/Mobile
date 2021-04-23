@@ -13,14 +13,13 @@ public class User {
     @ColumnInfo(name = "email")
     private String email;
 
-    public String getPassword() {
-        return password;
-    }
-
     @ColumnInfo(name = "password")
     private String password;
 
+    @ColumnInfo(name = "firstName")
     private String firstName;
+
+    @ColumnInfo(name = "lastName")
     private String lastName;
 
     public String getFirstName() {
@@ -61,6 +60,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public User(String email, String password) {

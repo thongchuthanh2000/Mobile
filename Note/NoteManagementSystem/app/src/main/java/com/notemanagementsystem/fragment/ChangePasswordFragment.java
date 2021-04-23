@@ -48,8 +48,11 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
 
     @Override
     public void onClick(View v) {
+
         if(v.getId() == R.id.btn_switch_to_home){
+
             replaceFragment(new HomeFragment());
+
         }
 
         if(v.getId() == R.id.btn_change_password){
@@ -66,41 +69,61 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
                         .getUserById(sessionManager.getUserId());
 
             if(currentPassword.isEmpty() || newPassword.isEmpty()||newPasswordConfirm.isEmpty()){
-                ShowToast("fill all filed");
+
+                showToast("Please fill in all the information!");
+
             }else if(!(currentPassword.equals(user.getPassword()))){
-                ShowToast("current is incorrect");
+
+                showToast("Current password is incorrect!");
+
             }else if(newPassword.equals(user.getPassword())){
-                ShowToast("new password must");
+
+                showToast("New password must be different from the current password!");
+
             }else if(!(newPassword.equals(newPasswordConfirm))) {
-                ShowToast("confirm");
-            }else if(regexInput(newPassword)) {
-                ShowToast("6 ki tu");
+
+                showToast("Password confirmation is incorrect!");
+
+            }else if(!(regexInput(newPassword))) {
+
+                showToast("Password must be at least 6 characters!");
+
             }else {
+
                 user.setPassword(edtNewPassword.getText().toString().trim());
 
                 AppDatabase.getAppDatabase(v.getContext())
                         .userDAO().update(user);
 
-                Toast.makeText(v.getContext(), user.getEmail(), Toast.LENGTH_SHORT).show();
+                showToast("Update successful!");
+
             }
         }
     }
 
     private void replaceFragment(Fragment fragment){
+
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
+
     }
 
-    public void ShowToast(String string){
+    public void showToast(String string){
+
         Toast.makeText(getContext(),string,Toast.LENGTH_SHORT).show();
+
     }
 
     public Boolean regexInput(String string){
 
         if(string.matches(".{6,}")){
+
             return true;
+
         }
+
         return false;
+
     }
 }

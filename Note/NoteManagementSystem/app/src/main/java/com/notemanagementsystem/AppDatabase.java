@@ -32,12 +32,15 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase appDatabase;
 
     public static synchronized AppDatabase getAppDatabase(Context context){
+
         if(appDatabase == null){
             appDatabase = Room.databaseBuilder(context, AppDatabase.class, dbName)
                     .allowMainThreadQueries()
                     .build();
         }
+
         return appDatabase;
+
     }
 
     public abstract UserDAO userDAO();
