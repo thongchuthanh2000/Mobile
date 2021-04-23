@@ -3,19 +3,15 @@ package com.notemanagementsystem;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
-import com.notemanagementsystem.dao.UserDAO;
 import com.notemanagementsystem.entity.User;
+import com.notemanagementsystem.utils.SessionManager;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -78,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         }
 
-                        sessionManager.setEmail(email);
+                        SessionManager.email = email;
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
                     }

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,7 +31,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
-import com.notemanagementsystem.SessionManager;
+import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.adapter.NoteAdapter;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.entity.Category;
@@ -106,6 +105,8 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             openDialogAdd(Gravity.CENTER, v.getContext());
         }
     }
+
+
 
     private void openDialogAdd(int gravity, Context context) {
 
@@ -460,7 +461,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             case 2:
                 list.add(0, "Select status...");
                 for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllStatusById(userId)){
-                    list.add(s.getName().toString().trim());
+                    list.add(s.getName().trim());
                 }
                 return list;
         }

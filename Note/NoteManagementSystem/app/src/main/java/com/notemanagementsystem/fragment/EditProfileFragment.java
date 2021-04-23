@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
-import com.notemanagementsystem.SessionManager;
+import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.entity.User;
 
 

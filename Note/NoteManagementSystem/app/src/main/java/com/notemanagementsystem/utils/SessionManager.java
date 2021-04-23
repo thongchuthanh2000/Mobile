@@ -1,4 +1,4 @@
-package com.notemanagementsystem;
+package com.notemanagementsystem.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,6 +9,7 @@ public class SessionManager {
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
 
+    public static String email = "";
     public SessionManager(Context context) {
         // TODO Auto-generated constructor stub
         sharedPreferences=context.getSharedPreferences("appkey",0);
@@ -25,10 +26,10 @@ public class SessionManager {
         editor.commit();
     }
 
-    public void setEmail(String username){
-        editor.putString("email",username);
-        editor.commit();
-    }
+//    public void setEmail(String username){
+//        editor.putString("email",username);
+//        editor.commit();
+//    }
 
 
     public boolean getLogin(){
@@ -37,9 +38,9 @@ public class SessionManager {
     public String getUserName(){
         return sharedPreferences.getString("userName","");
     }
-    public String getEmail(){
-        return sharedPreferences.getString("email","");
-    }
+//    public String getEmail(){
+//        return sharedPreferences.getString("email","");
+//    }
 
     public void setUserId(int userId) {
         editor.putInt("key_userId",userId);

@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
-import com.notemanagementsystem.SessionManager;
+import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.adapter.CategoryAdapter;
 import com.notemanagementsystem.entity.Category;
 

@@ -3,16 +3,14 @@ package com.notemanagementsystem;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.AttributeSet;
+import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
-import com.notemanagementsystem.dao.UserDAO;
-import com.notemanagementsystem.entity.User;
 import com.notemanagementsystem.fragment.CategoryFragment;
 import com.notemanagementsystem.fragment.ChangePasswordFragment;
 import com.notemanagementsystem.fragment.EditProfileFragment;
@@ -20,6 +18,7 @@ import com.notemanagementsystem.fragment.HomeFragment;
 import com.notemanagementsystem.fragment.NoteFragment;
 import com.notemanagementsystem.fragment.PriorityFragment;
 import com.notemanagementsystem.fragment.StatusFragment;
+import com.notemanagementsystem.utils.SessionManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,10 +26,6 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -50,13 +45,14 @@ public class  MainActivity extends AppCompatActivity
 //
 //    private int currentFragment = fragment_home;
 
-//    private void setEmail(String gmail) {
-//        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-//        View headerView = navigationView.getHeaderView(0);
-//        TextView txtEmail = (TextView) headerView.findViewById(R.id.textEmail);
-//        txtEmail.setText(gmail);
-//    }
-//    SessionManager sessionManager = new SessionManager(getApplicationContext());
+    private void setEmail() {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = (NavigationView) drawerLayout.findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView txtEmail = (TextView) headerView.findViewById(R.id.textEmail);
+        txtEmail.setText(SessionManager.email);
+    }
+    //SessionManager sessionManager = new SessionManager(MainActivity.this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +75,7 @@ public class  MainActivity extends AppCompatActivity
         TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
         tv_appbar_tittle.setText("Home");
 
+        setEmail();
     }
 
     @Nullable
@@ -174,6 +171,12 @@ public class  MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+
+        super.onCreateContextMenu(menu, v, menuInfo);
     }
 
     private void replaceFragment(Fragment fragment){

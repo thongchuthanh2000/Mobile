@@ -16,7 +16,7 @@ import com.anychart.chart.common.dataentry.ValueDataEntry;
 import com.anychart.charts.Pie;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
-import com.notemanagementsystem.SessionManager;
+import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.entity.Status;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment {
 
         List<DataEntry> dataEntries = new ArrayList<>();
 
-        Pie pie = AnyChart.pie();
+        Pie pie =  AnyChart.pie();
         for (int i=0;i<status.size();i++){
             dataEntries.add(new ValueDataEntry(status.get(i).getName(),
                     AppDatabase.getAppDatabase(view.getContext()).noteDAO().getStatusByNote(status.get(i).getName(),userId)
@@ -66,6 +66,7 @@ public class HomeFragment extends Fragment {
         }
         pie.data(dataEntries);
 
+        anyChartView.setBackgroundColor("#FFFFFF");
         anyChartView.setZoomEnabled(true);
         anyChartView.setChart(pie);
     }
