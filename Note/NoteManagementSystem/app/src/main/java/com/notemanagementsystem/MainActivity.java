@@ -33,18 +33,11 @@ import androidx.appcompat.widget.Toolbar;
 public class  MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
-    //private AppBarConfiguration mAppBarConfiguration;
-
-//    private static final int fragment_home = 1;
-//    private static final int fragment_category = 2;
-//    private static final int fragment_priority = 3;
-//    private static final int fragment_status = 4;
-//    private static final int fragment_note = 5;
-//    private static final int fragment_edit_profile = 6;
-//    private static final int fragment_change_password = 7;
-//
-//    private int currentFragment = fragment_home;
-
+    /*
+    Get headerView -> Set text email
+    @Param : Null
+    @Return: null
+     */
     private void setEmail() {
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         NavigationView navigationView = (NavigationView) drawerLayout.findViewById(R.id.nav_view);
@@ -52,7 +45,7 @@ public class  MainActivity extends AppCompatActivity
         TextView txtEmail = (TextView) headerView.findViewById(R.id.textEmail);
         txtEmail.setText(SessionManager.email);
     }
-    //SessionManager sessionManager = new SessionManager(MainActivity.this);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +71,6 @@ public class  MainActivity extends AppCompatActivity
         setEmail();
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull String name, @NonNull Context context, @NonNull AttributeSet attrs) {
-        return super.onCreateView(name, context, attrs);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -102,68 +89,48 @@ public class  MainActivity extends AppCompatActivity
         }
     }
 
+    /*
+    Open form based on item
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        //Open fragment - Set text app bar
         if(id == R.id.nav_home){
-//            if(fragment_home != currentFragment){
                 replaceFragment(new HomeFragment());
-//                currentFragment = fragment_home;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Dashboard Form");
-//            }
         }
         else if(id == R.id.nav_category){
-//            if(fragment_category != currentFragment){
                 replaceFragment(new CategoryFragment());
-//                currentFragment = fragment_category;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Category Form");
-//            }
         }
         else if(id == R.id.nav_priority){
-//            if(fragment_priority != currentFragment){
                 replaceFragment(new PriorityFragment());
-//                currentFragment = fragment_priority;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Priority Form");
-//            }
         }
         else if(id == R.id.nav_status){
-//            if(fragment_status != currentFragment){
                 replaceFragment(new StatusFragment());
-//                currentFragment = fragment_status;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Status Form");
-//            }
         }
         else  if(id == R.id.nav_note){
-//            if(fragment_note != currentFragment){
                 replaceFragment(new NoteFragment());
-//                currentFragment = fragment_note;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Note Form");
-
-                FloatingActionButton fab_add_note = findViewById(R.id.fab_add_note);
-
-//            }
         }
         else  if(id == R.id.nav_editProfile){
-//            if(fragment_edit_profile != currentFragment){
                 replaceFragment(new EditProfileFragment());
-//                currentFragment = fragment_edit_profile;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Edit Profile");
-//            }
         }
         else  if(id == R.id.nav_changePassword){
-//            if(fragment_change_password != currentFragment){
                 replaceFragment(new ChangePasswordFragment());
-//                currentFragment = fragment_change_password;
                 TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Change Password");
-//            }
         }
 
 
@@ -172,14 +139,10 @@ public class  MainActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-
-        super.onCreateContextMenu(menu, v, menuInfo);
-    }
-
+    /*
+    Reload fragment
+     */
     private void replaceFragment(Fragment fragment){
-//        setEmail(sessionManager.getEmail());
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();

@@ -16,7 +16,12 @@ import com.notemanagementsystem.entity.Status;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-
+/*
+ *CategoryAdapter Of RecyclerView Category
+ *@author  Quang Hung
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusViewHolder> {
 
     private List<Status> mListStatus;
@@ -24,13 +29,22 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusView
     public StatusAdapter(IClickItemStatus iClickItemStatus) {
         this.iClickItemStatus = iClickItemStatus;
     }
-
+    /*
+     *  @param List<Status>
+     * assigns data to the list mListStatus
+     * @return Nothing.
+     */
     public void setData(List<Status> list){
         this.mListStatus = list;
         notifyDataSetChanged();
     }
 
     private IClickItemStatus iClickItemStatus;
+    /*
+    Update - Delete status
+    @Param: status
+    @Return Nothing
+     */
     public interface IClickItemStatus{
         void updateStatus(Status status);
         void deleteStatus(Status status);
@@ -39,21 +53,26 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusView
     @NonNull
     @Override
     public StatusViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Create view holder
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_priority_status, parent, false);
         return new StatusViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull StatusViewHolder holder, int position) {
+        //Get category to mListCategory
         Status status = mListStatus.get(position);
+        //If none exist => Return
         if (status == null){
             return;
         }
-
+        //Set value text
         holder.statusName.setText(status.getName());
+        //Format string yyyy-MM-dd
         String formatedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(status.getCreateDate());
         holder.createdDate.setText(formatedDate);
 
+        //Open context menu -> Delete | Update item status
         holder.statusName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -88,6 +107,7 @@ public class StatusAdapter extends RecyclerView.Adapter<StatusAdapter.StatusView
         return 0;
     }
 
+    //Create viewHolder
     public class StatusViewHolder extends RecyclerView.ViewHolder{
         private TextView statusName;
         private TextView createdDate;

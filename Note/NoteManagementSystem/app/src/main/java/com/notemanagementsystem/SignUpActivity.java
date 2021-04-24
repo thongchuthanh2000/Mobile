@@ -135,7 +135,10 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     /*checks the format of the input
-    if true returns true and vice versa*/
+    if true returns true and vice versa
+    @Param User
+    @Return boolean
+    */
     public Boolean regexInput(User user){
 
         if(user.getEmail().matches("^(.+)@(.+)$") && user.getPassword().matches(".{6,}")){

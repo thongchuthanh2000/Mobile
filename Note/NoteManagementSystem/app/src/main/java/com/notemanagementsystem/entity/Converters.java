@@ -4,6 +4,9 @@ import androidx.room.TypeConverter;
 
 import java.util.Date;
 
+/**
+ * Convert Date <-> Long for table
+ */
 public class Converters {
     @TypeConverter
     public static Date fromTimestamp(Long value) {

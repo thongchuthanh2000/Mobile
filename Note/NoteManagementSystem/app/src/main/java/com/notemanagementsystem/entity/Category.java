@@ -6,6 +6,9 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
+/**
+ * Table containing Category data
+ */
 @Entity(tableName = "category")
 public class Category {
 

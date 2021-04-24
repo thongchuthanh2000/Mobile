@@ -28,9 +28,13 @@ import com.notemanagementsystem.entity.User;
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
+    //Name databases
     private static final String dbName = "db_name";
     private static AppDatabase appDatabase;
 
+    /*Singleton create database
+    
+    */
     public static synchronized AppDatabase getAppDatabase(Context context){
 
         if(appDatabase == null){

@@ -3,7 +3,9 @@ package com.notemanagementsystem.entity;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
+/**
+ * Table containing user data
+ */
 @Entity(tableName = "user")
 public class User {
 

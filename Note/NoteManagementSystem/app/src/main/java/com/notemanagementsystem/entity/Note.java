@@ -7,7 +7,9 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
-
+/**
+ * Table containing note data
+ */
 @Entity(tableName = "note")
 public class Note {
 

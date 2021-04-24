@@ -5,7 +5,9 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
-
+/**
+ * Table containing status data
+ */
 @Entity(tableName = "status")
 public class Status {
 

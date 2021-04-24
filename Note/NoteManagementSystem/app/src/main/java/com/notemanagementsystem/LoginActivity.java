@@ -26,9 +26,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         addControls();
-
         addEvent();
-
     }
 
     //get all view in activity
@@ -40,7 +38,6 @@ public class LoginActivity extends AppCompatActivity {
         btnExit = findViewById(R.id.btn_exit);
         cbRememberMe = findViewById(R.id.cb_remember_me);
         fabAddUser = findViewById(R.id.fab_add_user);
-
     }
 
     //set event for views
@@ -76,7 +73,6 @@ public class LoginActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
 
                             Toast.makeText(getApplicationContext(),"Incorrect information!",Toast.LENGTH_SHORT).show();
-
                         });
                     } else {
 
@@ -89,12 +85,10 @@ public class LoginActivity extends AppCompatActivity {
 
                             //set the user's email into the session
                             sessionManager.setUserName(email);
-
                         } else {
 
                             //set empty if not selected
                             sessionManager.setUserName("");
-
                         }
 
                         SessionManager.email = email;
@@ -122,7 +116,6 @@ public class LoginActivity extends AppCompatActivity {
             //switch to the registration interface
             Intent intent = new Intent(LoginActivity.this, SignUpActivity.class);
             startActivity(intent);
-
         });
     }
 
@@ -131,12 +124,8 @@ public class LoginActivity extends AppCompatActivity {
     public Boolean validateInput_LogIn ( String email,  String pass){
 
         if( email.isEmpty() || pass.isEmpty()){
-
             return false;
-
         }
-
         return true;
-
     }
 }

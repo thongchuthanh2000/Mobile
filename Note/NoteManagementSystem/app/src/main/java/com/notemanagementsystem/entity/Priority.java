@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Date;
 
-
+/**
+ * Table containing priority data
+ */
 @Entity(tableName = "priority")
 public class Priority {
 
