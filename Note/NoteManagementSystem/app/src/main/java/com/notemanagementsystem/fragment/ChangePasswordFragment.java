@@ -60,13 +60,6 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
 
             //switch to home fragment
             replaceFragment(new HomeFragment());
-
-            //set title for actionbar
-//            Toolbar toolbar = v.findViewById(R.id.toolbar);
-//            ( (MainActivity)getActivity()).setSupportActionBar(toolbar);
-//            TextView tv_appbar_tittle = v.findViewById(R.id.tv_appbar_tittle);
-//            tv_appbar_tittle.setText("Dashboard Form");
-
         }
 
         //set event for btnChangePassword
@@ -127,14 +120,12 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
-
     }
 
     //show toast
     public void showToast(String string){
 
         Toast.makeText(getContext(),string,Toast.LENGTH_SHORT).show();
-
     }
 
     /*checks the format of the input
@@ -144,10 +135,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         if(string.matches(".{6,}")){
 
             return true;
-
         }
-
         return false;
-
     }
 }

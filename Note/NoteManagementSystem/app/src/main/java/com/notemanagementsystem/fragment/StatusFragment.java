@@ -30,7 +30,12 @@ import com.notemanagementsystem.entity.Status;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
+/*
+ *StatusFragment
+ *@author  Quang Hung
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class StatusFragment extends Fragment implements View.OnClickListener {
 
     private FloatingActionButton fabAddStatus;
@@ -63,13 +68,16 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        //Get userID by sessiong
         SessionManager sessionManager = new SessionManager(getContext());
         int userId = sessionManager.getUserId();
 
+        //Set value adapter for Status Adapter
         mListStatus = new ArrayList<>();
         mListStatus = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllStatusById(userId);
         statusAdapter.setData(mListStatus);
 
+        //Set layout manager -> recyclerView Status
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
         rcvStatus.setLayoutManager(linearLayoutManager);
         rcvStatus.setAdapter(statusAdapter);
@@ -77,6 +85,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    //Delete item staus
     private void clickDeleteStatus(View view, Status status) {
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Confirm")
@@ -91,6 +100,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
                 .show();
     }
 
+    //Update item status
     private void clickUpdateStatus(View view, Status status) {
         openDialogEdit(Gravity.CENTER, view.getContext(), status);
     }
@@ -138,6 +148,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+        //set even for btn_add_status -- Add status
         if (v.getId() == R.id.fab_add_status){
             openDialog(Gravity.CENTER, v.getContext());
         }
@@ -149,6 +160,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         dialog.setContentView(R.layout.layout_dialog);
         dialog.setCancelable(false);
 
+        //get information from views
         TextView title = dialog.findViewById(R.id.title);
         EditText edtNameStatus = dialog.findViewById(R.id.edt_name);
         Button btnAdd = dialog.findViewById(R.id.btn_add);
@@ -159,22 +171,27 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         btnAdd.setOnClickListener(v -> {
             String nameStatus = edtNameStatus.getText().toString().trim();
 
+            //Check null
             if(TextUtils.isEmpty(nameStatus)){
                 return;
             }
-
+            //declare a session
             SessionManager sessionManager = new SessionManager(getContext());
             int userId = sessionManager.getUserId();
 
+            //create status
             Status status = new Status(nameStatus, new Date(), userId);
+            //Insert data into the database
             AppDatabase.getAppDatabase(v.getContext()).statusDAO().insert(status);
 
             Toast.makeText(v.getContext(), "Add status successfully", Toast.LENGTH_LONG).show();
 
+            //Load fragment
             replaceFragment(new StatusFragment());
             dialog.cancel();
         });
 
+        //Cancenl Update status
         btnClose.setOnClickListener(v -> {
             dialog.cancel();
         });
@@ -182,6 +199,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         dialog.show();
     }
 
+    //switch to another fragment
     private void replaceFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);

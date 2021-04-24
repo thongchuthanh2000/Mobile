@@ -33,7 +33,6 @@ public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase appDatabase;
 
     /*Singleton create database
-    
     */
     public static synchronized AppDatabase getAppDatabase(Context context){
 

@@ -197,6 +197,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
         fragmentTransaction.commit();
     }
 
+    //show toast
     public void showToast(String string){
         Toast.makeText(getContext(),string,Toast.LENGTH_SHORT).show();
     }
