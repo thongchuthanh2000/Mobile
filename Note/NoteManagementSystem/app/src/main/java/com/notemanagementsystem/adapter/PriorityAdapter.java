@@ -19,10 +19,20 @@ import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-
+/*
+ *PriorityAdapter Of RecyclerView Priority
+ *@author  Chu Thanh
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.PriorityViewHolder> {
 
     private PriorityAdapter.IClickItemPriority iClickItemNote;
+    /*
+    Update - Delete Priority
+    @Param: Priority
+    @Return Nothing
+    */
     public interface IClickItemPriority{
         void update(Priority priority);
         void delete(Priority priority);
@@ -33,6 +43,11 @@ public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.Prior
     }
 
     private List<Priority> mListPriority;
+    /*
+     *  @param List<Priority>
+     * assigns data to the list mListPriority
+     * @return Nothing.
+     */
     public void setData(List<Priority> mListPriority){
         this.mListPriority = mListPriority;
         notifyDataSetChanged();
@@ -41,22 +56,27 @@ public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.Prior
     @NonNull
     @Override
     public PriorityViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Create view holder
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_priority_status, parent, false);
         return new PriorityViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PriorityViewHolder holder, int position) {
+        //Get category to mListCategory
         Priority priority = mListPriority.get(position);
+        //If none exist => Return
         if(priority == null){
             return;
         }
 
+        //Set value text
         holder.priorityName.setText(priority.getName());
+        //Format string yyyy-MM-dd
         String formatedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(priority.getCreateDate());
         holder.createdDate.setText(formatedDate);
 
-
+        //Open context menu -> Delete | Update item priority
         holder.priorityName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -93,20 +113,17 @@ public class PriorityAdapter extends  RecyclerView.Adapter<PriorityAdapter.Prior
         return 0;
     }
 
-
-
+    //Create viewHolder
     public class PriorityViewHolder extends RecyclerView.ViewHolder {
 
         private TextView priorityName;
         private TextView createdDate;
-        private LinearLayout layout;
 
         public PriorityViewHolder(@NonNull View itemView) {
             super(itemView);
 
             priorityName = itemView.findViewById(R.id.txt_name_category_priority_status);
             createdDate = itemView.findViewById(R.id.txt_created_category_priority_status);
-            layout = itemView.findViewById(R.id.linear_item_category_priority_status);
         }
     }
 }

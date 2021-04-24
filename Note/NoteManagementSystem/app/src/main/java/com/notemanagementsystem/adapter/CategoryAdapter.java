@@ -16,22 +16,35 @@ import com.notemanagementsystem.entity.Category;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-
+/*
+*CategoryAdapter Of RecyclerView Category
+*@author  Quang Hung
+* @version 1.0
+* @since   2021-04-24
+ */
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
 
     private List<Category> mListCategory;
-
     public CategoryAdapter(IClickItemCategory iClickItemCategory) {
         this.iClickItemCategory = iClickItemCategory;
     }
 
+    /*
+    *  @param List<Category>
+    * assigns data to the list mListCategory
+    * @return Nothing.
+     */
     public void setData(List<Category> mListCategory){
         this.mListCategory = mListCategory;
         notifyDataSetChanged();
     }
 
+    /*
+    Update - Delete Category
+    @Param: Category
+    @Return Nothing
+     */
     private CategoryAdapter.IClickItemCategory iClickItemCategory;
-
     public interface IClickItemCategory{
         void updateCategory(Category category);
         void deleteCategory(Category category);
@@ -40,6 +53,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     @NonNull
     @Override
     public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        //Create view holder
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_priority_status, parent, false);
         return new CategoryViewHolder(view);
     }
@@ -47,15 +61,21 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(@NonNull CategoryViewHolder holder, int position) {
+
+        //Get category to mListCategory
         Category category = mListCategory.get(position);
+        //If none exist => Return
         if (category == null){
             return;
         }
 
+        //Set value text
         holder.categoryName.setText(category.getName());
+        //Format string yyyy-MM-dd
         String formatedDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(category.getCreateDate());
         holder.createdDate.setText(formatedDate);
 
+        //Open context menu -> Delete | Update item category
         holder.categoryName.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -90,6 +110,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         return 0;
     }
 
+    //Create viewHolder
     public class CategoryViewHolder extends RecyclerView.ViewHolder{
         private TextView categoryName;
         private TextView createdDate;
