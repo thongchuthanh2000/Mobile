@@ -10,7 +10,12 @@ import android.widget.Toast;
 
 import com.notemanagementsystem.dao.UserDAO;
 import com.notemanagementsystem.entity.User;
-
+/*
+ *SignUpActivity
+ *@author  Quyet Sinh
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class SignUpActivity extends AppCompatActivity {
 
     private EditText edtEmailSignUp, edtPasswordSignUp, edtConfirm ;

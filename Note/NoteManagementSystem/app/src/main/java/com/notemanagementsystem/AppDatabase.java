@@ -22,6 +22,12 @@ import com.notemanagementsystem.entity.Priority;
 import com.notemanagementsystem.entity.Status;
 import com.notemanagementsystem.entity.User;
 
+/*
+ *AppDatabase
+ *@author  Quyet Sinh
+ * @version 1.0
+ * @since   2021-04-24
+ */
 @Database(entities = {User.class, Note.class, Priority.class, Category.class, Status.class},
         version = 1, exportSchema = false)
 

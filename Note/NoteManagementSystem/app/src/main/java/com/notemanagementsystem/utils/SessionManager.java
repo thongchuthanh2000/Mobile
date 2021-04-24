@@ -3,7 +3,12 @@ package com.notemanagementsystem.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
+/*
+ *SessionManager
+ *@author  Quyet Sinh
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class SessionManager {
 
     SharedPreferences sharedPreferences;

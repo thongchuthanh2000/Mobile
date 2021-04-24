@@ -29,7 +29,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
+/*
+ *MainActivity
+ *@author  Quyet Sinh
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class  MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 

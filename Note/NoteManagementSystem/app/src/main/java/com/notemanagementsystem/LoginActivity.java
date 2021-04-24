@@ -12,7 +12,12 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.entity.User;
 import com.notemanagementsystem.utils.SessionManager;
-
+/*
+ *LoginActivity
+ *@author  Quyet Sinh
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText edtEmail, edtPassword;

@@ -45,7 +45,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
+/*
+ *StatusFragment
+ *@author  Van Nghia
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class NoteFragment extends Fragment implements View.OnClickListener {
 
     public NoteFragment() {
@@ -105,8 +110,6 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             openDialogAdd(Gravity.CENTER, v.getContext());
         }
     }
-
-
 
     private void openDialogAdd(int gravity, Context context) {
 
@@ -262,6 +265,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         openDialogEdit(Gravity.CENTER, v.getContext(), note);
     }
 
+    //openDialogEdit
     private void openDialogEdit(int gravity, Context context, Note note){
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -468,6 +472,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         return list;
     }
 
+    //switch to another fragment
     private void replaceFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);

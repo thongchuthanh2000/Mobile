@@ -49,7 +49,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         btnChangeProfile.setOnClickListener(this);
 
         return view;
-
     }
 
     @Override
