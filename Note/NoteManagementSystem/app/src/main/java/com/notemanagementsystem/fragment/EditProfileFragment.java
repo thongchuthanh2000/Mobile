@@ -17,7 +17,12 @@ import com.notemanagementsystem.R;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.entity.User;
 
-
+/*
+ *StatusFragment
+ *@author  Chu Thanh
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class EditProfileFragment extends Fragment implements View.OnClickListener {
 
     public EditProfileFragment() {

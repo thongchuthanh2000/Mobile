@@ -22,7 +22,12 @@ import com.notemanagementsystem.entity.Status;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/*
+ *StatusFragment
+ *@author  Chu Thanh
+ * @version 1.0
+ * @since   2021-04-24
+ */
 public class HomeFragment extends Fragment {
 
 
@@ -32,32 +37,35 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
 
         anyChartView = view.findViewById(R.id.any_chart_view);
+        //Setup Pie Chart
         setupPieChart(view);
         return  view;
     }
 
+    /*
+    Setup pie chart
+    @Parem View
+    @Return null
+     */
     private  void setupPieChart(View view){
-//        String [] status = {"Done","Pending","Processing"};
+        //Get userID by session
         SessionManager sessionManager = new SessionManager(getContext());
         int userId = sessionManager.getUserId();
 
+        //Get list status by User
         List<Status> status = new ArrayList<>();
         status = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllStatusById(userId);
 
 
         List<DataEntry> dataEntries = new ArrayList<>();
 
+        //Get value
         Pie pie =  AnyChart.pie();
         for (int i=0;i<status.size();i++){
             dataEntries.add(new ValueDataEntry(status.get(i).getName(),
@@ -65,8 +73,7 @@ public class HomeFragment extends Fragment {
             ));
         }
         pie.data(dataEntries);
-
-        anyChartView.setBackgroundColor("#FFFFFF");
+        //Set chart view
         anyChartView.setZoomEnabled(true);
         anyChartView.setChart(pie);
     }

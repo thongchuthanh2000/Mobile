@@ -68,7 +68,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        //Get userID by sessiong
+        //Get userID by session
         SessionManager sessionManager = new SessionManager(getContext());
         int userId = sessionManager.getUserId();
 
@@ -91,6 +91,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
                 .setTitle("Confirm")
                 .setMessage("Are you sure to delete this status?")
                 .setPositiveButton("Yes", (dialog, which) -> {
+                    //Delete item status
                     AppDatabase.getAppDatabase(view.getContext()).statusDAO().delete(status);
                     Toast.makeText(view.getContext(), "Delete status successfully!", Toast.LENGTH_SHORT).show();
 
@@ -108,9 +109,11 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
     private void openDialogEdit(int center, Context context, Status status) {
         final Dialog dialog = new Dialog(context);
 
+        //Set contentview dialog
         dialog.setContentView(R.layout.layout_dialog);
         dialog.setCancelable(false);
 
+        //get information from views
         TextView title = dialog.findViewById(R.id.title);
         EditText edtNameStatus = dialog.findViewById(R.id.edt_name);
         Button btnUpdate = dialog.findViewById(R.id.btn_add);
@@ -125,20 +128,25 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         btnUpdate.setOnClickListener(v -> {
             String nameStatus = edtNameStatus.getText().toString().trim();
 
+            //Check null
             if(TextUtils.isEmpty(nameStatus)){
                 return;
             }
 
+            //Change status
             status.setName(nameStatus);
             status.setCreateDate(new Date());
+            //Update data into the database
             AppDatabase.getAppDatabase(v.getContext()).statusDAO().update(status);
 
             Toast.makeText(v.getContext(), "Update status successfully", Toast.LENGTH_LONG).show();
+            //Load fragment
             replaceFragment(new StatusFragment());
 
             dialog.cancel();
         });
 
+        //Cancenl Update status
         btnClose.setOnClickListener(v -> {
             dialog.cancel();
         });
@@ -157,6 +165,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
     private void openDialog(int gravity, Context context) {
         final Dialog dialog = new Dialog(context);
 
+        //Set contentview dialog
         dialog.setContentView(R.layout.layout_dialog);
         dialog.setCancelable(false);
 
@@ -191,7 +200,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
             dialog.cancel();
         });
 
-        //Cancenl Update status
+        //Cancenl add status
         btnClose.setOnClickListener(v -> {
             dialog.cancel();
         });
