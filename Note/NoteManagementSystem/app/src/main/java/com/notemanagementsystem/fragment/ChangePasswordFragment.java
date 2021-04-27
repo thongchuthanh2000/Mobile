@@ -60,6 +60,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
 
             //switch to home fragment
             replaceFragment(new HomeFragment());
+
         }
 
         //set event for btnChangePassword
