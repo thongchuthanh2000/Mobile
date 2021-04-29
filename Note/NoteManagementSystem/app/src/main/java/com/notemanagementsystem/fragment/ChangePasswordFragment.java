@@ -1,5 +1,6 @@
 package com.notemanagementsystem.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.ActionBar;
@@ -20,6 +21,8 @@ import com.notemanagementsystem.MainActivity;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.entity.User;
+
+import static android.content.Intent.getIntent;
 
 
 public class ChangePasswordFragment extends Fragment implements View.OnClickListener {
@@ -57,10 +60,10 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
 
         //set even for btnSwitchToHone -- switch to home fragment
         if(v.getId() == R.id.btn_switch_to_home){
-
-            //switch to home fragment
-            replaceFragment(new HomeFragment());
-
+            //restart MainActivity
+            Intent intent = getActivity().getIntent();
+            getActivity().finish();
+            startActivity(intent);
         }
 
         //set event for btnChangePassword
@@ -113,14 +116,6 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
 
             }
         }
-    }
-
-    //switch to another fragment
-    private void replaceFragment(Fragment fragment){
-
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, fragment);
-        fragmentTransaction.commit();
     }
 
     //show toast

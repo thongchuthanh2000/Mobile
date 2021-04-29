@@ -1,5 +1,6 @@
 package com.notemanagementsystem.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -55,8 +56,10 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
     public void onClick(View v) {
         //set even for btnSwitchToHone -- switch to home fragment
         if(v.getId() == R.id.btn_switch_to_home){
-            //switch to home fragment
-            replaceFragment(new HomeFragment());
+            //restart MainActivity
+            Intent intent = getActivity().getIntent();
+            getActivity().finish();
+            startActivity(intent);
         }
         //set event for btn_change_profile
         if(v.getId() == R.id.btn_change_profile){
@@ -89,13 +92,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 showToast("OK");
             }
         }
-    }
-
-    //switch to another fragment
-    private void replaceFragment(Fragment fragment){
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.content_frame, fragment);
-        fragmentTransaction.commit();
     }
 
     //show toast
