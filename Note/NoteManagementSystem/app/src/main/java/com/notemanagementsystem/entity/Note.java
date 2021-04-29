@@ -26,25 +26,25 @@ public class Note {
     @ColumnInfo(name = "planDate")
     public Date planDate;
 
-    @ColumnInfo(name = "category")
-    public String category;
+    @ColumnInfo(name = "categoryId")
+    public int categoryId;
 
-    @ColumnInfo(name = "priority")
-    public String priority;
+    @ColumnInfo(name = "priorityId")
+    public int priorityId;
 
     @ColumnInfo(name = "status")
-    public String status;
+    public int statusId;
 
     @ColumnInfo(name = "userId")
     public int userId;
 
-    public Note(String name, Date planDate, Date createDate, String category, String priority, String status, int userId) {
+    public Note(String name, Date planDate, Date createDate, int categoryId, int priorityId, int statusId, int userId) {
         this.name = name;
         this.createDate = createDate;
         this.planDate = planDate;
-        this.category = category;
-        this.priority = priority;
-        this.status = status;
+        this.categoryId = categoryId;
+        this.priorityId = priorityId;
+        this.statusId = statusId;
         this.userId = userId;
     }
 
@@ -80,28 +80,28 @@ public class Note {
         this.planDate = planDate;
     }
 
-    public String getCategory() {
-        return category;
+    public int getCategoryId() {
+        return categoryId;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
-    public String getPriority() {
-        return priority;
+    public int getPriorityId() {
+        return priorityId;
     }
 
-    public void setPriority(String priority) {
-        this.priority = priority;
+    public void setPriorityId(int priorityId) {
+        this.priorityId = priorityId;
     }
 
-    public String getStatus() {
-        return status;
+    public int getStatusId() {
+        return statusId;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setStatusId(int statusId) {
+        this.statusId = statusId;
     }
 
     public int getUserId() {

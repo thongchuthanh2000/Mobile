@@ -26,4 +26,10 @@ public interface CategoryDAO {
 
     @Query("SELECT * FROM category WHERE userId =(:userId)")
     List<Category> getAllCategoryById(int userId);
+
+    @Query("SELECT * FROM category WHERE id =(:id)")
+    Category getCategoryById(int id);
+
+    @Query("SELECT * FROM category WHERE catName =(:cateName)")
+    Category getCategoryByName(String cateName);
 }

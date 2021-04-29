@@ -52,11 +52,8 @@ import java.util.List;
  * @since   2021-04-24
  */
 public class NoteFragment extends Fragment implements View.OnClickListener {
+    public NoteFragment() { }
 
-    public NoteFragment() {
-    }
-
-    //
     private FloatingActionButton fabAddNote;
     private RecyclerView rcvNote;
     private NoteAdapter noteAdapter;
@@ -65,9 +62,9 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
 
-    private String category = "_";
-    private String priority = "_";
-    private String status = "_";
+    private int category = -1;
+    private int priority = -1;
+    private int status = -1;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,7 +80,6 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             public void updateNote(Note note) {
                 clickUpdateNote(view, note);
             }
-
             @Override
             public void deleteNote(Note note) {
                 clickDeleteNote(view, note);
@@ -104,15 +100,35 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    //add new note
     @Override
     public void onClick(View v) {
         if(v.getId() == R.id.fab_add_note){
-            openDialogAdd(Gravity.CENTER, v.getContext());
+            openDialogAddOrUpdate(Gravity.CENTER, v.getContext(), null);
         }
     }
 
-    private void openDialogAdd(int gravity, Context context) {
+    //Update note
+    private void clickUpdateNote(View v, Note note){
+        openDialogAddOrUpdate(Gravity.CENTER, v.getContext(), note);
+    }
 
+    //delete note
+    private void clickDeleteNote(View v, Note note){
+        new AlertDialog.Builder(v.getContext())
+                .setTitle(note.getName().trim())
+                .setMessage("Are you sure to delete this note?")
+                .setPositiveButton("Yes",((dialog, which) -> {
+                    AppDatabase.getAppDatabase(v.getContext()).noteDAO().delete(note);
+                    Toast.makeText(v.getContext(), "Deleted " + note.getName().toString().trim() + "!", Toast.LENGTH_SHORT).show();
+
+                    replaceFragment(new NoteFragment());
+                }))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void openDialogAddOrUpdate(int gravity, Context context, Note note) {
         final Dialog dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.layout_dialog_note);
@@ -132,39 +148,90 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         dialog.setCancelable(false);
 
         EditText edtNameNote = dialog.findViewById(R.id.edt_name_note);
-        Button btnAdd = dialog.findViewById(R.id.btn_add_note);
+        Button btnAddOrUpdate = dialog.findViewById(R.id.btn_add_or_update_note);
         Button btnClose = dialog.findViewById(R.id.btn_close_note);
         Button btnPlanDate = dialog.findViewById(R.id.btn_plan_date);
         TextView tvPlanDate = dialog.findViewById(R.id.tv_plan_date);
 
-        //add a new note
-        btnAdd.setOnClickListener(v -> {
-            String nameNote = edtNameNote.getText().toString().trim();
-            String planDate = tvPlanDate.getText().toString().trim();
+        if(note == null) {
+            btnAddOrUpdate.setText("Add");
 
-            if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(planDate)){
-                return;
-            }
+            //add a new note
+            btnAddOrUpdate.setOnClickListener(v -> {
 
-            Date date;
-            try {
-                date = new SimpleDateFormat("yyyy-MM-dd").parse(planDate);
-            } catch (ParseException e) {
-                date = new Date();
-            }
+                String nameNote = edtNameNote.getText().toString().trim();
+                String planDate = tvPlanDate.getText().toString().trim();
 
-            SessionManager sessionManager = new SessionManager(getContext());
-            int userId = sessionManager.getUserId();
+                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(planDate) || category<0 || priority<0 || status<0){
+                    Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-            Note note = new Note(nameNote, date, new Date(), category, priority, status, userId);
-            AppDatabase.getAppDatabase(v.getContext()).noteDAO().insert(note);
+                Date date = new Date();;
+                try {
+                    date = new SimpleDateFormat("yyyy-MM-dd").parse(planDate);
+                }
+                catch (ParseException e) { }
 
-            Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
+                if(date.before(new Date())){
+                    Toast.makeText(v.getContext(), "Plan date can't be in the past!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
-            replaceFragment(new NoteFragment());
+                SessionManager sessionManager = new SessionManager(getContext());
+                int userId = sessionManager.getUserId();
 
-            dialog.cancel();
-        });
+                Note newNote = new Note(nameNote, date, new Date(), category, priority, status, userId);
+                AppDatabase.getAppDatabase(v.getContext()).noteDAO().insert(newNote);
+                Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
+
+                replaceFragment(new NoteFragment());
+
+                dialog.cancel();
+            });
+        }
+        else {
+
+            btnAddOrUpdate.setText("Update");
+
+            edtNameNote.setText(note.getName());
+            String formatPlanDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
+            tvPlanDate.setText(formatPlanDate);
+            category = note.getCategoryId();
+            priority = note.getPriorityId();
+            status = note.getStatusId();
+
+            //update note
+            btnAddOrUpdate.setOnClickListener(v -> {
+                String nameNote = edtNameNote.getText().toString().trim();
+                String planDate = tvPlanDate.getText().toString().trim();
+
+                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(planDate) || category<0 || priority<0 || status<0){
+                    Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Date date = new Date();
+                try {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    date = formatter.parse(planDate);
+                }
+                catch (ParseException e) { }
+
+                note.setName(nameNote);
+                note.setPlanDate(date);
+                note.setCategoryId(category);
+                note.setPriorityId(priority);
+                note.setStatusId(status);
+
+                AppDatabase.getAppDatabase(v.getContext()).noteDAO().update(note);
+
+                Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
+                replaceFragment(new NoteFragment());
+
+                dialog.cancel();
+            });
+        }
 
         //Close dialog
         btnClose.setOnClickListener(v -> {
@@ -184,266 +251,86 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                     tvPlanDate.setText(mYear + "-" + (mMonth+1) + "-" + mDayOfMonth);
                 }
             }, year, month, day);
-
             datePickerDialog.show();
         });
 
         SessionManager sessionManager = new SessionManager(getContext());
         int userId = sessionManager.getUserId();
 
-        //Select category
-        List<String> liCate = getList(context, 0, userId);
-        ArrayAdapter<String> dataAdapterCate = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liCate);
-        dataAdapterCate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        //select cate, priority, status
+        for(int i = 0; i <= 2; i++){
+            List<String> li = getList(context, i, userId);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-        Spinner spnCategory = dialog.findViewById(R.id.spn_category);
-        spnCategory.setAdapter(dataAdapterCate);
-
-        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position!=0){
-                    category = parent.getItemAtPosition(position).toString();
-                }
+            Spinner spn;
+            switch (i){
+                case 0:
+                    spn = dialog.findViewById(R.id.spn_category);
+                    spn.setAdapter(dataAdapter);
+                    if (note != null) {
+                        String value = AppDatabase.getAppDatabase(context).categoryDAO().getCategoryById(note.getCategoryId()).getName();
+                        int spinnerPosition = dataAdapter.getPosition(value);
+                        spn.setSelection(spinnerPosition);
+                    };
+                    spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if(position!=0){
+                                String name = parent.getItemAtPosition(position).toString();
+                                Category cate = AppDatabase.getAppDatabase(view.getContext()).categoryDAO().getCategoryByName(name);
+                                category = cate.getId();
+                            }
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+                case 1:
+                    spn = dialog.findViewById(R.id.spn_priority);
+                    spn.setAdapter(dataAdapter);
+                    if (note != null) {
+                        String value = AppDatabase.getAppDatabase(context).priorityDAO().getPriorityById(note.getPriorityId()).getName();
+                        int spinnerPosition = dataAdapter.getPosition(value);
+                        spn.setSelection(spinnerPosition);
+                    };
+                    spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if(position!=0){
+                                String name = parent.getItemAtPosition(position).toString();
+                                Priority prio = AppDatabase.getAppDatabase(view.getContext()).priorityDAO().getPriorityByName(name);
+                                priority = prio.getId();
+                            }
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
+                case 2:
+                    spn = dialog.findViewById(R.id.spn_status);
+                    spn.setAdapter(dataAdapter);
+                    if (note != null) {
+                        String value = AppDatabase.getAppDatabase(context).statusDAO().getStatusById(note.getStatusId()).getName();
+                        int spinnerPosition = dataAdapter.getPosition(value);
+                        spn.setSelection(spinnerPosition);
+                    };
+                    spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            if(position!=0){
+                                String name = parent.getItemAtPosition(position).toString();
+                                Status stt = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getStatusByName(name);
+                                status = stt.getId();
+                            }
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+                        }
+                    });
             }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        //Select priority
-        List<String> liPrio = getList(context, 1, userId);
-        ArrayAdapter<String> dataAdapterPrio = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liPrio);
-        dataAdapterPrio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        Spinner spnPriority = dialog.findViewById(R.id.spn_priority);
-        spnPriority.setAdapter(dataAdapterPrio);
-
-        spnPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position!=0){
-                    priority = parent.getItemAtPosition(position).toString();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        //Select status
-        List<String> liStt = getList(context, 2, userId);
-        ArrayAdapter<String> dataAdapterStt = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liStt);
-        dataAdapterStt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        Spinner spnStatus = dialog.findViewById(R.id.spn_status);
-        spnStatus.setAdapter(dataAdapterStt);
-
-        spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position!=0){
-                    status = parent.getItemAtPosition(position).toString();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        dialog.show();
-    }
-
-    //Update note
-    private void clickUpdateNote(View v, Note note){
-        openDialogEdit(Gravity.CENTER, v.getContext(), note);
-    }
-
-    //openDialogEdit
-    private void openDialogEdit(int gravity, Context context, Note note){
-        final Dialog dialog = new Dialog(context);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.layout_dialog_edit_note);
-
-        Window window = dialog.getWindow();
-        if (window ==  null){
-            return;
         }
-
-        window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-
-        WindowManager.LayoutParams windowAttribute = window.getAttributes();
-        windowAttribute.gravity = gravity;
-        window.setAttributes(windowAttribute);
-
-        dialog.setCancelable(false);
-
-        EditText edtNameNote = dialog.findViewById(R.id.edt_name_note);
-        Button btnUpdate = dialog.findViewById(R.id.btn_update_note);
-        Button btnClose = dialog.findViewById(R.id.btn_close_note);
-        Button btnPlanDate = dialog.findViewById(R.id.btn_plan_date);
-        TextView tvPlanDate = dialog.findViewById(R.id.tv_plan_date);
-
-        if (note==null){
-            return;
-        }
-
-            edtNameNote.setText(note.getName());
-            String formatPlanDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
-            tvPlanDate.setText(formatPlanDate);
-            category = note.getCategory();
-            priority = note.getPriority();
-            status = note.getStatus();
-
-
-        //update note
-        btnUpdate.setOnClickListener(v -> {
-            String nameNote = edtNameNote.getText().toString().trim();
-            String planDate = tvPlanDate.getText().toString().trim();
-
-            if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(planDate)){
-                return;
-            }
-
-            //convert plan date
-            Date date = new Date();
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                date = formatter.parse(planDate);
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            note.setName(nameNote);
-            note.setPlanDate(date);
-            note.setCategory(category);
-            note.setPriority(priority);
-            note.setStatus(status);
-
-            AppDatabase.getAppDatabase(v.getContext()).noteDAO().update(note);
-
-            Toast.makeText(v.getContext(), "Update note successfully!", Toast.LENGTH_SHORT).show();
-            replaceFragment(new NoteFragment());
-
-            dialog.cancel();
-        });
-
-        //close dialog
-        btnClose.setOnClickListener(v -> {
-            dialog.cancel();
-        });
-
-        //update plan date
-        btnPlanDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calendar = Calendar.getInstance();
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
-
-                datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
-                        tvPlanDate.setText(mYear + "-" + (mMonth+1) + "-" + mDayOfMonth);
-                    }
-                }, year, month, day);
-                datePickerDialog.show();
-            }
-        });
-
-        SessionManager sessionManager = new SessionManager(getContext());
-        int userId = sessionManager.getUserId();
-
-        //update  category
-        List<String> li = getList(context, 0, userId);
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        Spinner spnCategory = dialog.findViewById(R.id.spn_category);
-        spnCategory.setAdapter(dataAdapter);
-
-        spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               if(position!=0){
-                    category = parent.getItemAtPosition(position).toString();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        //Update priority
-        List<String> liPrio = getList(context, 1, userId);
-        ArrayAdapter<String> dataAdapterPrio = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liPrio);
-        dataAdapterPrio.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        Spinner spnPriority = dialog.findViewById(R.id.spn_priority);
-        spnPriority.setAdapter(dataAdapterPrio);
-
-        spnPriority.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-               if(position!=0){
-                    priority = parent.getItemAtPosition(position).toString();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        //Update status
-        List<String> liStt = getList(context, 2, userId);
-        ArrayAdapter<String> dataAdapterStt = new ArrayAdapter(context, android.R.layout.simple_spinner_item, liStt);
-        dataAdapterStt.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        Spinner spnStatus = dialog.findViewById(R.id.spn_status);
-        spnStatus.setAdapter(dataAdapterStt);
-
-        spnStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position!=0){
-                    status = parent.getItemAtPosition(position).toString();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
         dialog.show();
-    }
-
-    //delete note
-    private void clickDeleteNote(View v, Note note){
-        new AlertDialog.Builder(v.getContext())
-                .setTitle(note.getName().trim())
-                .setMessage("Are you sure to delete this note?")
-                .setPositiveButton("Yes",((dialog, which) -> {
-                    AppDatabase.getAppDatabase(v.getContext()).noteDAO().delete(note);
-                    Toast.makeText(v.getContext(), "Deleted " + note.getName().toString().trim() + "!", Toast.LENGTH_SHORT).show();
-
-                    replaceFragment(new NoteFragment());
-                }))
-                .setNegativeButton("No", null)
-                .show();
     }
 
     //get list for selecting category, priority and status
@@ -453,13 +340,13 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             case 0:
                 list.add(0, "Select category...");
                 for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategoryById(userId)){
-                    list.add(c.getName().toString().trim());
+                    list.add(c.getName().trim());
                 }
                 return list;
             case 1:
                 list.add(0, "Select priority...");
                 for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllPriorityById(userId)){
-                    list.add(p.getName().toString().trim());
+                    list.add(p.getName().trim());
                 }
                 return list;
             case 2:

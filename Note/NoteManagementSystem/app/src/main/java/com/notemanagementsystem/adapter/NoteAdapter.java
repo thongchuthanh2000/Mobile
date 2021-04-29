@@ -1,5 +1,6 @@
 package com.notemanagementsystem.adapter;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,35 +13,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.entity.Category;
 import com.notemanagementsystem.entity.Note;
+import com.notemanagementsystem.entity.Priority;
+import com.notemanagementsystem.entity.Status;
 
 
 import java.text.SimpleDateFormat;
 import java.util.List;
-/*
- *NoteAdapter Of RecyclerView Note
- *@author  VanNghia
- * @version 1.0
- * @since   2021-04-24
- */
-public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
 
+public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolder> {
     private List<Note> mListNote;
-    /*
-     *  @param List<Note>
-     * assigns data to the list mListNote
-     * @return Nothing.
-     */
+
     public void setData(List<Note> list){
         this.mListNote = list;
         notifyDataSetChanged();
     }
 
-    /*
-    Update - Delete Note
-    @Param: Note
-    @Return Nothing
-     */
     private IClickItemNote iClickItemNote;
     public interface IClickItemNote{
         void updateNote(Note note);
@@ -69,14 +58,19 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
         //Set value text
         StringBuffer sb = new StringBuffer();
         sb.append("Name: " + note.getName().toString() + '\n');
-        sb.append("Category: " + note.getCategory() + '\n');
-        sb.append("Priority: " + note.getPriority() + '\n');
-        sb.append("Status: " + note.getStatus() + '\n');
 
-        //Format string yyyy-MM-dd
+        Category category = AppDatabase.getAppDatabase(holder.itemView.getContext()).categoryDAO().getCategoryById(note.getCategoryId());
+        sb.append("Category: " + category.getName() + '\n');
+
+        Priority priority = AppDatabase.getAppDatabase(holder.itemView.getContext()).priorityDAO().getPriorityById(note.getPriorityId());
+        sb.append("Priority: " + priority.getName() + '\n');
+
+        Status status = AppDatabase.getAppDatabase(holder.itemView.getContext()).statusDAO().getStatusById(note.getStatusId());
+        sb.append("Status: " + status.getName() + '\n');
+
         String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
         sb.append("Plan Date: " + planDate + '\n');
-        //Format string yyyy-MM-dd
+
         String createDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(note.getCreateDate());
         sb.append("Created Date: " + createDate);
 

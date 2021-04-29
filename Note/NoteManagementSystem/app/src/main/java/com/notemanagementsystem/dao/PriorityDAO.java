@@ -27,4 +27,10 @@ public interface PriorityDAO {
 
     @Query("SELECT * FROM priority WHERE userId =(:userId)")
     List<Priority> getAllPriorityById(int userId);
+
+    @Query("SELECT * FROM priority WHERE id =(:id)")
+    Priority getPriorityById(int id);
+
+    @Query("SELECT * FROM priority WHERE name =(:name)")
+    Priority getPriorityByName(String name);
 }
