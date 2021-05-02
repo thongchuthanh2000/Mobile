@@ -79,15 +79,13 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
 
                         //set information for the session
-//                        sessionManager.setUserId(user.getId());
+                        SessionManager.getInstance().setUserId(user.getId());
                         //if the user chooses to remember me
                         if (cbRememberMe.isChecked()==true){
                             //set the user's email into the session
                         } else {
 
                         }
-
-//                        SessionManager.email = email;
 
                         //switch to the main interface
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

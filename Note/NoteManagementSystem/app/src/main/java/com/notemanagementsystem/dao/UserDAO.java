@@ -22,4 +22,7 @@ public interface UserDAO  extends AbstractDao<User>{
     @Query("SELECT * FROM user WHERE id=(:id)")
     User getUserById(int id);
 
+    @Query("Select count(*)>0 from user where id!=(:id) and email=(:email)" )
+    Boolean checkEmailExist(String email,int id);
+
 }

@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.adapter.GenericAdapter;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.adapter.StatusAdapter;
 import com.notemanagementsystem.entity.Status;
@@ -57,14 +58,15 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
 
         rcvStatus = view.findViewById(R.id.rcv_status);
 
-        statusAdapter = new StatusAdapter(new StatusAdapter.IClickItemStatus() {
+        statusAdapter = new StatusAdapter(new GenericAdapter.IClickItem<Status>() {
             @Override
-            public void updateStatus(Status status) {
-                clickUpdateStatus(view, status);
+            public void update(Status item) {
+                clickUpdateStatus(view, item);
             }
+
             @Override
-            public void deleteStatus(Status status) {
-                clickDeleteStatus(view, status);
+            public void delete(Status item) {
+                    clickDeleteStatus(view, item);
             }
         });
 

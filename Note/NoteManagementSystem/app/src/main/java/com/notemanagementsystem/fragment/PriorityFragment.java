@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.adapter.GenericAdapter;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.adapter.PriorityAdapter;
 import com.notemanagementsystem.entity.Priority;
@@ -59,7 +60,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
         fabAddPriority.setOnClickListener(this);
 
         rcvPriority = view.findViewById(R.id.rcv_priority);
-        priorityAdapter = new PriorityAdapter(new PriorityAdapter.IClickItemPriority() {
+        priorityAdapter = new PriorityAdapter(new GenericAdapter.IClickItem<Priority>() {
             @Override
             public void update(Priority priority) {
                 clickUpdatePriority(view, priority);

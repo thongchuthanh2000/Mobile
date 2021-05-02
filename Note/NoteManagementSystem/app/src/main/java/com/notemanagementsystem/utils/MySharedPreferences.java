@@ -22,6 +22,6 @@ public class MySharedPreferences {
     public Integer getIntValue(String key){
         SharedPreferences sharedPreferences =mContext.getSharedPreferences(MY_SHARED_FREFERENCES,
                 Context.MODE_PRIVATE);
-        return sharedPreferences.getInt(key,0);
+        return sharedPreferences.getInt(key,-1);
     }
 }

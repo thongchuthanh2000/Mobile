@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.notemanagementsystem">
 
+
     <application
+
         android:allowBackup="true"
         android:name=".MyApplication"
         android:icon="@mipmap/ic_launcher"

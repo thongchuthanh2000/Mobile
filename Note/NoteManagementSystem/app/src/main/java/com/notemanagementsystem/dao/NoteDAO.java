@@ -14,7 +14,7 @@ import java.util.List;
 @Dao
 public interface NoteDAO extends AbstractDao<Note> {
 
-    @Query("Select count(*) from note where userId=(:userId) and status = (:nameStatus)")
+    @Query("Select count(*) from note where userId=(:userId) and statusId = (:nameStatus)")
     int getStatusByNote( String nameStatus,int userId);
 
     @Query("SELECT * FROM note WHERE userId =(:userId)")

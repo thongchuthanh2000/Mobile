@@ -21,7 +21,7 @@ public class Note  extends AbstractEntity<Note>{
     @ColumnInfo(name = "priorityId")
     public int priorityId;
 
-    @ColumnInfo(name = "status")
+    @ColumnInfo(name = "statusId")
     public int statusId;
 
 
