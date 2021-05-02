@@ -12,17 +12,7 @@ import com.notemanagementsystem.entity.Status;
 import java.util.List;
 
 @Dao
-public interface StatusDAO {
-
-    @Insert
-    public void insert(Status status);
-
-    @Update
-    public void update(Status status);
-
-    @Delete
-    void delete(Status status);
-
+public interface StatusDAO extends AbstractDao<Status>{
 
     @Query("SELECT * FROM status WHERE userId =(:userId)")
     List<Status> getAllStatusById(int userId);

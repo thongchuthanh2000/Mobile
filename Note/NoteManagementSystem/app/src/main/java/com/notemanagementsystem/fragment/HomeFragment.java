@@ -55,8 +55,7 @@ public class HomeFragment extends Fragment {
      */
     private  void setupPieChart(View view){
         //Get userID by session
-        SessionManager sessionManager = new SessionManager(getContext());
-        int userId = sessionManager.getUserId();
+        int userId = SessionManager.getInstance().getUserId();
 
         //Get list status by User
         List<Status> status = new ArrayList<>();

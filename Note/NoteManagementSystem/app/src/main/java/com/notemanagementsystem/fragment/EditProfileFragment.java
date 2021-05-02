@@ -64,7 +64,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         //set event for btn_change_profile
         if(v.getId() == R.id.btn_change_profile){
             //declare a session
-            SessionManager sessionManager = new SessionManager(getContext());
+
 
             //get information from views
             String firstName = edtFirstName.getText().toString();
@@ -74,7 +74,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             //Create a new user based on the id obtained from the session
             User user = AppDatabase.getAppDatabase(v.getContext())
                     .userDAO()
-                    .getUserById(sessionManager.getUserId());
+                    .getUserById(  SessionManager.getInstance().getUserId());
 
             //if the user does not enter the complete information
             if(firstName.isEmpty() || lastName.isEmpty()||email.isEmpty()){

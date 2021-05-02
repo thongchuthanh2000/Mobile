@@ -10,19 +10,12 @@ import com.notemanagementsystem.entity.Category;
 import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Priority;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 @Dao
-public interface CategoryDAO {
-
-    @Insert
-    void insert(Category category);
-
-    @Delete
-    void delete(Category category);
-
-    @Update
-    void update(Category category);
+public interface CategoryDAO extends AbstractDao<Category> {
 
     @Query("SELECT * FROM category WHERE userId =(:userId)")
     List<Category> getAllCategoryById(int userId);

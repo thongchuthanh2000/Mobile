@@ -48,11 +48,8 @@ public class LoginActivity extends AppCompatActivity {
     //set event for views
     public void addEvent(){
 
-        //declare a session
-        SessionManager sessionManager = new SessionManager(getApplicationContext());
-
         //show the user's email in the previous session if any
-        edtEmail.setText(sessionManager.getUserName());
+//        edtEmail.setText(sessionManager.getUserName());
 
         btnSignIn.setOnClickListener(v -> {
 
@@ -82,21 +79,15 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
 
                         //set information for the session
-                        sessionManager.setUserId(user.getId());
-                        sessionManager.setLogin(true);
-
+//                        sessionManager.setUserId(user.getId());
                         //if the user chooses to remember me
                         if (cbRememberMe.isChecked()==true){
-
                             //set the user's email into the session
-                            sessionManager.setUserName(email);
                         } else {
 
-                            //set empty if not selected
-                            sessionManager.setUserName("");
                         }
 
-                        SessionManager.email = email;
+//                        SessionManager.email = email;
 
                         //switch to the main interface
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

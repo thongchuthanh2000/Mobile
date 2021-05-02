@@ -66,8 +66,8 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        SessionManager sessionManager = new SessionManager(getContext());
-        int userId = sessionManager.getUserId();
+
+        int userId = SessionManager.getInstance().getUserId();
 
         mListCategory = new ArrayList<>();
         mListCategory = AppDatabase.getAppDatabase(view.getContext()).categoryDAO().getAllCategoryById(userId);
@@ -170,8 +170,7 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
                 return;
             }
 
-            SessionManager sessionManager = new SessionManager(getContext());
-            int userId = sessionManager.getUserId();
+            int userId = SessionManager.getInstance().getUserId();
 
             Category category = new Category(nameCategory, new Date(), userId);
             AppDatabase.getAppDatabase(v.getContext()).categoryDAO().insert(category);

@@ -48,7 +48,7 @@ public class  MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) drawerLayout.findViewById(R.id.nav_view);
         View headerView = navigationView.getHeaderView(0);
         TextView txtEmail = (TextView) headerView.findViewById(R.id.textEmail);
-        txtEmail.setText(SessionManager.email);
+//        txtEmail.setText(SessionManager.email);
     }
 
     @Override

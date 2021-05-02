@@ -71,8 +71,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
             }
         });
         //Get userID by session
-        SessionManager sessionManager = new SessionManager(getContext());
-        int userId = sessionManager.getUserId();
+        int userId = SessionManager.getInstance().getUserId();
 
         //Set value adapter for Status Adapter
         mListPriority = new ArrayList<>();
@@ -182,8 +181,7 @@ public class PriorityFragment extends Fragment implements View.OnClickListener {
             }
 
             //declare a session
-            SessionManager sessionManager = new SessionManager(getContext());
-            int userId = sessionManager.getUserId();
+            int userId = SessionManager.getInstance().getUserId();
 
             //create priority
             Priority priority = new Priority(namePriority, new Date(), userId);

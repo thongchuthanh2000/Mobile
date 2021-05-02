@@ -70,7 +70,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         if(v.getId() == R.id.btn_change_password){
 
             //declare a session
-            SessionManager sessionManager = new SessionManager(getContext());
+
 
             //get information from views
             String currentPassword = edtCurrentPassword.getText().toString();
@@ -80,7 +80,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
             //Create a new user based on the id obtained from the session
             User user = AppDatabase.getAppDatabase(v.getContext())
                         .userDAO()
-                        .getUserById(sessionManager.getUserId());
+                        .getUserById( SessionManager.getInstance().getUserId());
 
             //if the user does not enter the complete information
             if(currentPassword.isEmpty() || newPassword.isEmpty()||newPasswordConfirm.isEmpty()){

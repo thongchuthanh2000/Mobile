@@ -12,16 +12,7 @@ import com.notemanagementsystem.entity.User;
 import java.util.List;
 
 @Dao
-public interface NoteDAO {
-
-    @Insert
-    void insert(Note note);
-
-    @Update
-    void update(Note note);
-
-    @Delete
-    void delete(Note note);
+public interface NoteDAO extends AbstractDao<Note> {
 
     @Query("Select count(*) from note where userId=(:userId) and status = (:nameStatus)")
     int getStatusByNote( String nameStatus,int userId);

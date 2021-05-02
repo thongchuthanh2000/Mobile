@@ -69,9 +69,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
         });
 
         //Get userID by session
-        SessionManager sessionManager = new SessionManager(getContext());
-        int userId = sessionManager.getUserId();
-
+        int userId = SessionManager.getInstance().getUserId();
         //Set value adapter for Status Adapter
         mListStatus = new ArrayList<>();
         mListStatus = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllStatusById(userId);
@@ -185,9 +183,7 @@ public class StatusFragment extends Fragment implements View.OnClickListener {
                 return;
             }
             //declare a session
-            SessionManager sessionManager = new SessionManager(getContext());
-            int userId = sessionManager.getUserId();
-
+            int userId = SessionManager.getInstance().getUserId();
             //create status
             Status status = new Status(nameStatus, new Date(), userId);
             //Insert data into the database

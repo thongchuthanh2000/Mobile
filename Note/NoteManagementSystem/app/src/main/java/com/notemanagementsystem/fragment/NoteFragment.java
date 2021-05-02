@@ -86,9 +86,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        SessionManager sessionManager = new SessionManager(getContext());
-        int userId = sessionManager.getUserId();
-
+        int userId = SessionManager.getInstance().getUserId();
         mListNote = new ArrayList<>();
         mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getAllNoteById(userId);
         noteAdapter.setData(mListNote);
@@ -178,8 +176,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
                     return;
                 }
 
-                SessionManager sessionManager = new SessionManager(getContext());
-                int userId = sessionManager.getUserId();
+                int userId = SessionManager.getInstance().getUserId();
 
                 Note newNote = new Note(nameNote, date, new Date(), category, priority, status, userId);
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().insert(newNote);
@@ -254,8 +251,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             datePickerDialog.show();
         });
 
-        SessionManager sessionManager = new SessionManager(getContext());
-        int userId = sessionManager.getUserId();
+        int userId = SessionManager.getInstance().getUserId();
 
         //select cate, priority, status
         for(int i = 0; i <= 2; i++){

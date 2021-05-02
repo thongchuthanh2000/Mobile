@@ -11,7 +11,7 @@ import com.notemanagementsystem.entity.User;
 import java.util.List;
 
 @Dao
-public interface UserDAO {
+public interface UserDAO  extends AbstractDao<User>{
 
     @Query("SELECT * FROM user WHERE email=(:email) AND password=(:password)")
     User checkUser(String email, String password);
@@ -21,14 +21,5 @@ public interface UserDAO {
 
     @Query("SELECT * FROM user WHERE id=(:id)")
     User getUserById(int id);
-
-    @Update
-    void update(User user);
-
-    @Insert
-    void insert(User user);
-
-    @Delete
-    void delete(User user);
 
 }
