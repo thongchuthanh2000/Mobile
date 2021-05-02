@@ -20,6 +20,6 @@ public interface StatusDAO extends AbstractDao<Status>{
     @Query("SELECT * FROM status WHERE id =(:id)")
     Status getStatusById(int id);
 
-    @Query("SELECT * FROM status WHERE statusName =(:statusName)")
+    @Query("SELECT * FROM status WHERE status.name =(:statusName)")
     Status getStatusByName(String statusName);
 }

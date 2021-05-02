@@ -11,18 +11,7 @@ import java.util.Date;
  * Table containing note data
  */
 @Entity(tableName = "note")
-public class Note {
-
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    private int id;
-
-    @ColumnInfo(name = "name")
-    private String name;
-
-    @ColumnInfo(name = "createdDate")
-    public Date createDate;
-
+public class Note  extends AbstractEntity<Note>{
     @ColumnInfo(name = "planDate")
     public Date planDate;
 
@@ -35,42 +24,18 @@ public class Note {
     @ColumnInfo(name = "status")
     public int statusId;
 
-    @ColumnInfo(name = "userId")
-    public int userId;
 
     public Note(String name, Date planDate, Date createDate, int categoryId, int priorityId, int statusId, int userId) {
-        this.name = name;
-        this.createDate = createDate;
+        super(name, createDate, userId);
+
         this.planDate = planDate;
         this.categoryId = categoryId;
         this.priorityId = priorityId;
         this.statusId = statusId;
-        this.userId = userId;
+
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
 
     public Date getPlanDate() {
         return planDate;
@@ -104,11 +69,4 @@ public class Note {
         this.statusId = statusId;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
 }

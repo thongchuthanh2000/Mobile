@@ -23,6 +23,6 @@ public interface CategoryDAO extends AbstractDao<Category> {
     @Query("SELECT * FROM category WHERE id =(:id)")
     Category getCategoryById(int id);
 
-    @Query("SELECT * FROM category WHERE catName =(:cateName)")
+    @Query("SELECT * FROM category WHERE name =(:cateName)")
     Category getCategoryByName(String cateName);
 }
