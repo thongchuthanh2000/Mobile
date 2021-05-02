@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.adapter.GenericAdapter;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.adapter.CategoryAdapter;
 import com.notemanagementsystem.entity.Category;
@@ -54,15 +55,15 @@ public class CategoryFragment extends Fragment implements View.OnClickListener {
 
 
         rcvCategory = view.findViewById(R.id.rcv_category);
-        categoryAdapter = new CategoryAdapter(new CategoryAdapter.IClickItemCategory() {
+        categoryAdapter = new CategoryAdapter(new GenericAdapter.IClickItem<Category>() {
             @Override
-            public void updateCategory(Category category) {
-                clickUpdateCategory(view, category);
+            public void update(Category item) {
+                clickUpdateCategory(view, item);
             }
 
             @Override
-            public void deleteCategory(Category category) {
-                clickDeleteCategory(view, category);
+            public void delete(Category item) {
+                clickDeleteCategory(view, item);
             }
         });
 
