@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.notemanagementsystem.dao.UserDAO;
 import com.notemanagementsystem.entity.User;
+import com.notemanagementsystem.utils.RegularExpressions;
+
 /*
  *SignUpActivity
  *@author  Quyet Sinh
@@ -51,20 +53,31 @@ public class SignUpActivity extends AppCompatActivity {
             //if the user has not entered the complete information
             if(!(validateInputSignIn(user))) {
 
+                edtEmailSignUp.requestFocus();
                 showToast("Please fill in all the information!");
 
             }
 
-            //if the user enters the wrong format of the information
-            else if(!(regexInput(user))) {
+            //if the user enters the wrong format of the email
+            else if(!(RegularExpressions.regexEmail(user.getEmail()))) {
 
-                showToast("Please enter the correct email format and the password must be at least 6 characters in length !");
+                edtEmailSignUp.requestFocus();
+                showToast("Please enter the correct email format!");
+
+            }
+
+            //if the user enters the wrong format of the email
+            else if(!(RegularExpressions.regexPassword(user.getPassword()))){
+
+                edtPasswordSignUp.requestFocus();
+                showToast("The password must be at least 6 characters in length !");
 
             }
 
             //if password confirmation is incorrect
             else if(!(edtConfirm.getText().toString().equals(edtPasswordSignUp.getText().toString()))) {
 
+                edtConfirm.requestFocus();
                 showToast("Password confirmation is incorrect !");
 
             } else {
@@ -86,6 +99,10 @@ public class SignUpActivity extends AppCompatActivity {
                             //save the new user to the database
                             userDAO.insert(user);
 
+                            edtEmailSignUp.setText("");
+                            edtPasswordSignUp.setText("");
+                            edtConfirm.setText("");
+
                             runOnUiThread(() -> {
 
                                 //announced that it was successful
@@ -97,7 +114,7 @@ public class SignUpActivity extends AppCompatActivity {
 
                 } else{
 
-                    //notice that the user already exists
+                    edtEmailSignUp.requestFocus();
                     showToast( "Use already exists!");
 
                 }
@@ -138,19 +155,4 @@ public class SignUpActivity extends AppCompatActivity {
         return true;
 
     }
-
-    /*checks the format of the input
-    if true returns true and vice versa
-    @Param User
-    @Return boolean
-    */
-    public Boolean regexInput(User user){
-
-        if(user.getEmail().matches("^(.+)@(.+)$") && user.getPassword().matches(".{6,}")){
-            return true;
-        }
-
-        return false;
-    }
-
 }

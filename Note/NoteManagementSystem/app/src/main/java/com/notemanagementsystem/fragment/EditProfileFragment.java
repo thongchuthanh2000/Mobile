@@ -134,8 +134,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
             if (!isValidEmail.test(email)) {
                 setFocus.accept(edtEmail);
                 showToast("error email");
-            } else
-            if (checkEmailExists.test(email)) {
+            } else if (checkEmailExists.test(email)) {
                 setFocus.accept(edtEmail);
                 showToast("Email Exists");
             } else {

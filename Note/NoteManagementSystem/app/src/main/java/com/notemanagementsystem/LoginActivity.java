@@ -48,8 +48,19 @@ public class LoginActivity extends AppCompatActivity {
     //set event for views
     public void addEvent(){
 
-        //show the user's email in the previous session if any
-//        edtEmail.setText(sessionManager.getUserName());
+        //pull user from session -- userSession
+        User userSession = AppDatabase.getAppDatabase(getApplicationContext())
+                .userDAO()
+                .getUserById(SessionManager.getInstance().getUserId());
+
+        if(userSession!=null && SessionManager.getInstance().getRememberMe()==true){
+
+            //show the email and password of user in the previous session if any
+            edtEmail.setText(userSession.getEmail());
+            edtPassword.setText(userSession.getPassword());
+
+            cbRememberMe.setChecked(true);
+        }
 
         btnSignIn.setOnClickListener(v -> {
 
@@ -75,25 +86,31 @@ public class LoginActivity extends AppCompatActivity {
                         runOnUiThread(() -> {
 
                             Toast.makeText(getApplicationContext(),"Incorrect information!",Toast.LENGTH_SHORT).show();
+
                         });
                     } else {
 
                         //set information for the session
                         SessionManager.getInstance().setUserId(user.getId());
+
                         //if the user chooses to remember me
                         if (cbRememberMe.isChecked()==true){
+
                             //set the user's email into the session
+                            SessionManager.getInstance().setRememberMe(true);
+
                         } else {
+
+                            //set empty if not selected
+                            SessionManager.getInstance().setRememberMe(false);
 
                         }
 
                         //switch to the main interface
                         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         startActivity(intent);
-
                     }
                 }).start();
-
             }
         });
 
@@ -102,7 +119,6 @@ public class LoginActivity extends AppCompatActivity {
             //exit the application
             finish();
             System.exit(0);
-
         });
 
         fabAddUser.setOnClickListener(v -> {

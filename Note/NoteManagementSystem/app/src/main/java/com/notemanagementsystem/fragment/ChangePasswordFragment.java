@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.MainActivity;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.utils.RegularExpressions;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.entity.User;
 
@@ -69,9 +70,6 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
         //set event for btnChangePassword
         if(v.getId() == R.id.btn_change_password){
 
-            //declare a session
-
-
             //get information from views
             String currentPassword = edtCurrentPassword.getText().toString();
             String newPassword = edtNewPassword.getText().toString();
@@ -85,22 +83,27 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
             //if the user does not enter the complete information
             if(currentPassword.isEmpty() || newPassword.isEmpty()||newPasswordConfirm.isEmpty()){
 
+                edtCurrentPassword.requestFocus();
                 showToast("Please fill in all the information!");
 
             }else if(!(currentPassword.equals(user.getPassword()))){ //if the current password is not correct
 
+                edtCurrentPassword.requestFocus();
                 showToast("Current password is incorrect!");
 
             }else if(newPassword.equals(user.getPassword())){ //if the new password matches the current password
 
+                edtNewPassword.requestFocus();
                 showToast("New password must be different from the current password!");
 
             }else if(!(newPassword.equals(newPasswordConfirm))) { //if password confirmation is incorrect
 
+                edtNewPasswordConfirm.requestFocus();
                 showToast("Password confirmation is incorrect!");
 
-            }else if(!(regexInput(newPassword))) { ////if the user enters the wrong format of the information
+            }else if(!(RegularExpressions.regexPassword(newPassword))) { ////if the user enters the wrong format of the information
 
+                edtNewPassword.requestFocus();
                 showToast("Password must be at least 6 characters!");
 
             }else {
@@ -112,6 +115,10 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
                 AppDatabase.getAppDatabase(v.getContext())
                         .userDAO().update(user);
 
+                edtCurrentPassword.setText("");
+                edtNewPassword.setText("");
+                edtNewPasswordConfirm.setText("");
+                
                 showToast("Update successful!");
 
             }
@@ -122,16 +129,5 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
     public void showToast(String string){
 
         Toast.makeText(getContext(),string,Toast.LENGTH_SHORT).show();
-    }
-
-    /*checks the format of the input
-    if true returns true and vice versa*/
-    public Boolean regexInput(String string){
-
-        if(string.matches(".{6,}")){
-
-            return true;
-        }
-        return false;
     }
 }
