@@ -12,16 +12,12 @@ import com.notemanagementsystem.entity.Priority;
 import java.util.List;
 
 @Dao
-public interface PriorityDAO extends AbstractDao<Priority> {
-    @Query("SELECT * FROM priority")
-    List<Priority> getAllPriority();
+public abstract class PriorityDAO extends AbstractDao<Priority> {
 
-    @Query("SELECT * FROM priority WHERE userId =(:userId)")
-    List<Priority> getAllPriorityById(int userId);
 
     @Query("SELECT * FROM priority WHERE id =(:id)")
-    Priority getPriorityById(int id);
+    public abstract Priority getPriorityById(int id);
 
     @Query("SELECT * FROM priority WHERE name =(:name)")
-    Priority getPriorityByName(String name);
+    public abstract Priority getPriorityByName(String name);
 }

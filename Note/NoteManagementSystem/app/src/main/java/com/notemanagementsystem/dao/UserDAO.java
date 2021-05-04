@@ -11,18 +11,19 @@ import com.notemanagementsystem.entity.User;
 import java.util.List;
 
 @Dao
-public interface UserDAO  extends AbstractDao<User>{
+public abstract class UserDAO  extends AbstractDao<User>{
 
     @Query("SELECT * FROM user WHERE email=(:email) AND password=(:password)")
-    User checkUser(String email, String password);
+    public abstract User checkUser(String email, String password);
 
     @Query("SELECT * FROM user WHERE email=(:email)")
-    User checkExistUser(String email);
+    public abstract User checkExistUser(String email);
 
     @Query("SELECT * FROM user WHERE id=(:id)")
-    User getUserById(int id);
+    public abstract User getUserById(int id);
 
     @Query("Select count(*)>0 from user where id!=(:id) and email=(:email)" )
-    Boolean checkEmailExist(String email,int id);
+    public abstract Boolean checkEmailExist(String email,int id);
+
 
 }

@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
 
         //Get list status by User
         List<Status> status = new ArrayList<>();
-        status = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllStatusById(userId);
+        status = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllById(userId);
 
 
         List<DataEntry> dataEntries = new ArrayList<>();

@@ -12,11 +12,11 @@ import com.notemanagementsystem.entity.User;
 import java.util.List;
 
 @Dao
-public interface NoteDAO extends AbstractDao<Note> {
+public abstract class NoteDAO extends AbstractDao<Note> {
 
     @Query("Select count(*) from note where userId=(:userId) and statusId = (:nameStatus)")
-    int getStatusByNote( String nameStatus,int userId);
+    public abstract Integer getStatusByNote( String nameStatus,int userId);
 
     @Query("SELECT * FROM note WHERE userId =(:userId)")
-    List<Note> getAllNoteById(int userId);
+    public abstract List<Note> getAllById(int userId);
 }

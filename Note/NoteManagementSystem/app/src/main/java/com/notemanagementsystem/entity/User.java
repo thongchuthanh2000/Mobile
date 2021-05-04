@@ -10,10 +10,7 @@ import lombok.Data;
  * Table containing user data
  */
 @Entity(tableName = "user")
-public class User {
-
-    @PrimaryKey(autoGenerate = true)
-    private int id;
+public class User extends AbstractEntity<User>{
 
     @ColumnInfo(name = "email")
     private String email;
@@ -43,13 +40,7 @@ public class User {
         this.lastName = lastName;
     }
 
-    public int getId() {
-        return id;
-    }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getEmail() {
         return email;

@@ -30,6 +30,12 @@ public class AbstractEntity<T> {
         this.userId = userId;
     }
 
+    public AbstractEntity(AbstractEntity<Priority> ec) {
+        this.name = ec.name;
+        this.createDate = ec.createDate;
+        this.userId = ec.userId;
+    }
+
     public boolean isDeleted() {
         return isDeleted;
     }
@@ -70,4 +76,7 @@ public class AbstractEntity<T> {
         this.id = id;
     }
 
+    public AbstractEntity(){
+
+    }
 }

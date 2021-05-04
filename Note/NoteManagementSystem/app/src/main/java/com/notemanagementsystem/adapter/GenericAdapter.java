@@ -27,11 +27,11 @@ import java.util.List;
  * Cua ca team a
  * Cua ca team a
  */
-public abstract class GenericAdapter<T extends AbstractEntity> extends RecyclerView.Adapter<GenericAdapter.GenericViewHolder> {
+public class GenericAdapter<T extends AbstractEntity> extends RecyclerView.Adapter<GenericAdapter.GenericViewHolder> {
 
     private GenericAdapter.IClickItem iClickItem;
 
-    public interface IClickItem<T>{
+    public interface IClickItem<T extends AbstractEntity>{
          void update(T  item);
          void delete(T item);
     }

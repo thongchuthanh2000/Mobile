@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.github.mikephil.charting.utils.Utils;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
+import com.notemanagementsystem.utils.EmailUtil;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.entity.User;
 
@@ -147,6 +148,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 AppDatabase.getAppDatabase(v.getContext())
                         .userDAO().update(user);
 
+                EmailUtil.setEmail(this.getActivity().getWindow().getDecorView());
                 showToast("Success");
             }
         }

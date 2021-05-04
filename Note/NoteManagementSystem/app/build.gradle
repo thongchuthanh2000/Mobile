@@ -55,4 +55,6 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok:1.18.12'
     annotationProcessor 'org.projectlombok:lombok:1.18.12' //or v. 1.16.2 in your case.
+
+
 }

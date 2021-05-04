@@ -88,7 +88,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
 
         int userId = SessionManager.getInstance().getUserId();
         mListNote = new ArrayList<>();
-        mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getAllNoteById(userId);
+        mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getAllById(userId);
         noteAdapter.setData(mListNote);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
@@ -335,19 +335,19 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
         switch (i) {
             case 0:
                 list.add(0, "Select category...");
-                for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllCategoryById(userId)){
+                for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllById(userId)){
                     list.add(c.getName().trim());
                 }
                 return list;
             case 1:
                 list.add(0, "Select priority...");
-                for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllPriorityById(userId)){
+                for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllById(userId)){
                     list.add(p.getName().trim());
                 }
                 return list;
             case 2:
                 list.add(0, "Select status...");
-                for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllStatusById(userId)){
+                for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllById(userId)){
                     list.add(s.getName().trim());
                 }
                 return list;

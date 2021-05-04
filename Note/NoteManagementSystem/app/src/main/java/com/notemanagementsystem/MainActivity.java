@@ -1,16 +1,17 @@
 package com.notemanagementsystem;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.util.AttributeSet;
-import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Menu;
 import android.widget.TextView;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
+import com.notemanagementsystem.constant.SystemConstant;
+import com.notemanagementsystem.dao.PriorityDAO;
+import com.notemanagementsystem.entity.Priority;
+import com.notemanagementsystem.entity.Status;
+import com.notemanagementsystem.fragment.AbstractFragment;
 import com.notemanagementsystem.fragment.CategoryFragment;
 import com.notemanagementsystem.fragment.ChangePasswordFragment;
 import com.notemanagementsystem.fragment.EditProfileFragment;
@@ -18,10 +19,9 @@ import com.notemanagementsystem.fragment.HomeFragment;
 import com.notemanagementsystem.fragment.NoteFragment;
 import com.notemanagementsystem.fragment.PriorityFragment;
 import com.notemanagementsystem.fragment.StatusFragment;
+import com.notemanagementsystem.utils.EmailUtil;
 import com.notemanagementsystem.utils.SessionManager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
@@ -38,23 +38,20 @@ import androidx.appcompat.widget.Toolbar;
 public class  MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
+    private TextView tv_appbar_tittle;
     /*
     Get headerView -> Set text email
     @Param : Null
     @Return: null
      */
-    private void setEmail() {
-        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) drawerLayout.findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        TextView txtEmail = (TextView) headerView.findViewById(R.id.textEmail);
-//        txtEmail.setText(SessionManager.email);
-    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -73,7 +70,7 @@ public class  MainActivity extends AppCompatActivity
         TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
         tv_appbar_tittle.setText("Dashboard Form");
 
-        setEmail();
+        EmailUtil.setEmail(this.getWindow().getDecorView());
     }
 
     @Override
@@ -101,43 +98,39 @@ public class  MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+
         //Open fragment - Set text app bar
         if(id == R.id.nav_home){
                 replaceFragment(new HomeFragment());
-                TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Dashboard Form");
         }
         else if(id == R.id.nav_category){
+            SystemConstant.CHOOSE = SystemConstant.CATEGORY;
                 replaceFragment(new CategoryFragment());
-                TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Category Form");
         }
         else if(id == R.id.nav_priority){
-                replaceFragment(new PriorityFragment());
-                TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
-                tv_appbar_tittle.setText("Priority Form");
+            SystemConstant.CHOOSE = SystemConstant.PRIORITY;
+            replaceFragment(new PriorityFragment());
+            tv_appbar_tittle.setText("Priority Form");
         }
         else if(id == R.id.nav_status){
-                replaceFragment(new StatusFragment());
-                TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
-                tv_appbar_tittle.setText("Status Form");
+            SystemConstant.CHOOSE = SystemConstant.STATUS;
+            replaceFragment(new StatusFragment());
+            tv_appbar_tittle.setText("Status Form");
         }
         else  if(id == R.id.nav_note){
                 replaceFragment(new NoteFragment());
-                TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Note Form");
         }
         else  if(id == R.id.nav_editProfile){
                 replaceFragment(new EditProfileFragment());
-                TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Edit Profile");
         }
         else  if(id == R.id.nav_changePassword){
                 replaceFragment(new ChangePasswordFragment());
-                TextView tv_appbar_tittle = findViewById(R.id.tv_appbar_tittle);
                 tv_appbar_tittle.setText("Change Password");
         }
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

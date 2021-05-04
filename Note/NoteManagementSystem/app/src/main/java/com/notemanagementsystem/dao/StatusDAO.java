@@ -12,14 +12,13 @@ import com.notemanagementsystem.entity.Status;
 import java.util.List;
 
 @Dao
-public interface StatusDAO extends AbstractDao<Status>{
+public abstract class StatusDAO extends AbstractDao<Status>{
 
-    @Query("SELECT * FROM status WHERE userId =(:userId)")
-    List<Status> getAllStatusById(int userId);
+
 
     @Query("SELECT * FROM status WHERE id =(:id)")
-    Status getStatusById(int id);
+    public abstract Status getStatusById(int id);
 
     @Query("SELECT * FROM status WHERE status.name =(:statusName)")
-    Status getStatusByName(String statusName);
+    public abstract Status getStatusByName(String statusName);
 }
