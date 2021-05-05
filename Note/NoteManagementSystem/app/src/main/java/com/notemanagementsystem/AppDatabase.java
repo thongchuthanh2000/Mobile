@@ -65,7 +65,6 @@ public abstract class AppDatabase extends RoomDatabase {
         }
 
         return appDatabase;
-
     }
 
     public abstract UserDAO userDAO();
@@ -73,8 +72,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract PriorityDAO priorityDAO();
     public abstract CategoryDAO categoryDAO();
     public abstract StatusDAO statusDAO();
-
-
 
     public   <S extends AbstractDao> S abstractDao(){
         if (SystemConstant.CHOOSE.equals(SystemConstant.PRIORITY))
@@ -86,6 +83,4 @@ public abstract class AppDatabase extends RoomDatabase {
 
         return  null;
     }
-
-
 }

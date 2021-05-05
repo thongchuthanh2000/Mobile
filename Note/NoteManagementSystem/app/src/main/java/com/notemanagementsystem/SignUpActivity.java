@@ -30,7 +30,6 @@ public class SignUpActivity extends AppCompatActivity {
 
         addControls();
         addEvents();
-
     }
 
     //show toast
@@ -50,32 +49,23 @@ public class SignUpActivity extends AppCompatActivity {
             user.setLastName("");
             user.setFirstName("");
 
-            //if the user has not entered the complete information
+            //catch the error of input
             if(!(validateInputSignIn(user))) {
 
                 edtEmailSignUp.requestFocus();
                 showToast("Please fill in all the information!");
 
-            }
-
-            //if the user enters the wrong format of the email
-            else if(!(RegularExpressions.regexEmail(user.getEmail()))) {
+            } else if(!(RegularExpressions.regexEmail(user.getEmail()))) {
 
                 edtEmailSignUp.requestFocus();
                 showToast("Please enter the correct email format!");
 
-            }
-
-            //if the user enters the wrong format of the email
-            else if(!(RegularExpressions.regexPassword(user.getPassword()))){
+            } else if(!(RegularExpressions.regexPassword(user.getPassword()))){
 
                 edtPasswordSignUp.requestFocus();
                 showToast("The password must be at least 6 characters in length !");
 
-            }
-
-            //if password confirmation is incorrect
-            else if(!(edtConfirm.getText().toString().equals(edtPasswordSignUp.getText().toString()))) {
+            } else if(!(edtConfirm.getText().toString().equals(edtPasswordSignUp.getText().toString()))) {
 
                 edtConfirm.requestFocus();
                 showToast("Password confirmation is incorrect !");
@@ -91,7 +81,6 @@ public class SignUpActivity extends AppCompatActivity {
 
                 //If you cannot find a user with the same email as the one entered by the user
                 if (userCheck == null) {
-
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -107,16 +96,13 @@ public class SignUpActivity extends AppCompatActivity {
 
                                 //announced that it was successful
                                 showToast("Success!");
-
                             });
                         }
                     }).start();
-
                 } else{
 
                     edtEmailSignUp.requestFocus();
                     showToast( "Use already exists!");
-
                 }
             }
         });
@@ -126,9 +112,7 @@ public class SignUpActivity extends AppCompatActivity {
             //switch to the login interface
             Intent intent = new Intent(SignUpActivity.this, LoginActivity.class);
             startActivity(intent);
-
         });
-
     }
 
     ////get all view in activity
@@ -139,7 +123,6 @@ public class SignUpActivity extends AppCompatActivity {
         edtConfirm = findViewById(R.id.edt_password_sign_up_confirm);
         btnSignUp = findViewById(R.id.btn_sign_up);
         btnSwitchToLogin = findViewById(R.id.btn_switch_to_login);
-
     }
 
     /*Check if the input information is complete
@@ -151,8 +134,6 @@ public class SignUpActivity extends AppCompatActivity {
                 edtConfirm.getText().toString().isEmpty()){
             return false;
         }
-
         return true;
-
     }
 }
