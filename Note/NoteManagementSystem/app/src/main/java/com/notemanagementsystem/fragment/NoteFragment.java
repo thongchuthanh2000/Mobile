@@ -3,11 +3,13 @@ package com.notemanagementsystem.fragment;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,16 +54,23 @@ import java.util.List;
  * @version 1.0
  * @since   2021-04-24
  */
-public class NoteFragment extends Fragment implements View.OnClickListener {
+public class NoteFragment extends Fragment {
     public NoteFragment() { }
 
+    private View view;
+
     private FloatingActionButton fabAddNote;
+
     private RecyclerView rcvNote;
     private NoteAdapter noteAdapter;
     private List<Note> mListNote;
+    LinearLayoutManager linearLayoutManager;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
+    private TimePickerDialog timePickerDialog;
+
+    private Date planDate;
 
     private int category = -1;
     private int priority = -1;
@@ -69,56 +79,58 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_note, container, false);
+        view = inflater.inflate(R.layout.fragment_note, container, false);
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
         fabAddNote = view.findViewById(R.id.fab_add_note);
-        fabAddNote.setOnClickListener(this);
+        fabAddNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDialogAddOrUpdate(Gravity.CENTER, v.getContext(), null);
+            }
+        });
 
         rcvNote = view.findViewById(R.id.rcv_Note);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
+        rcvNote.setLayoutManager(linearLayoutManager);
+
         noteAdapter = new NoteAdapter(new NoteAdapter.IClickItemNote() {
             @Override
             public void updateNote(Note note) {
-                clickUpdateNote(view, note);
+                clickUpdateNote(note);
             }
             @Override
             public void deleteNote(Note note) {
-                clickDeleteNote(view, note);
+                clickDeleteNote(note);
             }
         });
 
         int userId = SessionManager.getInstance().getUserId();
         mListNote = new ArrayList<>();
         mListNote = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getAllById(userId);
+
         noteAdapter.setData(mListNote);
-
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext());
-        rcvNote.setLayoutManager(linearLayoutManager);
         rcvNote.setAdapter(noteAdapter);
-
-        return view;
-    }
-
-    //add new note
-    @Override
-    public void onClick(View v) {
-        if(v.getId() == R.id.fab_add_note){
-            openDialogAddOrUpdate(Gravity.CENTER, v.getContext(), null);
-        }
     }
 
     //Update note
-    private void clickUpdateNote(View v, Note note){
-        openDialogAddOrUpdate(Gravity.CENTER, v.getContext(), note);
+    private void clickUpdateNote(Note note){
+        openDialogAddOrUpdate(Gravity.CENTER, this.getContext(), note);
     }
 
     //delete note
-    private void clickDeleteNote(View v, Note note){
-        new AlertDialog.Builder(v.getContext())
+    private void clickDeleteNote(Note note){
+        new AlertDialog.Builder(this.getContext())
                 .setTitle(note.getName().trim())
                 .setMessage("Are you sure to delete this note?")
                 .setPositiveButton("Yes",((dialog, which) -> {
-                    AppDatabase.getAppDatabase(v.getContext()).noteDAO().delete(note);
-                    Toast.makeText(v.getContext(), "Deleted " + note.getName().toString().trim() + "!", Toast.LENGTH_SHORT).show();
+                    AppDatabase.getAppDatabase(this.getContext()).noteDAO().delete(note);
+                    Toast.makeText(this.getContext(), "Deleted " + note.getName().toString().trim() + "!", Toast.LENGTH_SHORT).show();
 
                     replaceFragment(new NoteFragment());
                 }))
@@ -158,27 +170,16 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             btnAddOrUpdate.setOnClickListener(v -> {
 
                 String nameNote = edtNameNote.getText().toString().trim();
-                String planDate = tvPlanDate.getText().toString().trim();
+                String sPlanDate = tvPlanDate.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(planDate) || category<0 || priority<0 || status<0){
+                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category<0 || priority<0 || status<0){
                     Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Date date = new Date();;
-                try {
-                    date = new SimpleDateFormat("yyyy-MM-dd").parse(planDate);
-                }
-                catch (ParseException e) { }
-
-                if(date.before(new Date())){
-                    Toast.makeText(v.getContext(), "Plan date can't be in the past!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 int userId = SessionManager.getInstance().getUserId();
 
-                Note newNote = new Note(nameNote, date, new Date(), category, priority, status, userId);
+                Note newNote = new Note(nameNote, planDate, new Date(), category, priority, status, userId);
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().insert(newNote);
                 Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
 
@@ -192,8 +193,7 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             btnAddOrUpdate.setText("Update");
 
             edtNameNote.setText(note.getName());
-            String formatPlanDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
-            tvPlanDate.setText(formatPlanDate);
+            tvPlanDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate()));
             category = note.getCategoryId();
             priority = note.getPriorityId();
             status = note.getStatusId();
@@ -201,22 +201,15 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             //update note
             btnAddOrUpdate.setOnClickListener(v -> {
                 String nameNote = edtNameNote.getText().toString().trim();
-                String planDate = tvPlanDate.getText().toString().trim();
+                String sPlanDate = tvPlanDate.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(planDate) || category<0 || priority<0 || status<0){
+                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category<0 || priority<0 || status<0){
                     Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                Date date = new Date();
-                try {
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    date = formatter.parse(planDate);
-                }
-                catch (ParseException e) { }
-
                 note.setName(nameNote);
-                note.setPlanDate(date);
+                note.setPlanDate(planDate);
                 note.setCategoryId(category);
                 note.setPriorityId(priority);
                 note.setStatusId(status);
@@ -241,11 +234,25 @@ public class NoteFragment extends Fragment implements View.OnClickListener {
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             int month = calendar.get(Calendar.MONTH);
             int year = calendar.get(Calendar.YEAR);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
 
             datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
-                    tvPlanDate.setText(mYear + "-" + (mMonth+1) + "-" + mDayOfMonth);
+
+                    timePickerDialog = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
+                        @Override
+                        public void onTimeSet(TimePicker view, int mHourOfDay, int mMinute) {
+
+                            calendar.set(mYear, mMonth, mDayOfMonth, mHourOfDay, mMinute, 0);
+                            planDate = calendar.getTime();
+
+                            tvPlanDate.setText(new SimpleDateFormat("yyyy-MM-dd hh:mm").format(planDate));
+
+                        }
+                    }, hour, minute, true);
+                    timePickerDialog.show();
                 }
             }, year, month, day);
             datePickerDialog.show();
