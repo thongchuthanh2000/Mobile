@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
     private PieChartView pieChartView;
 
     BiFunction<String,String,String> getLabel = (String name, String value)->{
-        return  name + " " + value+"%";
+        return  name + ": " + value+"%";
     };
 
     public HomeFragment() {
@@ -91,6 +91,7 @@ public class HomeFragment extends Fragment {
 
         PieChartData pieChartData = new PieChartData(pieData);
         pieChartData.setHasLabels(true);
+        pieChartData.setValueLabelTextSize(10);
         pieChartView.setPieChartData(pieChartData);
     }
 
