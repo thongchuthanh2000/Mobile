@@ -105,17 +105,14 @@ public class  MainActivity extends AppCompatActivity
                 tv_appbar_tittle.setText("Dashboard Form");
         }
         else if(id == R.id.nav_category){
-            SystemConstant.CHOOSE = SystemConstant.CATEGORY;
                 replaceFragment(new CategoryFragment());
                 tv_appbar_tittle.setText("Category Form");
         }
         else if(id == R.id.nav_priority){
-            SystemConstant.CHOOSE = SystemConstant.PRIORITY;
             replaceFragment(new PriorityFragment());
             tv_appbar_tittle.setText("Priority Form");
         }
         else if(id == R.id.nav_status){
-            SystemConstant.CHOOSE = SystemConstant.STATUS;
             replaceFragment(new StatusFragment());
             tv_appbar_tittle.setText("Status Form");
         }

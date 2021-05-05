@@ -37,6 +37,9 @@ import com.notemanagementsystem.entity.Status;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.entity.AbstractEntity;
 import  com.notemanagementsystem.dao.AbstractDao;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -68,6 +71,8 @@ public class AbstractFragment<T extends AbstractEntity> extends Fragment impleme
         fabAddAbstract.setOnClickListener(this);
 
         rcvAbstract = view.findViewById(R.id.rcv_abstract);
+        solveChoose(getName());
+
         adapter = new GenericAdapter<>(new GenericAdapter.IClickItem<T>() {
             @Override
             public void update(T item) {
@@ -127,15 +132,7 @@ public class AbstractFragment<T extends AbstractEntity> extends Fragment impleme
         Button btnAddOrUpdate = dialog.findViewById(R.id.btn_add);
         Button btnClose = dialog.findViewById(R.id.btn_close);
 
-        if (SystemConstant.CHOOSE.equals(SystemConstant.PRIORITY)) {
-            title.setText(SystemConstant.PRIORITY+" From");
-        }
-        if (SystemConstant.CHOOSE.equals(SystemConstant.STATUS)) {
-            title.setText(SystemConstant.STATUS+" From");
-        }
-        if (SystemConstant.CHOOSE.equals(SystemConstant.CATEGORY)) {
-            title.setText(SystemConstant.CATEGORY+" From");
-        }
+        title.setText(SystemConstant.CHOOSE+" From");
 
         if (item==null){
             btnAddOrUpdate.setText("Add");
@@ -193,7 +190,7 @@ public class AbstractFragment<T extends AbstractEntity> extends Fragment impleme
                 //Update data into the database
                 AppDatabase.getAppDatabase(v.getContext()).abstractDao().update(item);
 
-                showToast("Update  successfully");
+                showToast("Update successfully");
 
                 //Load fragment
                 replaceFragment(new AbstractFragment<T>());
@@ -210,6 +207,29 @@ public class AbstractFragment<T extends AbstractEntity> extends Fragment impleme
 
         }
 
+    }
+    private void solveChoose(String choose){
+        if (SystemConstant.PRIORITY.equals(choose)) {
+            SystemConstant.CHOOSE=SystemConstant.PRIORITY;
+        }
+        if (SystemConstant.STATUS.equals(choose)) {
+            SystemConstant.CHOOSE=SystemConstant.STATUS;
+        }
+        if (SystemConstant.CATEGORY.equals(choose)) {
+            SystemConstant.CHOOSE=SystemConstant.CATEGORY;
+        }
+    }
+
+    public String getName(){
+        Type t = this.getClass().getGenericSuperclass();
+        if (t instanceof ParameterizedType){
+            ParameterizedType parameterizedType = (ParameterizedType) t;
+            Type[] types= parameterizedType.getActualTypeArguments();
+            Class<T> clazz= (Class<T>) types[0];
+            String tableName = clazz.getSimpleName();
+            return tableName;
+        }
+        return "";
     }
 
     //switch to another fragment
