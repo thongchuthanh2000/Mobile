@@ -1,26 +1,29 @@
 package com.notemanagementsystem.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.anychart.AnyChart;
-import com.anychart.AnyChartView;
-import com.anychart.chart.common.dataentry.DataEntry;
-import com.anychart.chart.common.dataentry.ValueDataEntry;
-import com.anychart.charts.Pie;
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
-import com.notemanagementsystem.utils.SessionManager;
+import com.notemanagementsystem.constant.SystemConstant;
 import com.notemanagementsystem.entity.Status;
+import com.notemanagementsystem.utils.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import lecho.lib.hellocharts.model.PieChartData;
+import lecho.lib.hellocharts.model.SliceValue;
+
+import lecho.lib.hellocharts.view.PieChartView;
 
 /*
  *StatusFragment
@@ -31,7 +34,12 @@ import java.util.List;
 public class HomeFragment extends Fragment {
 
 
-    private AnyChartView anyChartView;
+    private PieChartView pieChartView;
+
+    BiFunction<String,String,String> getLabel = (String name, String value)->{
+        return  name + " " + value+"%";
+    };
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -41,10 +49,11 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
+        pieChartView = view.findViewById(R.id.chart);
 
-        anyChartView = view.findViewById(R.id.any_chart_view);
         //Setup Pie Chart
         setupPieChart(view);
+
         return  view;
     }
 
@@ -57,24 +66,32 @@ public class HomeFragment extends Fragment {
         //Get userID by session
         int userId = SessionManager.getInstance().getUserId();
 
-        //Get list status by User
+        List pieData = new ArrayList<>();
+
+
+
+//        //Get list status by User
         List<Status> status = new ArrayList<>();
         status = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getAllById(userId);
 
-
-        List<DataEntry> dataEntries = new ArrayList<>();
-
-        //Get value
-        Pie pie =  AnyChart.pie();
+        Double sumNote = Double.valueOf(AppDatabase.getAppDatabase(view.getContext()).noteDAO().getCountByNote(userId));
         for (int i=0;i<status.size();i++){
-            dataEntries.add(new ValueDataEntry(status.get(i).getName(),
-                    AppDatabase.getAppDatabase(view.getContext()).noteDAO().getStatusByNote(status.get(i).getName(),userId)
-            ));
+            Integer value = AppDatabase.getAppDatabase(view.getContext()).noteDAO().getStatusByNote(status.get(i).getId(),userId);
+
+            if (value==0){
+                continue;
+            }
+
+            String name  =  status.get(i).getName();
+            Integer color = SystemConstant.color[i % SystemConstant.lengthColor];
+            Double percent = value/sumNote*100;
+
+            pieData.add(new SliceValue(value, color).setLabel(getLabel.apply(name,String.format("%.1f",percent))));
         }
-        pie.data(dataEntries);
-        //Set chart view
-        anyChartView.setZoomEnabled(true);
-        anyChartView.setChart(pie);
+
+        PieChartData pieChartData = new PieChartData(pieData);
+        pieChartData.setHasLabels(true);
+        pieChartView.setPieChartData(pieChartData);
     }
 
 }

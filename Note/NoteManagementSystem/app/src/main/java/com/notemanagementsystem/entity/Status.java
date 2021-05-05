@@ -6,8 +6,6 @@ import androidx.room.PrimaryKey;
 
 import java.util.Date;
 
-import lombok.Data;
-
 /**
  * Table containing status data
  */

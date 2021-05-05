@@ -7,19 +7,17 @@
     tools:context=".fragment.HomeFragment">
 
 
-    <com.anychart.AnyChartView
-        android:id="@+id/any_chart_view"
+    <lecho.lib.hellocharts.view.PieChartView
+        android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true">
+        android:layout_height="match_parent" />
 
-    </com.anychart.AnyChartView>
-    <RelativeLayout
-        android:layout_gravity="bottom"
-        android:layout_width="match_parent"
-        android:background="@color/white"
-        android:layout_height="50dp">
+<!--    <RelativeLayout-->
+<!--        android:layout_gravity="bottom"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:background="@color/white"-->
+<!--        android:layout_height="50dp">-->
 
-    </RelativeLayout>
+<!--    </RelativeLayout>-->
 
 </FrameLayout>

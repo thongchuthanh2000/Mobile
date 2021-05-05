@@ -16,10 +16,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.github.mikephil.charting.utils.Utils;
+
 import com.notemanagementsystem.AppDatabase;
 import com.notemanagementsystem.R;
 import com.notemanagementsystem.utils.EmailUtil;
+import com.notemanagementsystem.utils.RegularExpressions;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.entity.User;
 
@@ -51,9 +52,6 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 .checkEmailExist(e, userId);
     };
 
-    Predicate<CharSequence> isValidEmail = target -> {
-        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
-    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -132,7 +130,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
                 setFocus.accept(edtEmail);
                 showToast("fill email");
             }
-            if (!isValidEmail.test(email)) {
+            if (!RegularExpressions.regexEmail(email)) {
                 setFocus.accept(edtEmail);
                 showToast("error email");
             } else if (checkEmailExists.test(email)) {
