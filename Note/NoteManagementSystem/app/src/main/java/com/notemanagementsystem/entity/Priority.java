@@ -15,16 +15,11 @@ import java.util.Date;
 @Entity(tableName = "priority")
 public class Priority extends AbstractEntity<Priority>{
 
-    public Priority(AbstractEntity<Priority> priorityAbstractEntity){
-        super(priorityAbstractEntity);
+    public Priority(){
+        super();
     }
     public Priority(String name, Date createDate, int userId) {
         super(name, createDate, userId);
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return getName();
-    }
 }

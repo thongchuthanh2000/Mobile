@@ -16,9 +16,8 @@ public class Status extends AbstractEntity<Status>{
         super(name, createDate, userId);
     }
 
-    @NonNull
-    @Override
-    public String toString() {
-        return getName();
+    public Status(){
+        super();
     }
+
 }

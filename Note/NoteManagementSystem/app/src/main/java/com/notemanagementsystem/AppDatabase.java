@@ -46,11 +46,6 @@ import java.lang.reflect.Type;
 
 @TypeConverters({Converters.class})
 public abstract class AppDatabase extends RoomDatabase {
-
-//    public static <T> MyObject<T> createMyObject(Class<T> type) {
-//        return new MyObject<T>(type);
-//    }
-
     //Name databases
     private static final String dbName = "db_name";
     private static AppDatabase appDatabase;

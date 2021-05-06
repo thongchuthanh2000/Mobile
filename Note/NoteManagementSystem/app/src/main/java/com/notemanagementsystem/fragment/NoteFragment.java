@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -173,7 +174,7 @@ public class NoteFragment extends Fragment {
                 String nameNote = edtNameNote.getText().toString().trim();
                 String sPlanDate = tvPlanDate.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category==null || priority==null  || status==null ){
+                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category.getId()==-1 || priority.getId()==-1  || status.getId()==-1 ){
                     Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -204,7 +205,7 @@ public class NoteFragment extends Fragment {
                 String nameNote = edtNameNote.getText().toString().trim();
                 String sPlanDate = tvPlanDate.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category==null || priority==null || status==null){
+                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category.getId()==-1 || priority.getId()==-1  || status.getId()==-1 ){
                     Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -273,6 +274,7 @@ public class NoteFragment extends Fragment {
         ArrayList<T> list = (ArrayList<T>) getList(context,i,userId);
 
         ArrayAdapter<T> adapter = new ArrayAdapter<T>(context, android.R.layout.simple_spinner_item,list);
+
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         Spinner spn =null;
@@ -311,7 +313,6 @@ public class NoteFragment extends Fragment {
         spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position!=0){
                     T aClazz = (T) parent.getSelectedItem();
 
                     if (i ==0) {
@@ -323,8 +324,6 @@ public class NoteFragment extends Fragment {
                     if (i ==2) {
                         status = (Status) aClazz;
                     }
-
-                }
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -335,6 +334,7 @@ public class NoteFragment extends Fragment {
     //get list for selecting category, priority and status
     private <T extends AbstractEntity> List<T> getList(Context context, int i, int userId){
         List<T> list = new ArrayList<>();
+        list.add(getTempValue(context,i,userId));
         switch (i) {
             case 0:
                 list.addAll((Collection<? extends T>) AppDatabase.getAppDatabase(context).categoryDAO().getAllById(userId));
@@ -349,6 +349,35 @@ public class NoteFragment extends Fragment {
         return list;
     }
 
+    private <T extends AbstractEntity> T getTempValue(Context context, int i, int userId){
+        switch (i) {
+            case 0:
+               Category category = new Category();
+               category.setId(-1);
+               category.setName("Select category...");
+               category.setIsDeleted(1);
+               category.setUserId(userId);
+
+               return (T) category;
+            case 1:
+                Priority priority = new Priority();
+                priority.setId(-1);
+                priority.setName("Select priority...");
+                priority.setIsDeleted(1);
+                priority.setUserId(userId);
+
+                return (T) priority;
+            case 2:
+                Status status = new Status();
+                status.setId(-1);
+                status.setName("Select status...");
+                status.setIsDeleted(1);
+                status.setUserId(userId);
+
+                return (T) status;
+        }
+        return  null;
+    }
     //switch to another fragment
     private void replaceFragment(Fragment fragment){
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();

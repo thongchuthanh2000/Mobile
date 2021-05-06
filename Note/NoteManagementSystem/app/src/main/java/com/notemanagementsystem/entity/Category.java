@@ -18,5 +18,8 @@ public class Category extends AbstractEntity<Category>{
         super(name, createDate, userId);
     }
 
+    public Category(){
+        super();
+    }
 
 }
