@@ -78,7 +78,7 @@ public class ChangePasswordFragment extends Fragment implements View.OnClickList
             //Create a new user based on the id obtained from the session
             User user = AppDatabase.getAppDatabase(v.getContext())
                         .userDAO()
-                        .getUserById( SessionManager.getInstance().getUserId());
+                        .getById( SessionManager.getInstance().getUserId());
 
             //if the user does not enter the complete information
             if(currentPassword.isEmpty() || newPassword.isEmpty()||newPasswordConfirm.isEmpty()){

@@ -20,6 +20,4 @@ public abstract class NoteDAO extends AbstractDao<Note> {
     @Query("Select count(*) from note where userId=(:userId)")
     public abstract Integer getCountByNote(int userId);
 
-    @Query("SELECT * FROM note WHERE userId =(:userId)")
-    public abstract List<Note> getAllById(int userId);
 }

@@ -1,5 +1,6 @@
 package com.notemanagementsystem.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -13,5 +14,11 @@ import java.util.Date;
 public class Status extends AbstractEntity<Status>{
     public Status(String name, Date createDate, int userId) {
         super(name, createDate, userId);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getName();
     }
 }

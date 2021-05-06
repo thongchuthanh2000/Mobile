@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
         //pull user from session -- userSession
         User userSession = AppDatabase.getAppDatabase(getApplicationContext())
                 .userDAO()
-                .getUserById(SessionManager.getInstance().getUserId());
+                .getById(SessionManager.getInstance().getUserId());
 
         if(userSession!=null && SessionManager.getInstance().getRememberMe()==true){
 

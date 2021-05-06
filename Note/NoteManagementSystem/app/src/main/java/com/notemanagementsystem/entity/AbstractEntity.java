@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
+import java.util.Objects;
 
 
 public class AbstractEntity<T> {
@@ -21,8 +22,16 @@ public class AbstractEntity<T> {
     @ColumnInfo
     private int userId;
 
+    public int getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(int isDeleted) {
+        this.isDeleted = isDeleted;
+    }
+
     @ColumnInfo
-    private boolean isDeleted;
+    private int isDeleted;
 
     public AbstractEntity(String name, Date createDate, int userId) {
         this.name = name;
@@ -36,13 +45,6 @@ public class AbstractEntity<T> {
         this.userId = ec.userId;
     }
 
-    public boolean isDeleted() {
-        return isDeleted;
-    }
-
-    public void setDeleted(boolean deleted) {
-        isDeleted = deleted;
-    }
 
     public String getName() {
         return name;
@@ -78,5 +80,23 @@ public class AbstractEntity<T> {
 
     public AbstractEntity(){
 
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AbstractEntity<?> that = (AbstractEntity<?>) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

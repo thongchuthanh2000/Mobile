@@ -25,7 +25,6 @@ import java.util.List;
  * @since   2021-04-24
  *
  * Cua ca team a
- * Cua ca team a
  */
 public class GenericAdapter<T extends AbstractEntity> extends RecyclerView.Adapter<GenericAdapter.GenericViewHolder> {
 

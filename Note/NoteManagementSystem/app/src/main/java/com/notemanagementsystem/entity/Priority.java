@@ -1,5 +1,6 @@
 package com.notemanagementsystem.entity;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -19,5 +20,11 @@ public class Priority extends AbstractEntity<Priority>{
     }
     public Priority(String name, Date createDate, int userId) {
         super(name, createDate, userId);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return getName();
     }
 }

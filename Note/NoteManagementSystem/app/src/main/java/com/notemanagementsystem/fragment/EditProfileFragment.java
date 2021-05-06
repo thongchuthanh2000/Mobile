@@ -94,7 +94,7 @@ public class EditProfileFragment extends Fragment implements View.OnClickListene
         //Create a new user based on the id obtained from the session
         user = AppDatabase.getAppDatabase(view.getContext())
                 .userDAO()
-                .getUserById(userId);
+                .getById(userId);
 
         edtEmail.setText(user.getEmail());
         edtFirstName.setText(user.getFirstName());

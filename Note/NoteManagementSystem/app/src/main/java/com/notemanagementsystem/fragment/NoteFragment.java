@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.notemanagementsystem.AppDatabase;
+import com.notemanagementsystem.entity.AbstractEntity;
 import com.notemanagementsystem.utils.SessionManager;
 import com.notemanagementsystem.adapter.NoteAdapter;
 import com.notemanagementsystem.R;
@@ -42,10 +43,10 @@ import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Priority;
 import com.notemanagementsystem.entity.Status;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 /*
@@ -72,9 +73,9 @@ public class NoteFragment extends Fragment {
 
     private Date planDate;
 
-    private int category = -1;
-    private int priority = -1;
-    private int status = -1;
+    private Category category;
+    private Priority priority;
+    private Status status;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -172,14 +173,14 @@ public class NoteFragment extends Fragment {
                 String nameNote = edtNameNote.getText().toString().trim();
                 String sPlanDate = tvPlanDate.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category<0 || priority<0 || status<0){
+                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category==null || priority==null  || status==null ){
                     Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 int userId = SessionManager.getInstance().getUserId();
 
-                Note newNote = new Note(nameNote, planDate, new Date(), category, priority, status, userId);
+                Note newNote = new Note(nameNote, planDate, new Date(), category.getId(), priority.getId(), status.getId(), userId);
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().insert(newNote);
                 Toast.makeText(v.getContext(), "Add note successfully!", Toast.LENGTH_SHORT).show();
 
@@ -194,25 +195,25 @@ public class NoteFragment extends Fragment {
 
             edtNameNote.setText(note.getName());
             tvPlanDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate()));
-            category = note.getCategoryId();
-            priority = note.getPriorityId();
-            status = note.getStatusId();
+            category = AppDatabase.getAppDatabase(context).categoryDAO().getById(note.getCategoryId());
+            priority = AppDatabase.getAppDatabase(context).priorityDAO().getById(note.getPriorityId());
+            status = AppDatabase.getAppDatabase(context).statusDAO().getById(note.getStatusId());
 
             //update note
             btnAddOrUpdate.setOnClickListener(v -> {
                 String nameNote = edtNameNote.getText().toString().trim();
                 String sPlanDate = tvPlanDate.getText().toString().trim();
 
-                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category<0 || priority<0 || status<0){
+                if(TextUtils.isEmpty(nameNote) || TextUtils.isEmpty(sPlanDate) || category==null || priority==null || status==null){
                     Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 note.setName(nameNote);
                 note.setPlanDate(planDate);
-                note.setCategoryId(category);
-                note.setPriorityId(priority);
-                note.setStatusId(status);
+                note.setCategoryId(category.getId());
+                note.setPriorityId(priority.getId());
+                note.setStatusId(status.getId());
 
                 AppDatabase.getAppDatabase(v.getContext()).noteDAO().update(note);
 
@@ -261,102 +262,88 @@ public class NoteFragment extends Fragment {
         int userId = SessionManager.getInstance().getUserId();
 
         //select cate, priority, status
-        for(int i = 0; i <= 2; i++){
-            List<String> li = getList(context, i, userId);
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter(context, android.R.layout.simple_spinner_item, li);
-            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        setSpiner(context,dialog,0,userId,note);
+        setSpiner(context,dialog,1,userId,note);
+        setSpiner(context,dialog,2,userId,note);
 
-            Spinner spn;
-            switch (i){
-                case 0:
-                    spn = dialog.findViewById(R.id.spn_category);
-                    spn.setAdapter(dataAdapter);
-                    if (note != null) {
-                        String value = AppDatabase.getAppDatabase(context).categoryDAO().getCategoryById(note.getCategoryId()).getName();
-                        int spinnerPosition = dataAdapter.getPosition(value);
-                        spn.setSelection(spinnerPosition);
-                    };
-                    spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if(position!=0){
-                                String name = parent.getItemAtPosition(position).toString();
-                                Category cate = AppDatabase.getAppDatabase(view.getContext()).categoryDAO().getCategoryByName(name);
-                                category = cate.getId();
-                            }
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
-                case 1:
-                    spn = dialog.findViewById(R.id.spn_priority);
-                    spn.setAdapter(dataAdapter);
-                    if (note != null) {
-                        String value = AppDatabase.getAppDatabase(context).priorityDAO().getPriorityById(note.getPriorityId()).getName();
-                        int spinnerPosition = dataAdapter.getPosition(value);
-                        spn.setSelection(spinnerPosition);
-                    };
-                    spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if(position!=0){
-                                String name = parent.getItemAtPosition(position).toString();
-                                Priority prio = AppDatabase.getAppDatabase(view.getContext()).priorityDAO().getPriorityByName(name);
-                                priority = prio.getId();
-                            }
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
-                case 2:
-                    spn = dialog.findViewById(R.id.spn_status);
-                    spn.setAdapter(dataAdapter);
-                    if (note != null) {
-                        String value = AppDatabase.getAppDatabase(context).statusDAO().getStatusById(note.getStatusId()).getName();
-                        int spinnerPosition = dataAdapter.getPosition(value);
-                        spn.setSelection(spinnerPosition);
-                    };
-                    spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                        @Override
-                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            if(position!=0){
-                                String name = parent.getItemAtPosition(position).toString();
-                                Status stt = AppDatabase.getAppDatabase(view.getContext()).statusDAO().getStatusByName(name);
-                                status = stt.getId();
-                            }
-                        }
-                        @Override
-                        public void onNothingSelected(AdapterView<?> parent) {
-                        }
-                    });
-            }
-        }
         dialog.show();
     }
 
+    private <T extends AbstractEntity> void setSpiner (Context context,Dialog dialog,int i,int userId,Note note){
+        ArrayList<T> list = (ArrayList<T>) getList(context,i,userId);
+
+        ArrayAdapter<T> adapter = new ArrayAdapter<T>(context, android.R.layout.simple_spinner_item,list);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        Spinner spn =null;
+        if (i==0){
+            spn = dialog.findViewById(R.id.spn_category);
+        }
+        if (i==1){
+            spn = dialog.findViewById(R.id.spn_priority);
+        }
+        if (i==2){
+            spn = dialog.findViewById(R.id.spn_status);
+        }
+
+        spn.setAdapter(adapter);
+
+        if (note != null) {
+            int spinnerPosition=-1;
+            if (i ==0) {
+                Category categoryNote = AppDatabase.getAppDatabase(context).categoryDAO().getById(note.getCategoryId());
+                spinnerPosition = adapter.getPosition((T) categoryNote);
+                spn.setSelection(spinnerPosition,true);
+            }
+            if (i ==1) {
+                Priority priorityNote = AppDatabase.getAppDatabase(context).priorityDAO().getById(note.getPriorityId());
+                spinnerPosition = adapter.getPosition((T) priorityNote);
+                spn.setSelection(spinnerPosition,true);
+            }
+            if (i ==2) {
+                Status statusNote = AppDatabase.getAppDatabase(context).statusDAO().getById(note.getStatusId());
+                spinnerPosition = adapter.getPosition((T) statusNote);
+                spn.setSelection(spinnerPosition,true);
+            }
+
+        };
+
+        spn.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(position!=0){
+                    T aClazz = (T) parent.getSelectedItem();
+
+                    if (i ==0) {
+                        category = (Category) aClazz;
+                    }
+                    if (i ==1) {
+                        priority = (Priority) aClazz;
+                    }
+                    if (i ==2) {
+                        status = (Status) aClazz;
+                    }
+
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+    }
     //get list for selecting category, priority and status
-    private List<String> getList(Context context, int i, int userId){
-        List<String> list = new ArrayList<>();
+    private <T extends AbstractEntity> List<T> getList(Context context, int i, int userId){
+        List<T> list = new ArrayList<>();
         switch (i) {
             case 0:
-                list.add(0, "Select category...");
-                for(Category c : AppDatabase.getAppDatabase(context).categoryDAO().getAllById(userId)){
-                    list.add(c.getName().trim());
-                }
+                list.addAll((Collection<? extends T>) AppDatabase.getAppDatabase(context).categoryDAO().getAllById(userId));
                 return list;
             case 1:
-                list.add(0, "Select priority...");
-                for(Priority p : AppDatabase.getAppDatabase(context).priorityDAO().getAllById(userId)){
-                    list.add(p.getName().trim());
-                }
+                list.addAll((Collection<? extends T>) AppDatabase.getAppDatabase(context).priorityDAO().getAllById(userId));
                 return list;
             case 2:
-                list.add(0, "Select status...");
-                for(Status s : AppDatabase.getAppDatabase(context).statusDAO().getAllById(userId)){
-                    list.add(s.getName().trim());
-                }
+                list.addAll((Collection<? extends T>) AppDatabase.getAppDatabase(context).statusDAO().getAllById(userId));
                 return list;
         }
         return list;
