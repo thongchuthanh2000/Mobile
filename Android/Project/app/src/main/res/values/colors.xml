@@ -9,4 +9,8 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="action_bar_color">#fd3c01</color>
+    <color name="item_color">#ffeacb</color>
+    <color name="btn1_color">#3466ff</color>
+    <color name="btn2_color">#51f656</color>
+
 </resources>

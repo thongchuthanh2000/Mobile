@@ -30,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getDrawable(R.drawable.ic_menu));
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         FloatingActionButton fab = findViewById(R.id.fab);

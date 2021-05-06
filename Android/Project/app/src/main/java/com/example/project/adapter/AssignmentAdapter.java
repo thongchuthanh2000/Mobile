@@ -18,23 +18,18 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.As
 
     private List<Assignment> mListAssignment;
 
-    public AssignmentAdapter(List<Assignment> mListAssignment) {
-        this.mListAssignment = mListAssignment;
+    public void setData(List<Assignment> list){
+        this.mListAssignment = list;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public AssignmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        Context context =parent.getContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_assignment,parent,false);
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_assignment, parent, false);
-
-        AssignmentViewHolder assignmentViewHolder = new AssignmentViewHolder(view);
-
-        return assignmentViewHolder;
-
+        return new AssignmentViewHolder(view);
     }
 
     @Override
@@ -42,8 +37,15 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.As
 
         Assignment assignment =mListAssignment.get(position);
 
-        holder.AssignmentNo.setText(assignment.getId());
+        if(assignment==null){
+            return;
+        }
 
+        holder.AssignmentNo.setText(String.valueOf(assignment.getId()));
+        holder.AssignmentClassName.setText(assignment.getClass_name());
+        holder.AssignmentCourseName.setText(assignment.getCourse_name());
+        holder.AssignmentTrainerName.setText(assignment.getTrainer_name());
+        holder.AssignmentRegistrationCode.setText(assignment.getRegistration_code());
     }
 
     @Override
@@ -66,7 +68,6 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.As
             AssignmentClassName =itemView.findViewById(R.id.assignment_class_name);
             AssignmentTrainerName =itemView.findViewById(R.id.assignment_trainer_name);
             AssignmentRegistrationCode =itemView.findViewById(R.id.assignment_registration_code);
-
         }
     }
 }
