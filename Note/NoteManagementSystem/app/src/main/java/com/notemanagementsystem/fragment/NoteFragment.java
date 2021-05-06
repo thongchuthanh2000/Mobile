@@ -44,6 +44,8 @@ import com.notemanagementsystem.entity.Note;
 import com.notemanagementsystem.entity.Priority;
 import com.notemanagementsystem.entity.Status;
 
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,11 +68,9 @@ public class NoteFragment extends Fragment {
     private RecyclerView rcvNote;
     private NoteAdapter noteAdapter;
     private List<Note> mListNote;
-    LinearLayoutManager linearLayoutManager;
 
     private Calendar calendar;
     private DatePickerDialog datePickerDialog;
-    private TimePickerDialog timePickerDialog;
 
     private Date planDate;
 
@@ -132,7 +132,7 @@ public class NoteFragment extends Fragment {
                 .setMessage("Are you sure to delete this note?")
                 .setPositiveButton("Yes",((dialog, which) -> {
                     AppDatabase.getAppDatabase(this.getContext()).noteDAO().delete(note);
-                    Toast.makeText(this.getContext(), "Deleted " + note.getName().toString().trim() + "!", Toast.LENGTH_SHORT).show();
+                    showToast("Deleted " + note.getName().trim() + "!");
 
                     replaceFragment(new NoteFragment());
                 }))
@@ -209,7 +209,13 @@ public class NoteFragment extends Fragment {
                     Toast.makeText(v.getContext(), "Note's name, category, priority, status and plan date can't be empty!\nCheck to see if you have added categories, priorities and status before!", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
+                try {
+                    planDate = df.parse(sPlanDate);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
                 note.setName(nameNote);
                 note.setPlanDate(planDate);
                 note.setCategoryId(category.getId());
@@ -236,27 +242,18 @@ public class NoteFragment extends Fragment {
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             int month = calendar.get(Calendar.MONTH);
             int year = calendar.get(Calendar.YEAR);
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
 
             datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker view, int mYear, int mMonth, int mDayOfMonth) {
 
-                    timePickerDialog = new TimePickerDialog(v.getContext(), new TimePickerDialog.OnTimeSetListener() {
-                        @Override
-                        public void onTimeSet(TimePicker view, int mHourOfDay, int mMinute) {
+                    calendar.set(mYear, mMonth, mDayOfMonth);
+                    planDate = calendar.getTime();
 
-                            calendar.set(mYear, mMonth, mDayOfMonth, mHourOfDay, mMinute, 0);
-                            planDate = calendar.getTime();
-
-                            tvPlanDate.setText(new SimpleDateFormat("yyyy-MM-dd hh:mm").format(planDate));
-
-                        }
-                    }, hour, minute, true);
-                    timePickerDialog.show();
+                    tvPlanDate.setText(new SimpleDateFormat("yyyy-MM-dd").format(planDate));
                 }
             }, year, month, day);
+
             datePickerDialog.show();
         });
 
@@ -383,5 +380,8 @@ public class NoteFragment extends Fragment {
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.content_frame, fragment);
         fragmentTransaction.commit();
+    }
+    public void showToast(String string){
+        Toast.makeText(getContext(),string,Toast.LENGTH_SHORT).show();
     }
 }

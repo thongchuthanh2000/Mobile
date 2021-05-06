@@ -110,10 +110,10 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
         Status status = AppDatabase.getAppDatabase(holder.itemView.getContext()).statusDAO().getById(note.getStatusId());
         sb.append("Status: " + status.getName() + '\n');
 
-        String planDate = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(note.getPlanDate());
+        String planDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getPlanDate());
         sb.append("Plan Date: " + planDate + '\n');
 
-        String createDate = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(note.getCreateDate());
+        String createDate = new SimpleDateFormat("yyyy-MM-dd").format(note.getCreateDate());
         sb.append("Created Date: " + createDate);
 
         holder.tvItemNote.setText(sb);
