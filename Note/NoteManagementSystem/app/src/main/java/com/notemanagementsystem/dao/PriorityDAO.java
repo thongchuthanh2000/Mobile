@@ -13,11 +13,4 @@ import java.util.List;
 
 @Dao
 public abstract class PriorityDAO extends AbstractDao<Priority> {
-
-
-    @Query("SELECT * FROM priority WHERE id =(:id)")
-    public abstract Priority getPriorityById(int id);
-
-    @Query("SELECT * FROM priority WHERE name =(:name)")
-    public abstract Priority getPriorityByName(String name);
 }

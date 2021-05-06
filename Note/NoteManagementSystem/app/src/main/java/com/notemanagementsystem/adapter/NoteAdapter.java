@@ -101,13 +101,13 @@ public class NoteAdapter extends  RecyclerView.Adapter<NoteAdapter.NoteViewHolde
         StringBuffer sb = new StringBuffer();
         sb.append("Name: " + note.getName().toString() + '\n');
 
-        Category category = AppDatabase.getAppDatabase(holder.itemView.getContext()).categoryDAO().getCategoryById(note.getCategoryId());
+        Category category = AppDatabase.getAppDatabase(holder.itemView.getContext()).categoryDAO().getById(note.getCategoryId());
         sb.append("Category: " + category.getName() + '\n');
 
-        Priority priority = AppDatabase.getAppDatabase(holder.itemView.getContext()).priorityDAO().getPriorityById(note.getPriorityId());
+        Priority priority = AppDatabase.getAppDatabase(holder.itemView.getContext()).priorityDAO().getById(note.getPriorityId());
         sb.append("Priority: " + priority.getName() + '\n');
 
-        Status status = AppDatabase.getAppDatabase(holder.itemView.getContext()).statusDAO().getStatusById(note.getStatusId());
+        Status status = AppDatabase.getAppDatabase(holder.itemView.getContext()).statusDAO().getById(note.getStatusId());
         sb.append("Status: " + status.getName() + '\n');
 
         String planDate = new SimpleDateFormat("yyyy-MM-dd hh:mm").format(note.getPlanDate());

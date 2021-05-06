@@ -23,7 +23,7 @@ public class EmailUtil {
         //Create a new user based on the id obtained from the session
         User user = AppDatabase.getAppDatabase(view.getContext())
                 .userDAO()
-                .getUserById(userId);
+                .getById(userId);
 
         txtEmail.setText(user.getEmail());
     }

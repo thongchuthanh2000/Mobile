@@ -106,6 +106,12 @@ public class AbstractFragment<T extends AbstractEntity> extends Fragment impleme
     }
 
     private void clickDeleteAbstract(View view, T item){
+
+        if (getAppDatabase(view.getContext()).abstractDao().checkNoteExits(item)){
+            showToast( "Note exist");
+            return;
+        }
+
         new AlertDialog.Builder(view.getContext())
                 .setTitle("Confirm")
                 .setMessage("Are you sure to delete this ?")
